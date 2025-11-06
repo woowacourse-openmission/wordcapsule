@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: wordCapsule
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/wordcapsule?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: true
+  
+  sql:
+    init:
+      mode: always
