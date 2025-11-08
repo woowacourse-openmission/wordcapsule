@@ -15,9 +15,50 @@ object QuizConfigFactory {
      * @return 생성된 QuizConfig 도메인 객체 (하위 Quiz, QuizOption 포함)
      */
     fun createQuizConfig(request: QuizConfigRequest): QuizConfig {
-        return QuizConfig(
+        val quizConfig = QuizConfig(
             quizName = request.quizName,
+            quizType = request.quizType,
             level = request.level
         )
+
+        val quizzes = createQuizzes(request, quizConfig)
+        return QuizConfig(
+            quizName = quizConfig.quizName,
+            quizType = quizConfig.quizType,
+            level = quizConfig.level,
+            quizzes = quizzes
+        )
+    }
+
+    private fun createQuizzes(request: QuizConfigRequest, config: QuizConfig): List<Quiz> {
+        return request.quizzes.map { quizRequest ->
+            val quiz = Quiz(
+                config = config,
+                content = quizRequest.content,
+                level = quizRequest.level
+            )
+
+            val options = createQuizOptions(quizRequest, quiz)
+            Quiz(
+                config = quiz.config,
+                content = quiz.content,
+                level = quiz.level,
+                options = options
+            )
+        }
+    }
+
+    private fun createQuizOptions(
+        quizRequest: com.woowacourse.wordcapsule.dto.quiz.QuizRequest,
+        quiz: Quiz
+    ): List<QuizOption> {
+        return quizRequest.options.map { optionRequest ->
+            QuizOption(
+                quiz = quiz,
+                content = optionRequest.content,
+                position = optionRequest.position,
+                isCorrect = optionRequest.isCorrect
+            )
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.woowacourse.wordcapsule.dto.quiz
 
-import com.woowacourse.wordcapsule.domain.quiz.QuizType
-import jakarta.validation.constraints.NotNull
+import com.woowacourse.wordcapsule.domain.quiz.Level
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
@@ -12,8 +11,7 @@ data class QuizRequest(
     @field:Size(max = 50, message = "퀴즈 내용은 50자 이하여야 합니다")
     val content: String,
 
-    @field:NotNull(message = "퀴즈 타입은 필수입니다")
-    val quizType: QuizType,
+    val level: Level = Level.BEGINNER,
 
     @field:NotEmpty(message = "선택지는 최소 1개 이상 필요합니다")
     @field:Valid
