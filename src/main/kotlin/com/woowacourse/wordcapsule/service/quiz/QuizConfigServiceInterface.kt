@@ -3,6 +3,7 @@ package com.woowacourse.wordcapsule.service.quiz
 import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizType
 import com.woowacourse.wordcapsule.dto.common.PageResponse
+import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
 import org.springframework.data.domain.Pageable
@@ -30,4 +31,13 @@ interface QuizConfigServiceInterface {
      * @return 페이징된 퀴즈 설정 목록
      */
     fun getQuizConfigs(level: Level?, quizType: QuizType?, pageable: Pageable): PageResponse<QuizConfigListResponse>
+    
+    /**
+     * ID로 퀴즈 설정 상세 정보 조회
+     *
+     * @param configId 퀴즈 설정 ID
+     * @return 퀴즈 설정 상세 정보 (퀴즈 문제 및 선택지 포함)
+     * @throws EntityNotFoundException 퀴즈 설정을 찾을 수 없는 경우
+     */
+    fun getQuizConfigDetail(configId: Long): QuizConfigDetailResponse
 }

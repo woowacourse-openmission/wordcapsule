@@ -3,6 +3,7 @@ package com.woowacourse.wordcapsule.controller.quiz
 import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizType
 import com.woowacourse.wordcapsule.dto.common.PageResponse
+import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
 import com.woowacourse.wordcapsule.service.quiz.QuizConfigServiceInterface
@@ -58,6 +59,18 @@ class QuizConfigController(
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
 
         val result = quizConfigService.getQuizConfigs(level, quizType, pageable)
+        return ResponseEntity.ok(result)
+    }
+    
+    /**
+     * ID로 퀴즈 설정 상세 정보 조회
+     *
+     * @param configId 퀴즈 설정 ID
+     * @return HTTP 200 OK와 퀴즈 설정 상세 정보
+     */
+    @GetMapping("/{configId}")
+    fun getQuizConfigDetail(@PathVariable configId: Long): ResponseEntity<QuizConfigDetailResponse> {
+        val result = quizConfigService.getQuizConfigDetail(configId)
         return ResponseEntity.ok(result)
     }
 }

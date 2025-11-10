@@ -4,6 +4,7 @@ import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizConfigFactory
 import com.woowacourse.wordcapsule.domain.quiz.QuizType
 import com.woowacourse.wordcapsule.dto.common.PageResponse
+import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
 import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import jakarta.persistence.EntityNotFoundException
 
 /**
  * 퀴즈 설정 관리 서비스 구현체
@@ -46,5 +48,12 @@ class QuizConfigService(
         val responsePage = PageImpl(responseList, page.pageable, page.totalElements)
 
         return PageResponse.of(responsePage)
+    }
+    
+    override fun getQuizConfigDetail(configId: Long): QuizConfigDetailResponse {
+        val quizConfig = quizConfigRepository.findById(configId)
+            .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
+        
+        return QuizConfigDetailResponse.from(quizConfig)
     }
 }
