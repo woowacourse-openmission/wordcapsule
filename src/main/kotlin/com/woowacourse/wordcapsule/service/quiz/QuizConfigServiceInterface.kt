@@ -20,10 +20,10 @@ interface QuizConfigServiceInterface {
      * @return 생성된 퀴즈 설정의 식별자
      */
     fun createQuizConfig(request: QuizConfigRequest): Long
-    
+
     /**
      * 퀴즈 설정 목록을 페이징하여 조회
-     * 
+     *
      * @param level 레벨 필터 (선택사항)
      * @param quizType 퀴즈 타입 필터 (선택사항)
      * @param pageable 페이징 정보
