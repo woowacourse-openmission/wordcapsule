@@ -29,18 +29,22 @@ class QuizConfigService(
         val savedConfig = quizConfigRepository.save(quizConfig)
         return savedConfig.id
     }
-    
-    override fun getQuizConfigs(level: Level?, quizType: QuizType?, pageable: Pageable): PageResponse<QuizConfigListResponse> {
+
+    override fun getQuizConfigs(
+        level: Level?,
+        quizType: QuizType?,
+        pageable: Pageable
+    ): PageResponse<QuizConfigListResponse> {
         val page = when {
             level != null && quizType != null -> quizConfigRepository.findByLevelAndQuizType(level, quizType, pageable)
             level != null -> quizConfigRepository.findByLevel(level, pageable)
             quizType != null -> quizConfigRepository.findByQuizType(quizType, pageable)
             else -> quizConfigRepository.findAll(pageable)
         }
-        
+
         val responseList = page.content.map { QuizConfigListResponse.from(it) }
         val responsePage = PageImpl(responseList, page.pageable, page.totalElements)
-        
+
         return PageResponse.of(responsePage)
     }
 }

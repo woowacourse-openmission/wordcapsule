@@ -34,12 +34,12 @@ class QuizConfigController(
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(mapOf("configId" to configId))
     }
-    
+
     /**
      * 퀴즈 설정 목록을 페이징하여 조회
      *
      * @param level 레벨 필터 (선택사항)
-     * @param quizType 퀴즈 타입 필터 (선택사항) 
+     * @param quizType 퀴즈 타입 필터 (선택사항)
      * @param page 페이지 번호 (기본값: 0)
      * @param size 페이지 크기 (기본값: 10)
      * @param sort 정렬 기준 (기본값: createdAt,desc)
@@ -56,7 +56,7 @@ class QuizConfigController(
         val sortDirection = if (sort.contains("desc")) Sort.Direction.DESC else Sort.Direction.ASC
         val sortProperty = sort.split(",")[0]
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
-        
+
         val result = quizConfigService.getQuizConfigs(level, quizType, pageable)
         return ResponseEntity.ok(result)
     }
