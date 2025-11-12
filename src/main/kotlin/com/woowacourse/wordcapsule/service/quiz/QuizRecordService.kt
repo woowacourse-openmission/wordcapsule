@@ -68,12 +68,10 @@ class QuizRecordService(
             )
         )
 
-        val page: Page<QuizRecord> = quizRecordRepository.findAll(spec, pageable)
+        val page = quizRecordRepository.findAll(spec, pageable)
+            .map(QuizRecordListResponse::from)
 
-        val responseList = page.content.map { QuizRecordListResponse.from(it) }
-        val responsePage = PageImpl(responseList, page.pageable, page.totalElements)
-
-        return PageResponse.of(responsePage)
+        return PageResponse.of(page)
     }
 
     /**
