@@ -4,6 +4,7 @@ import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordRequest
+import com.woowacourse.wordcapsule.dto.quiz.QuizRecordStatisticResponse
 import com.woowacourse.wordcapsule.service.quiz.QuizRecordServiceInterface
 import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
@@ -49,6 +50,12 @@ class QuizRecordController(
     @GetMapping("/{recordId}")
     fun getUserQuizRecordDetail(@PathVariable recordId: Long): ResponseEntity<QuizRecordDetailResponse> {
         val result = quizRecordService.getUserQuizRecordDetail(recordId)
+        return ResponseEntity.ok(result)
+    }
+
+    @GetMapping("/statistic")
+    fun getUserQuizRecordStatistic(@RequestParam(required = false) userId: Long): ResponseEntity<QuizRecordStatisticResponse> {
+        val result = quizRecordService.getUserQuizRecordStatistic(userId)
         return ResponseEntity.ok(result)
     }
 }
