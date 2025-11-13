@@ -4,7 +4,7 @@ import com.woowacourse.wordcapsule.domain.quiz.QuizAnswer
 
 data class QuizAnswerDetailResponse(
     val answerId: Long,
-    val quiz: QuizResponseV2,
+    val quiz: QuizResponse,
     val selectedOptionId: Long,
     val questionNumber: Int,
     val isCorrect: Boolean,
@@ -15,7 +15,7 @@ data class QuizAnswerDetailResponse(
 
             return QuizAnswerDetailResponse(
                 answerId = quizAnswer.id,
-                quiz = QuizResponseV2.from(quiz),
+                quiz = QuizResponse.from(quiz),
                 selectedOptionId = quizAnswer.option.id,
                 questionNumber = quizAnswer.questionNumber,
                 isCorrect = quizAnswer.isCorrect,
