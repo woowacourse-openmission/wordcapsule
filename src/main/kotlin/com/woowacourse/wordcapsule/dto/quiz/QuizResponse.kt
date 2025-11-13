@@ -1,6 +1,6 @@
 package com.woowacourse.wordcapsule.dto.quiz
 
-import com.woowacourse.wordcapsule.domain.quiz.Level
+import com.woowacourse.wordcapsule.domain.quiz.QuizType
 import com.woowacourse.wordcapsule.domain.quiz.Quiz
 
 /**
@@ -9,7 +9,7 @@ import com.woowacourse.wordcapsule.domain.quiz.Quiz
 data class QuizResponse(
     val quizId: Long,
     val content: String,
-    val level: Level,
+    val quizType: QuizType,
     val options: List<QuizOptionResponse>
 ) {
     companion object {
@@ -17,7 +17,7 @@ data class QuizResponse(
             return QuizResponse(
                 quizId = quiz.id,
                 content = quiz.content,
-                level = quiz.level,
+                quizType = quiz.quizType,
                 options = quiz.options.map { QuizOptionResponse.from(it) }
             )
         }
