@@ -23,44 +23,8 @@ class QuizConfigService(
 
     @Transactional
     override fun createQuizConfig(request: QuizConfigRequest): Long {
-        val quizConfig = QuizConfig(
-            quizName = request.quizName,
-            level = request.level
-        )
-        
-        val quizzes = request.quizzes.map { quizRequest ->
-            val quiz = Quiz(
-                config = quizConfig,
-                content = quizRequest.content,
-                quizType = quizRequest.quizType
-            )
-            
-            val options = quizRequest.options.map { optionRequest ->
-                QuizOption(
-                    quiz = quiz,
-                    content = optionRequest.content,
-                    position = optionRequest.position,
-                    isCorrect = optionRequest.isCorrect
-                )
-            }
-            
-            // Quiz의 options 설정
-            Quiz(
-                config = quizConfig,
-                content = quiz.content,
-                quizType = quiz.quizType,
-                options = options
-            )
-        }
-        
-        // QuizConfig의 quizzes 설정
-        val finalConfig = QuizConfig(
-            quizName = request.quizName,
-            level = request.level,
-            quizzes = quizzes
-        )
-        
-        val savedConfig = quizConfigRepository.save(finalConfig)
+        val quizConfig = QuizConfigFactory.createQuizConfig(request)
+        val savedConfig = quizConfigRepository.save(quizConfig)
         return savedConfig.id
     }
 

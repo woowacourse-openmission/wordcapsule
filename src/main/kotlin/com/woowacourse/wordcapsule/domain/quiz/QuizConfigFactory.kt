@@ -15,8 +15,6 @@ object QuizConfigFactory {
      * @return 생성된 QuizConfig 도메인 객체 (하위 Quiz, QuizOption 포함)
      */
     fun createQuizConfig(request: QuizConfigRequest): QuizConfig {
-        // JPA가 저장 시 cascade로 연관관계를 자동 처리하므로 
-        // 기본 QuizConfig만 생성하고 Service에서 하위 객체들을 직접 생성
         return QuizConfig(
             quizName = request.quizName,
             level = request.level
