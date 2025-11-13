@@ -13,13 +13,13 @@ class QuizConfig(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "config_id")
-    override val id: Long = 0L,
+    val id: Long = 0L,
 
     @Column(name = "quiz_name", nullable = false, length = 50)
     val quizName: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "level", nullable = true)
+    @Column(name = "level", nullable = false)
     val level: Level = Level.BEGINNER,
 
     @OneToMany(mappedBy = "config", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)

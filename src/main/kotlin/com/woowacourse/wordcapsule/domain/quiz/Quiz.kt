@@ -13,7 +13,7 @@ class Quiz(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_id")
-    override val id: Long = 0L,
+    val id: Long = 0L,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "config_id", nullable = false)

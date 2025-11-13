@@ -1,8 +1,6 @@
 package com.woowacourse.wordcapsule.service.quiz
 
-import com.woowacourse.wordcapsule.domain.quiz.Level
-import com.woowacourse.wordcapsule.domain.quiz.QuizConfigFactory
-import com.woowacourse.wordcapsule.domain.quiz.QuizType
+import com.woowacourse.wordcapsule.domain.quiz.*
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
@@ -25,8 +23,44 @@ class QuizConfigService(
 
     @Transactional
     override fun createQuizConfig(request: QuizConfigRequest): Long {
-        val quizConfig = QuizConfigFactory.createQuizConfig(request)
-        val savedConfig = quizConfigRepository.save(quizConfig)
+        val quizConfig = QuizConfig(
+            quizName = request.quizName,
+            level = request.level
+        )
+        
+        val quizzes = request.quizzes.map { quizRequest ->
+            val quiz = Quiz(
+                config = quizConfig,
+                content = quizRequest.content,
+                quizType = quizRequest.quizType
+            )
+            
+            val options = quizRequest.options.map { optionRequest ->
+                QuizOption(
+                    quiz = quiz,
+                    content = optionRequest.content,
+                    position = optionRequest.position,
+                    isCorrect = optionRequest.isCorrect
+                )
+            }
+            
+            // Quiz의 options 설정
+            Quiz(
+                config = quizConfig,
+                content = quiz.content,
+                quizType = quiz.quizType,
+                options = options
+            )
+        }
+        
+        // QuizConfig의 quizzes 설정
+        val finalConfig = QuizConfig(
+            quizName = request.quizName,
+            level = request.level,
+            quizzes = quizzes
+        )
+        
+        val savedConfig = quizConfigRepository.save(finalConfig)
         return savedConfig.id
     }
 

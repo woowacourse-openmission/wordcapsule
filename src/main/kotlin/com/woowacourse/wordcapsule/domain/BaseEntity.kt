@@ -16,22 +16,10 @@ abstract class BaseEntity {
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    open val createdAt: LocalDateTime = LocalDateTime.now()
+    open lateinit var createdAt: LocalDateTime
     
     @LastModifiedDate
     @Column(name = "updated_at")
-    open val updatedAt: LocalDateTime = LocalDateTime.now()
+    open lateinit var updatedAt: LocalDateTime
     
-    /**
-     * 각 엔티티에서 구현해야 하는 ID 접근 메소드
-     */
-    abstract val id: Long
-    
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return id == (other as BaseEntity).id
-    }
-
-    override fun hashCode(): Int = id.hashCode()
 }

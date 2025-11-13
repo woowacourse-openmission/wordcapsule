@@ -15,48 +15,11 @@ object QuizConfigFactory {
      * @return 생성된 QuizConfig 도메인 객체 (하위 Quiz, QuizOption 포함)
      */
     fun createQuizConfig(request: QuizConfigRequest): QuizConfig {
-        val quizConfig = QuizConfig(
+        // JPA가 저장 시 cascade로 연관관계를 자동 처리하므로 
+        // 기본 QuizConfig만 생성하고 Service에서 하위 객체들을 직접 생성
+        return QuizConfig(
             quizName = request.quizName,
             level = request.level
         )
-
-        val quizzes = createQuizzes(request, quizConfig)
-        return QuizConfig(
-            quizName = quizConfig.quizName,
-            level = quizConfig.level,
-            quizzes = quizzes
-        )
-    }
-
-    private fun createQuizzes(request: QuizConfigRequest, config: QuizConfig): List<Quiz> {
-        return request.quizzes.map { quizRequest ->
-            val quiz = Quiz(
-                config = config,
-                content = quizRequest.content,
-                quizType = quizRequest.quizType
-            )
-
-            val options = createQuizOptions(quizRequest, quiz)
-            Quiz(
-                config = quiz.config,
-                content = quiz.content,
-                quizType = quiz.quizType,
-                options = options
-            )
-        }
-    }
-
-    private fun createQuizOptions(
-        quizRequest: com.woowacourse.wordcapsule.dto.quiz.QuizRequest,
-        quiz: Quiz
-    ): List<QuizOption> {
-        return quizRequest.options.map { optionRequest ->
-            QuizOption(
-                quiz = quiz,
-                content = optionRequest.content,
-                position = optionRequest.position,
-                isCorrect = optionRequest.isCorrect
-            )
-        }
     }
 }
