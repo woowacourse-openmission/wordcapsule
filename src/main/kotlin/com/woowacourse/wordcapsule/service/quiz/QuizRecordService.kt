@@ -1,13 +1,12 @@
 package com.woowacourse.wordcapsule.service.quiz
 
-import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizAnswer
 import com.woowacourse.wordcapsule.domain.quiz.QuizRecord
 import com.woowacourse.wordcapsule.domain.quiz.QuizRecordFactory
 import com.woowacourse.wordcapsule.domain.quiz.QuizRecordSpecs
-import com.woowacourse.wordcapsule.domain.quiz.QuizType
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizAnswerRequest
+import com.woowacourse.wordcapsule.dto.quiz.QuizRecordDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordRequest
 import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
@@ -15,8 +14,6 @@ import com.woowacourse.wordcapsule.repository.quiz.QuizOptionRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizRecordRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizRepository
 import jakarta.persistence.EntityNotFoundException
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
@@ -54,7 +51,7 @@ class QuizRecordService(
     }
 
     /**
-     * 퀴즈 목록 조회
+     * 퀴즈 기록 목록 조회
      */
     override fun getUserQuizRecordList(
         userId: Long?,
@@ -72,6 +69,16 @@ class QuizRecordService(
             .map(QuizRecordListResponse::from)
 
         return PageResponse.of(page)
+    }
+
+    /**
+     * 퀴즈 기록 상세 조회
+     */
+    override fun getUserQuizRecordDetail(recordId: Long): QuizRecordDetailResponse {
+        val quizRecord = quizRecordRepository.findById(recordId)
+            .orElseThrow { EntityNotFoundException("퀴즈 기록을 찾을 수 없습니다. ID: $recordId") }
+
+        return QuizRecordDetailResponse.from(quizRecord)
     }
 
     /**
