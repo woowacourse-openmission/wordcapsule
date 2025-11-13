@@ -8,8 +8,6 @@ import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
 import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -42,12 +40,9 @@ class QuizConfigService(
             level != null -> quizConfigRepository.findByLevel(level, pageable)
             quizType != null -> quizConfigRepository.findByQuizType(quizType, pageable)
             else -> quizConfigRepository.findAll(pageable)
-        }
+        }.map(QuizConfigListResponse::from)
 
-        val responseList = page.content.map { QuizConfigListResponse.from(it) }
-        val responsePage = PageImpl(responseList, page.pageable, page.totalElements)
-
-        return PageResponse.of(responsePage)
+        return PageResponse.of(page)
     }
     
     override fun getQuizConfigDetail(configId: Long): QuizConfigDetailResponse {

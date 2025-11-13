@@ -23,10 +23,6 @@ class QuizConfig(
     val quizName: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "quiz_type", nullable = false)
-    val quizType: QuizType,
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "level", nullable = true)
     val level: Level = Level.BEGINNER,
 
@@ -51,6 +47,6 @@ class QuizConfig(
     override fun hashCode(): Int = id.hashCode()
 
     override fun toString(): String {
-        return "QuizConfig(id=$id, quizName='$quizName', quizType=$quizType, level=$level)"
+        return "QuizConfig(id=$id, quizName='$quizName', level=$level)"
     }
 }

@@ -17,14 +17,12 @@ object QuizConfigFactory {
     fun createQuizConfig(request: QuizConfigRequest): QuizConfig {
         val quizConfig = QuizConfig(
             quizName = request.quizName,
-            quizType = request.quizType,
             level = request.level
         )
 
         val quizzes = createQuizzes(request, quizConfig)
         return QuizConfig(
             quizName = quizConfig.quizName,
-            quizType = quizConfig.quizType,
             level = quizConfig.level,
             quizzes = quizzes
         )
@@ -35,14 +33,14 @@ object QuizConfigFactory {
             val quiz = Quiz(
                 config = config,
                 content = quizRequest.content,
-                level = quizRequest.level
+                quizType = quizRequest.quizType
             )
 
             val options = createQuizOptions(quizRequest, quiz)
             Quiz(
                 config = quiz.config,
                 content = quiz.content,
-                level = quiz.level,
+                quizType = quiz.quizType,
                 options = options
             )
         }
