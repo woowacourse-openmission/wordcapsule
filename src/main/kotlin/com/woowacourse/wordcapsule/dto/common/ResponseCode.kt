@@ -12,6 +12,9 @@ enum class ResponseCode(
 ) {
     // Success
     OK("S000", HttpStatus.OK, "OK"),
+    CREATED("S001", HttpStatus.CREATED, "생성되었습니다"),
+    ACCEPTED("S002", HttpStatus.ACCEPTED, "요청이 접수되었습니다"),
+    NO_CONTENT("S003", HttpStatus.NO_CONTENT, "처리되었습니다"),
     
     // Client Error
     BAD_REQUEST("C000", HttpStatus.BAD_REQUEST, "잘못된 요청입니다"),

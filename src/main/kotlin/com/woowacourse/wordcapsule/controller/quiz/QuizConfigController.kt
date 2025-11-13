@@ -33,7 +33,7 @@ class QuizConfigController(
     @PostMapping
     fun createQuizConfig(@Valid @RequestBody request: QuizConfigRequest): ResponseEntity<DataResponse<Map<String, Long>>> {
         val configId = quizConfigService.createQuizConfig(request)
-        val response = DataResponse.of(mapOf("configId" to configId), "퀴즈 설정이 성공적으로 생성되었습니다")
+        val response = DataResponse.created(mapOf("configId" to configId))
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
