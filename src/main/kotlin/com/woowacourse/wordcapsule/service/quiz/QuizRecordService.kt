@@ -43,7 +43,7 @@ class QuizRecordService(
 
         val savedQuizRecord = quizRecordRepository.save(quizRecord)
 
-        val answers = request.answers.map { answerDto -> buildQuizAnswer(answerDto, savedQuizRecord) }
+        val answers = request.answers.mapIndexed { index, answerDto -> buildQuizAnswer(index, answerDto, savedQuizRecord) }
 
         answers.forEach { answer -> savedQuizRecord.addAnswer(answer) }
 
@@ -84,7 +84,7 @@ class QuizRecordService(
     /**
      * 퀴즈 기록 내부에 답변 정보를 매핑
      */
-    fun buildQuizAnswer(request: QuizAnswerRequest, savedQuizRecord: QuizRecord): QuizAnswer {
+    fun buildQuizAnswer(index: Int, request: QuizAnswerRequest, savedQuizRecord: QuizRecord): QuizAnswer {
         return QuizAnswer(
             record = savedQuizRecord,
 
@@ -94,7 +94,7 @@ class QuizRecordService(
             option = quizOptionRepository.findById(request.optionId)
                 .orElseThrow { EntityNotFoundException("선택지를 찾을 수 없습니다. ID: ${request.optionId}") },
 
-            questionNumber = request.questionNumber,
+            questionNumber = index,
 
             isCorrect = request.isCorrect
         )
