@@ -22,8 +22,8 @@ class Quiz(
     val content: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "level", nullable = true)
-    val level: Level = Level.BEGINNER,
+    @Column(name = "quiz_type", nullable = false)
+    val quizType: QuizType,
 
     @OneToMany(mappedBy = "quiz", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     val options: List<QuizOption> = emptyList()
@@ -38,6 +38,6 @@ class Quiz(
     override fun hashCode(): Int = id.hashCode()
 
     override fun toString(): String {
-        return "Quiz(id=$id, content='$content', level=$level)"
+        return "Quiz(id=$id, content='$content', quizType=$quizType)"
     }
 }
