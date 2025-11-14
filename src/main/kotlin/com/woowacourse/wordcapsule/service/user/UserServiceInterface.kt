@@ -16,4 +16,14 @@ interface UserServiceInterface {
      * @return 생성된 사용자 정보
      */
     fun createUser(request: UserCreateRequest): UserResponse
+
+    /**
+     * ID로 사용자 정보 조회
+     *
+     * @param userId 사용자 ID
+     * @return 사용자 정보
+     * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
+     */
+    fun getUserById(userId: Long): UserResponse
+
 }
