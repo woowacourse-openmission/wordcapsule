@@ -1,5 +1,6 @@
 package com.woowacourse.wordcapsule.controller.quiz
 
+import com.woowacourse.wordcapsule.dto.common.DataResponse
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.common.SimpleResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordDetailResponse
@@ -10,8 +11,6 @@ import com.woowacourse.wordcapsule.service.quiz.QuizRecordServiceInterface
 import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -28,10 +27,9 @@ class QuizRecordController(
 ) {
 
     @PostMapping
-    fun createQuizRecord(@Valid @RequestBody request: QuizRecordRequest): ResponseEntity<Map<String, Long>> {
+    fun createQuizRecord(@Valid @RequestBody request: QuizRecordRequest): DataResponse<Map<String, Long>> {
         val recordId = quizRecordService.createQuizRecord(request)
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(mapOf("recordId" to recordId))
+        return DataResponse.of(mapOf("recordId" to recordId))
     }
 
     @GetMapping
@@ -39,26 +37,26 @@ class QuizRecordController(
         @RequestParam(required = false) userId: Long,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
-        @RequestParam(defaultValue = "startedAt,desc") sort: String): ResponseEntity<PageResponse<QuizRecordListResponse>>
+        @RequestParam(defaultValue = "startedAt,desc") sort: String): DataResponse<PageResponse<QuizRecordListResponse>>
     {
         val sortDirection = if (sort.contains("desc")) Sort.Direction.DESC else Sort.Direction.ASC
         val sortProperty = sort.split(",")[0]
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
 
         val result = quizRecordService.getUserQuizRecordList(userId, pageable)
-        return ResponseEntity.ok(result)
+        return DataResponse.of(result)
     }
 
     @GetMapping("/{recordId}")
-    fun getUserQuizRecordDetail(@PathVariable recordId: Long): ResponseEntity<QuizRecordDetailResponse> {
+    fun getUserQuizRecordDetail(@PathVariable recordId: Long): DataResponse<QuizRecordDetailResponse> {
         val result = quizRecordService.getUserQuizRecordDetail(recordId)
-        return ResponseEntity.ok(result)
+        return DataResponse.of(result)
     }
 
     @GetMapping("/statistic")
-    fun getUserQuizRecordStatistic(@RequestParam(required = false) userId: Long): ResponseEntity<QuizRecordStatisticResponse> {
+    fun getUserQuizRecordStatistic(@RequestParam(required = false) userId: Long): DataResponse<QuizRecordStatisticResponse> {
         val result = quizRecordService.getUserQuizRecordStatistic(userId)
-        return ResponseEntity.ok(result)
+        return DataResponse.of(result)
     }
 
     @DeleteMapping("/{recordId}")
