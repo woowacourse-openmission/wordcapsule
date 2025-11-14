@@ -3,6 +3,8 @@ package com.woowacourse.wordcapsule.controller.user
 import com.woowacourse.wordcapsule.dto.common.DataResponse
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.common.SimpleResponse
+import com.woowacourse.wordcapsule.dto.user.LoginIdResponse
+import com.woowacourse.wordcapsule.dto.user.PasswordResponse
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
 import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
@@ -86,7 +88,6 @@ class UserController(
         val user = userService.updateUser(currentUserId, request)
         return DataResponse.of(user)
     }
-    
 
     /**
      * 사용자 정보 삭제
@@ -103,5 +104,29 @@ class UserController(
     ): SimpleResponse {
         userService.deleteUser(currentUserId, userId)
         return SimpleResponse.noContent()
+    }
+    
+    /**
+     * username으로 사용자의 loginId 찾기
+     *
+     * @param username 사용자 이름
+     * @return HTTP 200 OK와 loginId
+     */
+    @GetMapping("/id/{username}")
+    fun findLoginIdByUsername(@PathVariable username: String): DataResponse<LoginIdResponse> {
+        val loginId = userService.findLoginIdByUsername(username)
+        return DataResponse.of(LoginIdResponse(loginId))
+    }
+
+    /**
+     * 사용자 아이디로 사용자의 비밀번호 찾기
+     *
+     * @param loginId 아이디
+     * @return HTTP 200 OK와 비밀번호
+     */
+    @GetMapping("/password/{loginId}")
+    fun findPasswordById(@PathVariable loginId: String): DataResponse<PasswordResponse> {
+        val password = userService.findPasswordByLoginId(loginId)
+        return DataResponse.of(PasswordResponse(password))
     }
 }

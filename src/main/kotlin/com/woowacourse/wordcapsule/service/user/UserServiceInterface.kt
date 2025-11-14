@@ -42,7 +42,6 @@ interface UserServiceInterface {
      * 사용자 정보 수정
      *
      * @param currentUserId 현재 로그인한 사용자 ID
-     * @param userId 수정할 사용자 ID
      * @param request 수정할 정보
      * @return 수정된 사용자 정보
      * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
@@ -59,4 +58,23 @@ interface UserServiceInterface {
      * @throws IllegalAccessException 본인이 아니고 관리자도 아닌 경우
      */
     fun deleteUser(currentUserId: Long, userId: Long)
+
+    /**
+     * username으로 사용자의 loginId 조회
+     *
+     * @param username 사용자 이름
+     * @return 사용자의 loginId
+     * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
+     */
+    fun findLoginIdByUsername(username: String): String
+
+    /**
+     * ID로 사용자의 비밀번호 조회
+     *
+     * @param loginId 아이디
+     * @return 사용자의 비밀번호
+     * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
+     */
+    fun findPasswordByLoginId(loginId: String): String
+
 }
