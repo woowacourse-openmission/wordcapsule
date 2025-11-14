@@ -48,6 +48,15 @@ interface UserServiceInterface {
      * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
      * @throws IllegalAccessException 본인이 아닌 경우
      */
-    fun updateUser(currentUserId: Long, userId: Long, request: UserUpdateRequest): UserResponse
+    fun updateUser(currentUserId: Long, request: UserUpdateRequest): UserResponse
 
+    /**
+     * 사용자 정보 삭제
+     *
+     * @param currentUserId 현재 로그인한 사용자 ID
+     * @param userId 삭제할 사용자 ID
+     * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
+     * @throws IllegalAccessException 본인이 아니고 관리자도 아닌 경우
+     */
+    fun deleteUser(currentUserId: Long, userId: Long)
 }
