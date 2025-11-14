@@ -121,6 +121,16 @@ class QuizRecordService(
         return QuizRecordStatisticResponse.from(quizRecordList)
     }
 
+    /**
+     * 퀴즈기록 삭제
+     */
+    override fun deleteQuizRecord(recordId: Long) {
+        val quizRecord = quizRecordRepository.findById(recordId)
+            .orElseThrow { EntityNotFoundException("퀴즈 기록을 찾을 수 없습니다. ID: $recordId") }
+
+        quizRecordRepository.delete(quizRecord)
+    }
+
     companion object {
         /** 연속 일 초기값 */
         const val INIT_STREAK_DAY = 1
