@@ -1,27 +1,23 @@
 package com.woowacourse.wordcapsule.domain.user
 
+import com.woowacourse.wordcapsule.domain.BaseEntity
+
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDateTime
-
 
 @Entity
 @Table(name = "users")
-@EntityListeners(AuditingEntityListener::class)
 class User(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0L,
 
-    @Column(nullable = false, unique = true, updatable = false)
     @Size(min = 5, max = 20, message = "아이디는 5자 이상 20자 이하로 입력해야 합니다.")
-    var loginId: String,
+    @Column(name = "login_id", nullable = false, unique = true, updatable = false)
+    val loginId: String,
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     var password: String,
 
     @Column(nullable = false, unique = true, length = 50)
@@ -31,12 +27,4 @@ class User(
     @Column(nullable = false, length = 20)
     var role: UserRole = UserRole.USER,
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    var createdAt: LocalDateTime? = null,
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    var updatedAt: LocalDateTime? = null
-
-)
+) : BaseEntity()
