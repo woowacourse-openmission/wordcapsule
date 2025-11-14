@@ -4,6 +4,8 @@ import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
 import org.springframework.data.domain.Pageable
+import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
+import com.woowacourse.wordcapsule.dto.user.UserResponse
 
 /**
  * 사용자 관리를 위한 서비스 인터페이스

@@ -1,6 +1,5 @@
 package com.woowacourse.wordcapsule.domain.quiz
 
-import com.woowacourse.wordcapsule.domain.BaseEntity
 import jakarta.persistence.*
 
 /**
@@ -27,7 +26,15 @@ class QuizOption(
 
     @Column(name = "is_correct", nullable = false)
     val isCorrect: Boolean
-) : BaseEntity() {
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as QuizOption
+        return id == other.id
+    }
+
+    override fun hashCode(): Int = id.hashCode()
 
     override fun toString(): String {
         return "QuizOption(id=$id, content='$content', position=$position, isCorrect=$isCorrect)"
