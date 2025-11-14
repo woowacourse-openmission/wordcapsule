@@ -1,15 +1,24 @@
 package com.woowacourse.wordcapsule.service.quiz
 
+import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizAnswer
 import com.woowacourse.wordcapsule.domain.quiz.QuizRecord
 import com.woowacourse.wordcapsule.domain.quiz.QuizRecordFactory
+import com.woowacourse.wordcapsule.domain.quiz.QuizRecordSpecs
+import com.woowacourse.wordcapsule.domain.quiz.QuizType
+import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizAnswerRequest
+import com.woowacourse.wordcapsule.dto.quiz.QuizRecordListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordRequest
 import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizOptionRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizRecordRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizRepository
 import jakarta.persistence.EntityNotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -44,6 +53,30 @@ class QuizRecordService(
         return savedQuizRecord.id
     }
 
+    /**
+     * 퀴즈 목록 조회
+     */
+    override fun getUserQuizRecordList(
+        userId: Long?,
+        // score에 따른 검색, 다 맞은거 or 오답이 있는 것
+        pageable: Pageable
+    ): PageResponse<QuizRecordListResponse> {
+
+        val spec = Specification.allOf(
+            listOfNotNull(
+                userId?.let { QuizRecordSpecs.userIdEq(it) }
+            )
+        )
+
+        val page = quizRecordRepository.findAll(spec, pageable)
+            .map(QuizRecordListResponse::from)
+
+        return PageResponse.of(page)
+    }
+
+    /**
+     * 퀴즈 기록 내부에 답변 정보를 매핑
+     */
     fun buildQuizAnswer(request: QuizAnswerRequest, savedQuizRecord: QuizRecord): QuizAnswer {
         return QuizAnswer(
             record = savedQuizRecord,

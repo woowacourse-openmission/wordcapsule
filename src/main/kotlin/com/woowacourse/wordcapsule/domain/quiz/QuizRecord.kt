@@ -62,6 +62,11 @@ open class QuizRecord(
         this.completedAt = LocalDateTime.now()
     }
 
+    /** 퀴즈 이름 */
+    fun getConfigName(): String {
+        return config.quizName
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
