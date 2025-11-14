@@ -51,4 +51,12 @@ interface QuizConfigServiceInterface {
      * @throws EntityNotFoundException 퀴즈 설정을 찾을 수 없는 경우
      */
     fun updateQuizConfig(configId: Long, request: QuizConfigUpdateRequest): Long
+    
+    /**
+     * 퀴즈 설정을 삭제
+     *
+     * @param configId 삭제할 퀴즈 설정 ID
+     * @throws EntityNotFoundException 퀴즈 설정을 찾을 수 없는 경우
+     */
+    fun deleteQuizConfig(configId: Long)
 }

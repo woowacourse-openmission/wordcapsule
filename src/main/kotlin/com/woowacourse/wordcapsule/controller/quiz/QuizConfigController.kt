@@ -3,6 +3,7 @@ package com.woowacourse.wordcapsule.controller.quiz
 import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizType
 import com.woowacourse.wordcapsule.dto.common.DataResponse
+import com.woowacourse.wordcapsule.dto.common.SimpleResponse
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
@@ -92,5 +93,18 @@ class QuizConfigController(
         val updatedId = quizConfigService.updateQuizConfig(configId, request)
         val response = DataResponse.of(mapOf("configId" to updatedId))
         return ResponseEntity.ok(response)
+    }
+    
+    /**
+     * 퀴즈 설정을 삭제
+     *
+     * @param configId 삭제할 퀴즈 설정 ID
+     * @return HTTP 204 No Content
+     */
+    @DeleteMapping("/{configId}")
+    fun deleteQuizConfig(@PathVariable configId: Long): ResponseEntity<SimpleResponse> {
+        quizConfigService.deleteQuizConfig(configId)
+        val response = SimpleResponse.noContent()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response)
     }
 }

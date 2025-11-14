@@ -67,4 +67,12 @@ class QuizConfigService(
         val savedConfig = quizConfigRepository.save(updatedConfig)
         return savedConfig.id
     }
+    
+    @Transactional
+    override fun deleteQuizConfig(configId: Long) {
+        val quizConfig = quizConfigRepository.findById(configId)
+            .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
+        
+        quizConfigRepository.delete(quizConfig)
+    }
 }
