@@ -1,6 +1,7 @@
 package com.woowacourse.wordcapsule.controller.quiz
 
 import com.woowacourse.wordcapsule.dto.common.PageResponse
+import com.woowacourse.wordcapsule.dto.common.SimpleResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordRequest
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -57,5 +59,11 @@ class QuizRecordController(
     fun getUserQuizRecordStatistic(@RequestParam(required = false) userId: Long): ResponseEntity<QuizRecordStatisticResponse> {
         val result = quizRecordService.getUserQuizRecordStatistic(userId)
         return ResponseEntity.ok(result)
+    }
+
+    @DeleteMapping("/{recordId}")
+    fun deleteQuizRecord(@PathVariable recordId: Long): SimpleResponse {
+        quizRecordService.deleteQuizRecord(recordId)
+        return SimpleResponse.noContent()
     }
 }

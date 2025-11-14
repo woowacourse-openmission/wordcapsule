@@ -15,4 +15,6 @@ interface QuizRecordServiceInterface {
     fun getUserQuizRecordDetail(recordId: Long): QuizRecordDetailResponse
 
     fun getUserQuizRecordStatistic(userId: Long?): QuizRecordStatisticResponse
+
+    fun deleteQuizRecord(recordId: Long)
 }
