@@ -1,5 +1,9 @@
 package com.woowacourse.wordcapsule.service.user
 
+import com.woowacourse.wordcapsule.dto.common.PageResponse
+import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
+import com.woowacourse.wordcapsule.dto.user.UserResponse
+import org.springframework.data.domain.Pageable
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
 
@@ -18,6 +22,14 @@ interface UserServiceInterface {
     fun createUser(request: UserCreateRequest): UserResponse
 
     /**
+     * 사용자 목록을 페이징하여 조회
+     *
+     * @param pageable 페이징 정보
+     * @return 페이징된 사용자 목록
+     */
+    fun getUsers(currentUserId: Long, pageable: Pageable): PageResponse<UserResponse>
+
+    /**
      * ID로 사용자 정보 조회
      *
      * @param userId 사용자 ID
@@ -25,5 +37,4 @@ interface UserServiceInterface {
      * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
      */
     fun getUserById(userId: Long): UserResponse
-
 }
