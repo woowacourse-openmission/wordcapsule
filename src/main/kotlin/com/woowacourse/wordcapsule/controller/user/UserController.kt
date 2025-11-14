@@ -2,6 +2,7 @@ package com.woowacourse.wordcapsule.controller.user
 
 import com.woowacourse.wordcapsule.dto.common.DataResponse
 import com.woowacourse.wordcapsule.dto.common.PageResponse
+import com.woowacourse.wordcapsule.dto.common.SimpleResponse
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
 import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
@@ -83,5 +84,22 @@ class UserController(
     ): DataResponse<UserResponse> {
         val user = userService.updateUser(currentUserId, request)
         return DataResponse.of(user)
+    }
+
+    /**
+     * 사용자 정보 삭제
+     *
+     * @param userId 삭제할 사용자 ID
+     * @param currentUserId 현재 로그인한 사용자 ID
+     * @return HTTP 204 No Content
+     */
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteUser(
+        @PathVariable userId: Long,
+        @RequestHeader("User-Id") currentUserId: Long
+    ): SimpleResponse {
+        userService.deleteUser(currentUserId, userId)
+        return SimpleResponse.noContent()
     }
 }

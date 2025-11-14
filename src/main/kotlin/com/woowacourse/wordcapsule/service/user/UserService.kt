@@ -56,4 +56,19 @@ class UserService(
         user.updateProfile(request.password, request.username)
         return UserResponse.from(user)
     }
+
+    @Transactional
+    override fun deleteUser(currentUserId: Long, userId: Long) {
+        val currentUser = userRepository.findById(currentUserId)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다.") }
+
+        val targetUser = userRepository.findById(userId)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: $userId") }
+
+        if (currentUserId != userId && currentUser.role != UserRole.ADMIN) {
+            throw IllegalAccessException("본인의 정보만 삭제할 수 있습니다. 관리자는 모든 사용자를 삭제할 수 있습니다.")
+        }
+
+        userRepository.delete(targetUser)
+    }
 }
