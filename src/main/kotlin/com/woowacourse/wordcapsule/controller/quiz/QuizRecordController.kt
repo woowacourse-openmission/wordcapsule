@@ -1,6 +1,7 @@
 package com.woowacourse.wordcapsule.controller.quiz
 
 import com.woowacourse.wordcapsule.dto.common.PageResponse
+import com.woowacourse.wordcapsule.dto.quiz.QuizRecordDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordRequest
 import com.woowacourse.wordcapsule.service.quiz.QuizRecordServiceInterface
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -29,9 +31,6 @@ class QuizRecordController(
             .body(mapOf("recordId" to recordId))
     }
 
-    /**
-     * userId 필수
-     */
     @GetMapping
     fun getUserQuizRecordList(
         @RequestParam(required = false) userId: Long,
@@ -44,6 +43,12 @@ class QuizRecordController(
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
 
         val result = quizRecordService.getUserQuizRecordList(userId, pageable)
+        return ResponseEntity.ok(result)
+    }
+
+    @GetMapping("/{recordId}")
+    fun getUserQuizRecordDetail(@PathVariable recordId: Long): ResponseEntity<QuizRecordDetailResponse> {
+        val result = quizRecordService.getUserQuizRecordDetail(recordId)
         return ResponseEntity.ok(result)
     }
 }
