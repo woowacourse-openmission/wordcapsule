@@ -72,18 +72,16 @@ class UserController(
     /**
      * 사용자 정보 수정
      *
-     * @param userId 수정할 사용자 ID
      * @param currentUserId 현재 로그인한 사용자 ID
      * @param request 수정할 정보 (password, username)
      * @return HTTP 200 OK와 수정된 사용자 정보
      */
-    @PatchMapping("/{userId}")
+    @PatchMapping
     fun updateUser(
-        @PathVariable userId: Long,
         @RequestHeader("User-Id") currentUserId: Long,
         @Valid @RequestBody request: UserUpdateRequest
     ): DataResponse<UserResponse> {
-        val user = userService.updateUser(currentUserId, userId, request)
+        val user = userService.updateUser(currentUserId, request)
         return DataResponse.of(user)
     }
 }
