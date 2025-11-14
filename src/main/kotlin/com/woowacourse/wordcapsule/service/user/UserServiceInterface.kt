@@ -6,6 +6,7 @@ import com.woowacourse.wordcapsule.dto.user.UserResponse
 import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
 import org.springframework.data.domain.Pageable
 
+
 /**
  * 사용자 관리를 위한 서비스 인터페이스
  * 의존성 역전 원칙을 위해 추상화된 인터페이스 제공
@@ -75,4 +76,5 @@ interface UserServiceInterface {
      * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
      */
     fun findPasswordByLoginId(loginId: String): String
+
 }

@@ -75,6 +75,7 @@ class UserController(
     /**
      * 사용자 정보 수정
      *
+     * @param userId 수정할 사용자 ID
      * @param currentUserId 현재 로그인한 사용자 ID
      * @param request 수정할 정보 (password, username)
      * @return HTTP 200 OK와 수정된 사용자 정보
@@ -104,7 +105,7 @@ class UserController(
         userService.deleteUser(currentUserId, userId)
         return SimpleResponse.noContent()
     }
-
+    
     /**
      * username으로 사용자의 loginId 찾기
      *
@@ -119,7 +120,7 @@ class UserController(
 
     /**
      * 사용자 아이디로 사용자의 비밀번호 찾기
-     *x
+     *
      * @param loginId 아이디
      * @return HTTP 200 OK와 비밀번호
      */
