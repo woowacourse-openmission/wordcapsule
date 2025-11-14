@@ -2,6 +2,7 @@ package com.woowacourse.wordcapsule.controller.quiz
 
 import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizType
+import com.woowacourse.wordcapsule.dto.common.DataResponse
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
@@ -30,10 +31,10 @@ class QuizConfigController(
      * @return HTTP 201 Created와 생성된 퀴즈 설정 ID
      */
     @PostMapping
-    fun createQuizConfig(@Valid @RequestBody request: QuizConfigRequest): ResponseEntity<Map<String, Long>> {
+    fun createQuizConfig(@Valid @RequestBody request: QuizConfigRequest): ResponseEntity<DataResponse<Map<String, Long>>> {
         val configId = quizConfigService.createQuizConfig(request)
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(mapOf("configId" to configId))
+        val response = DataResponse.created(mapOf("configId" to configId))
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
     /**
@@ -53,13 +54,14 @@ class QuizConfigController(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
         @RequestParam(defaultValue = "createdAt,desc") sort: String
-    ): ResponseEntity<PageResponse<QuizConfigListResponse>> {
+    ): ResponseEntity<DataResponse<PageResponse<QuizConfigListResponse>>> {
         val sortDirection = if (sort.contains("desc")) Sort.Direction.DESC else Sort.Direction.ASC
         val sortProperty = sort.split(",")[0]
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
 
         val result = quizConfigService.getQuizConfigs(level, quizType, pageable)
-        return ResponseEntity.ok(result)
+        val response = DataResponse.of(result)
+        return ResponseEntity.ok(response)
     }
     
     /**
@@ -69,8 +71,9 @@ class QuizConfigController(
      * @return HTTP 200 OK와 퀴즈 설정 상세 정보
      */
     @GetMapping("/{configId}")
-    fun getQuizConfigDetail(@PathVariable configId: Long): ResponseEntity<QuizConfigDetailResponse> {
+    fun getQuizConfigDetail(@PathVariable configId: Long): ResponseEntity<DataResponse<QuizConfigDetailResponse>> {
         val result = quizConfigService.getQuizConfigDetail(configId)
-        return ResponseEntity.ok(result)
+        val response = DataResponse.of(result)
+        return ResponseEntity.ok(response)
     }
 }
