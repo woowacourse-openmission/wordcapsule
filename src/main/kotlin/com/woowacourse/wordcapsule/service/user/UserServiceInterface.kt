@@ -3,9 +3,9 @@ package com.woowacourse.wordcapsule.service.user
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
+import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
 import org.springframework.data.domain.Pageable
-import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
-import com.woowacourse.wordcapsule.dto.user.UserResponse
+
 
 /**
  * 사용자 관리를 위한 서비스 인터페이스
@@ -37,4 +37,17 @@ interface UserServiceInterface {
      * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
      */
     fun getUserById(userId: Long): UserResponse
+
+    /**
+     * 사용자 정보 수정
+     *
+     * @param currentUserId 현재 로그인한 사용자 ID
+     * @param userId 수정할 사용자 ID
+     * @param request 수정할 정보
+     * @return 수정된 사용자 정보
+     * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
+     * @throws IllegalAccessException 본인이 아닌 경우
+     */
+    fun updateUser(currentUserId: Long, userId: Long, request: UserUpdateRequest): UserResponse
+
 }
