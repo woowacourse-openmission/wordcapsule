@@ -9,6 +9,7 @@ import com.woowacourse.wordcapsule.dto.quiz.QuizAnswerRequest
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordRequest
+import com.woowacourse.wordcapsule.dto.quiz.QuizRecordStatisticResponse
 import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizOptionRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizRecordRepository
@@ -18,6 +19,11 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import java.util.EnumMap
+import kotlin.math.abs
 
 @Service
 @Transactional
@@ -98,5 +104,45 @@ class QuizRecordService(
 
             isCorrect = request.isCorrect
         )
+    }
+
+    /**
+     * 퀴즈 기록 통계
+     */
+    override fun getUserQuizRecordStatistic(userId: Long?): QuizRecordStatisticResponse {
+        val spec = Specification.allOf(
+            listOfNotNull(
+                userId?.let { QuizRecordSpecs.userIdEq(it) }
+            )
+        )
+
+        val quizRecordList = quizRecordRepository.findAll(spec)
+
+        return QuizRecordStatisticResponse.from(quizRecordList)
+    }
+
+    companion object {
+        /** 연속 일 초기값 */
+        const val INIT_STREAK_DAY = 1
+
+        /** 날짜 비교 */
+        fun getDayGap(today: LocalDateTime, tomorrow: LocalDateTime): Long {
+            return abs(ChronoUnit.DAYS.between(today, tomorrow))
+        }
+
+        /** 연속일 구하기 */
+        fun getStreakDay(dateList: List<LocalDateTime>): Int {
+            var peakDay = INIT_STREAK_DAY;
+            for (i in 0..<dateList.size - 1) {
+                val isTomorrow = getDayGap(dateList[i], dateList[i + 1])
+
+                when {
+                    isTomorrow == 0L -> peakDay
+                    isTomorrow == 1L -> peakDay++
+                    isTomorrow > 1L -> peakDay = INIT_STREAK_DAY
+                }
+            }
+            return peakDay
+        }
     }
 }

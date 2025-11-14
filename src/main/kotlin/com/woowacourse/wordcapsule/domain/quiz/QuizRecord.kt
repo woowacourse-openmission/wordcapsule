@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.Duration
 import java.time.LocalDateTime
 
 /**
@@ -65,6 +66,29 @@ open class QuizRecord(
     /** 퀴즈 이름 */
     fun getConfigName(): String {
         return config.quizName
+    }
+
+    /**
+     * 정답률 (0~1)
+     */
+    fun getCorrectAnswerRate(): Double {
+        return score.toDouble() / 10
+    }
+
+    /**
+     * 평균 풀이 속도 (초)
+     */
+    // 시간 구하기
+    fun getSolveSeconds(): Long {
+        val duration = Duration.between(startedAt, completedAt)
+        return duration.seconds
+    }
+
+    /**
+     * 플레이 시간대 (00시 ~ 23시)
+     */
+    fun getSolvedTimeRange(): TimeRange {
+        return TimeRange.from(completedAt.hour)
     }
 
     override fun equals(other: Any?): Boolean {
