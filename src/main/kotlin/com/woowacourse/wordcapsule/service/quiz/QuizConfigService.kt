@@ -1,12 +1,11 @@
 package com.woowacourse.wordcapsule.service.quiz
 
-import com.woowacourse.wordcapsule.domain.quiz.Level
-import com.woowacourse.wordcapsule.domain.quiz.QuizConfigFactory
-import com.woowacourse.wordcapsule.domain.quiz.QuizType
+import com.woowacourse.wordcapsule.domain.quiz.*
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
+import com.woowacourse.wordcapsule.dto.quiz.QuizConfigUpdateRequest
 import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -50,5 +49,18 @@ class QuizConfigService(
             .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
         
         return QuizConfigDetailResponse.from(quizConfig)
+    }
+    
+    @Transactional
+    override fun updateQuizConfig(configId: Long, request: QuizConfigUpdateRequest): Long {
+        val quizConfig = quizConfigRepository.findById(configId)
+            .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
+        
+        // JPA dirty checking 활용 - 엔티티 직접 수정
+        request.quizName?.let { quizConfig.quizName = it }
+        request.level?.let { quizConfig.level = it }
+        
+        // save() 호출 없이도 트랜잭션 종료 시 자동 업데이트
+        return quizConfig.id
     }
 }

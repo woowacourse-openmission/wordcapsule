@@ -2,10 +2,12 @@ package com.woowacourse.wordcapsule.controller.quiz
 
 import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizType
+import com.woowacourse.wordcapsule.dto.common.DataResponse
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
+import com.woowacourse.wordcapsule.dto.quiz.QuizConfigUpdateRequest
 import com.woowacourse.wordcapsule.service.quiz.QuizConfigServiceInterface
 import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
@@ -69,8 +71,26 @@ class QuizConfigController(
      * @return HTTP 200 OK와 퀴즈 설정 상세 정보
      */
     @GetMapping("/{configId}")
-    fun getQuizConfigDetail(@PathVariable configId: Long): ResponseEntity<QuizConfigDetailResponse> {
+    fun getQuizConfigDetail(@PathVariable configId: Long): ResponseEntity<DataResponse<QuizConfigDetailResponse>> {
         val result = quizConfigService.getQuizConfigDetail(configId)
-        return ResponseEntity.ok(result)
+        val response = DataResponse.of(result)
+        return ResponseEntity.ok(response)
+    }
+    
+    /**
+     * 퀴즈 설정 정보를 부분적으로 수정
+     *
+     * @param configId 수정할 퀴즈 설정 ID
+     * @param request 수정할 필드들을 포함한 요청 DTO
+     * @return HTTP 200 OK와 수정된 퀴즈 설정 ID
+     */
+    @PatchMapping("/{configId}")
+    fun updateQuizConfig(
+        @PathVariable configId: Long,
+        @Valid @RequestBody request: QuizConfigUpdateRequest
+    ): ResponseEntity<DataResponse<Map<String, Long>>> {
+        val updatedId = quizConfigService.updateQuizConfig(configId, request)
+        val response = DataResponse.of(mapOf("configId" to updatedId))
+        return ResponseEntity.ok(response)
     }
 }

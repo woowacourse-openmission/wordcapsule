@@ -6,6 +6,7 @@ import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
+import com.woowacourse.wordcapsule.dto.quiz.QuizConfigUpdateRequest
 import org.springframework.data.domain.Pageable
 
 /**
@@ -40,4 +41,14 @@ interface QuizConfigServiceInterface {
      * @throws EntityNotFoundException 퀴즈 설정을 찾을 수 없는 경우
      */
     fun getQuizConfigDetail(configId: Long): QuizConfigDetailResponse
+    
+    /**
+     * 퀴즈 설정 정보를 부분적으로 수정
+     *
+     * @param configId 수정할 퀴즈 설정 ID
+     * @param request 수정할 필드들을 포함한 요청 DTO
+     * @return 수정된 퀴즈 설정의 식별자
+     * @throws EntityNotFoundException 퀴즈 설정을 찾을 수 없는 경우
+     */
+    fun updateQuizConfig(configId: Long, request: QuizConfigUpdateRequest): Long
 }
