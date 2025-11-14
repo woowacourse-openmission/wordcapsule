@@ -77,4 +77,10 @@ class UserService(
             .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. username: $username") }
         return user.loginId
     }
+
+    override fun findPasswordByLoginId(loginId: String): String {
+        val user = userRepository.findByLoginId(loginId)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. loginId: $loginId") }
+        return user.password
+    }
 }

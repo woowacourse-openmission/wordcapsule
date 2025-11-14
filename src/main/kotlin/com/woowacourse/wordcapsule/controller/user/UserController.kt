@@ -4,6 +4,7 @@ import com.woowacourse.wordcapsule.dto.common.DataResponse
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.common.SimpleResponse
 import com.woowacourse.wordcapsule.dto.user.LoginIdResponse
+import com.woowacourse.wordcapsule.dto.user.PasswordResponse
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
 import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
@@ -114,5 +115,17 @@ class UserController(
     fun findLoginIdByUsername(@PathVariable username: String): DataResponse<LoginIdResponse> {
         val loginId = userService.findLoginIdByUsername(username)
         return DataResponse.of(LoginIdResponse(loginId))
+    }
+
+    /**
+     * 사용자 아이디로 사용자의 비밀번호 찾기
+     *x
+     * @param loginId 아이디
+     * @return HTTP 200 OK와 비밀번호
+     */
+    @GetMapping("/password/{loginId}")
+    fun findPasswordById(@PathVariable loginId: String): DataResponse<PasswordResponse> {
+        val password = userService.findPasswordByLoginId(loginId)
+        return DataResponse.of(PasswordResponse(password))
     }
 }

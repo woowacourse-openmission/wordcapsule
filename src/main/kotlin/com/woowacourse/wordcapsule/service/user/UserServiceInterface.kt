@@ -66,4 +66,13 @@ interface UserServiceInterface {
      * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
      */
     fun findLoginIdByUsername(username: String): String
+
+    /**
+     * ID로 사용자의 비밀번호 조회
+     *
+     * @param loginId 아이디
+     * @return 사용자의 비밀번호
+     * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
+     */
+    fun findPasswordByLoginId(loginId: String): String
 }
