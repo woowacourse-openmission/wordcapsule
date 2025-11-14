@@ -5,6 +5,7 @@ import com.woowacourse.wordcapsule.domain.user.UserRole
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
+import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
 import com.woowacourse.wordcapsule.repository.user.UserRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.domain.Pageable
@@ -29,8 +30,7 @@ class UserService(
     }
 
     override fun getUsers(currentUserId: Long, pageable: Pageable): PageResponse<UserResponse> {
-        val currentUser = userRepository.findById(currentUserId)
-            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다.") }
+        val currentUser = findUserByIdOrThrow(currentUserId)
 
         if (currentUser.role != UserRole.ADMIN) {
             throw IllegalAccessException("관리자만 접근할 수 있습니다.")
@@ -42,8 +42,50 @@ class UserService(
     }
 
     override fun getUserById(userId: Long): UserResponse {
-        val user = userRepository.findById(userId)
-            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: $userId") }
+        val user = findUserByIdOrThrow(userId)
         return UserResponse.from(user)
     }
+
+    @Transactional
+    override fun updateUser(currentUserId: Long, request: UserUpdateRequest): UserResponse {
+        val user = findUserByIdOrThrow(currentUserId)
+
+        user.updateProfile(request.password, request.username)
+        return UserResponse.from(user)
+    }
+
+    @Transactional
+    override fun deleteUser(currentUserId: Long, userId: Long) {
+        val currentUser = findUserByIdOrThrow(currentUserId)
+        val targetUser = findUserByIdOrThrow(userId)
+
+        if (currentUserId != userId && currentUser.role != UserRole.ADMIN) {
+            throw IllegalAccessException("본인의 정보만 삭제할 수 있습니다. 관리자는 모든 사용자를 삭제할 수 있습니다.")
+        }
+
+        userRepository.delete(targetUser)
+    }
+
+    override fun findLoginIdByUsername(username: String): String {
+        val user = findUserByUsernameOrThrow(username)
+        return user.loginId
+    }
+
+    override fun findPasswordByLoginId(loginId: String): String {
+        val user = findUserByLoginIdOrThrow(loginId)
+        return user.password
+    }
+
+    private fun findUserByIdOrThrow(userId: Long) =
+        userRepository.findById(userId)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: $userId") }
+
+    private fun findUserByLoginIdOrThrow(loginId: String) =
+        userRepository.findByLoginId(loginId)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. loginId: $loginId") }
+
+    private fun findUserByUsernameOrThrow(username: String) =
+        userRepository.findByUsername(username)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. username: $username") }
+
 }
