@@ -5,6 +5,7 @@ import com.woowacourse.wordcapsule.domain.user.UserRole
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
+import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
 import com.woowacourse.wordcapsule.repository.user.UserRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.domain.Pageable
@@ -44,6 +45,19 @@ class UserService(
     override fun getUserById(userId: Long): UserResponse {
         val user = userRepository.findById(userId)
             .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: $userId") }
+        return UserResponse.from(user)
+    }
+
+    @Transactional
+    override fun updateUser(currentUserId: Long, userId: Long, request: UserUpdateRequest): UserResponse {
+        val user = userRepository.findById(userId)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: $userId") }
+
+        if (currentUserId != userId) {
+            throw IllegalAccessException("본인의 정보만 수정할 수 있습니다.")
+        }
+
+        user.updateProfile(request.password, request.username)
         return UserResponse.from(user)
     }
 }

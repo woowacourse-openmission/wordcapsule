@@ -27,4 +27,11 @@ class User(
     @Column(nullable = false, length = 20)
     var role: UserRole = UserRole.USER,
 
-) : BaseEntity()
+) : BaseEntity() {
+
+    fun updateProfile(password: String?, username: String?) {
+        password?.let { this.password = it }
+        username?.let { this.username = it }
+    }
+
+}

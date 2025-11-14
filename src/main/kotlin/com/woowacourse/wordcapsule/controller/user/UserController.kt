@@ -4,6 +4,7 @@ import com.woowacourse.wordcapsule.dto.common.DataResponse
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
+import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
 import com.woowacourse.wordcapsule.service.user.UserServiceInterface
 import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
@@ -65,6 +66,24 @@ class UserController(
     @GetMapping("/{userId}")
     fun getUserById(@PathVariable userId: Long): DataResponse<UserResponse> {
         val user = userService.getUserById(userId)
+        return DataResponse.of(user)
+    }
+
+    /**
+     * 사용자 정보 수정
+     *
+     * @param userId 수정할 사용자 ID
+     * @param currentUserId 현재 로그인한 사용자 ID
+     * @param request 수정할 정보 (password, username)
+     * @return HTTP 200 OK와 수정된 사용자 정보
+     */
+    @PatchMapping("/{userId}")
+    fun updateUser(
+        @PathVariable userId: Long,
+        @RequestHeader("User-Id") currentUserId: Long,
+        @Valid @RequestBody request: UserUpdateRequest
+    ): DataResponse<UserResponse> {
+        val user = userService.updateUser(currentUserId, userId, request)
         return DataResponse.of(user)
     }
 }
