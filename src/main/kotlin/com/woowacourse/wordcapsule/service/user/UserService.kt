@@ -4,6 +4,7 @@ import com.woowacourse.wordcapsule.domain.user.UserFactory
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
 import com.woowacourse.wordcapsule.repository.user.UserRepository
+import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -22,5 +23,11 @@ class UserService(
         val user = UserFactory.createUser(request)
         val savedUser = userRepository.save(user)
         return UserResponse.from(savedUser)
+    }
+
+    override fun getUserById(userId: Long): UserResponse {
+        val user = userRepository.findById(userId)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: $userId") }
+        return UserResponse.from(user)
     }
 }
