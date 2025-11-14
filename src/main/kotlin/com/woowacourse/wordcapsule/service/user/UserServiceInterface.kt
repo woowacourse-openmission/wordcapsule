@@ -57,4 +57,13 @@ interface UserServiceInterface {
      * @throws IllegalAccessException 본인이 아니고 관리자도 아닌 경우
      */
     fun deleteUser(currentUserId: Long, userId: Long)
+
+    /**
+     * username으로 사용자의 loginId 조회
+     *
+     * @param username 사용자 이름
+     * @return 사용자의 loginId
+     * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
+     */
+    fun findLoginIdByUsername(username: String): String
 }

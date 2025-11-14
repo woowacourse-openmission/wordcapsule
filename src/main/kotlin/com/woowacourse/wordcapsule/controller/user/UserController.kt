@@ -3,6 +3,7 @@ package com.woowacourse.wordcapsule.controller.user
 import com.woowacourse.wordcapsule.dto.common.DataResponse
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.common.SimpleResponse
+import com.woowacourse.wordcapsule.dto.user.LoginIdResponse
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.dto.user.UserResponse
 import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
@@ -101,5 +102,17 @@ class UserController(
     ): SimpleResponse {
         userService.deleteUser(currentUserId, userId)
         return SimpleResponse.noContent()
+    }
+
+    /**
+     * username으로 사용자의 loginId 찾기
+     *
+     * @param username 사용자 이름
+     * @return HTTP 200 OK와 loginId
+     */
+    @GetMapping("/id/{username}")
+    fun findLoginIdByUsername(@PathVariable username: String): DataResponse<LoginIdResponse> {
+        val loginId = userService.findLoginIdByUsername(username)
+        return DataResponse.of(LoginIdResponse(loginId))
     }
 }
