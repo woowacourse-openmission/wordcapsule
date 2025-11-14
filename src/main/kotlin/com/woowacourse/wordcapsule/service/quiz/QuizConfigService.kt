@@ -1,6 +1,8 @@
 package com.woowacourse.wordcapsule.service.quiz
 
-import com.woowacourse.wordcapsule.domain.quiz.*
+import com.woowacourse.wordcapsule.domain.quiz.Level
+import com.woowacourse.wordcapsule.domain.quiz.QuizConfigFactory
+import com.woowacourse.wordcapsule.domain.quiz.QuizType
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse

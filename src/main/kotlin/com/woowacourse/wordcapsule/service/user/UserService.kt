@@ -30,4 +30,5 @@ class UserService(
             .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: $userId") }
         return UserResponse.from(user)
     }
+
 }

@@ -25,4 +25,5 @@ interface UserServiceInterface {
      * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
      */
     fun getUserById(userId: Long): UserResponse
+
 }
