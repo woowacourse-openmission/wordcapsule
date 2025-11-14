@@ -1,12 +1,11 @@
 package com.woowacourse.wordcapsule.service.quiz
 
-import com.woowacourse.wordcapsule.domain.quiz.Level
-import com.woowacourse.wordcapsule.domain.quiz.QuizConfigFactory
-import com.woowacourse.wordcapsule.domain.quiz.QuizType
+import com.woowacourse.wordcapsule.domain.quiz.*
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
+import com.woowacourse.wordcapsule.dto.quiz.QuizConfigUpdateRequest
 import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -50,5 +49,22 @@ class QuizConfigService(
             .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
         
         return QuizConfigDetailResponse.from(quizConfig)
+    }
+    
+    @Transactional
+    override fun updateQuizConfig(configId: Long, request: QuizConfigUpdateRequest): Long {
+        val quizConfig = quizConfigRepository.findById(configId)
+            .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
+        
+        // 변경할 필드가 있는 경우만 업데이트
+        val updatedConfig = QuizConfig(
+            id = quizConfig.id,
+            quizName = request.quizName ?: quizConfig.quizName,
+            level = request.level ?: quizConfig.level,
+            quizzes = quizConfig.quizzes
+        )
+        
+        val savedConfig = quizConfigRepository.save(updatedConfig)
+        return savedConfig.id
     }
 }
