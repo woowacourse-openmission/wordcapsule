@@ -56,15 +56,11 @@ class QuizConfigService(
         val quizConfig = quizConfigRepository.findById(configId)
             .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
         
-        // 변경할 필드가 있는 경우만 업데이트
-        val updatedConfig = QuizConfig(
-            id = quizConfig.id,
-            quizName = request.quizName ?: quizConfig.quizName,
-            level = request.level ?: quizConfig.level,
-            quizzes = quizConfig.quizzes
-        )
+        // JPA dirty checking 활용 - 엔티티 직접 수정
+        request.quizName?.let { quizConfig.quizName = it }
+        request.level?.let { quizConfig.level = it }
         
-        val savedConfig = quizConfigRepository.save(updatedConfig)
-        return savedConfig.id
+        // save() 호출 없이도 트랜잭션 종료 시 자동 업데이트
+        return quizConfig.id
     }
 }

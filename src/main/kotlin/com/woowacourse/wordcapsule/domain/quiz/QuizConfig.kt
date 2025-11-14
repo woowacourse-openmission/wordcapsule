@@ -20,11 +20,11 @@ class QuizConfig(
     val id: Long = 0L,
 
     @Column(name = "quiz_name", nullable = false, length = 50)
-    val quizName: String,
+    var quizName: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "level", nullable = true)
-    val level: Level = Level.BEGINNER,
+    @Column(name = "level", nullable = false)
+    var level: Level = Level.BEGINNER,
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
