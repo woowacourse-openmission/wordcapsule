@@ -1,5 +1,6 @@
 package com.woowacourse.wordcapsule.domain.quiz
 
+import com.woowacourse.wordcapsule.domain.user.User
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -25,12 +26,12 @@ import java.time.LocalDateTime
 @EntityListeners(AuditingEntityListener::class)
 open class QuizRecord(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "record_id")
+    @Column(name = "record_id", nullable = false)
     val id: Long = 0L,
 
-    // TODO : user 연관관계 매핑
-    @Column(name = "user_id", nullable = false)
-    val userId: Long,
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    val user: User,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "config_id", nullable = false)
@@ -103,7 +104,7 @@ open class QuizRecord(
     override fun toString(): String {
         return "QuizRecord(" +
                 "id=$id, " +
-                "userId=$userId, " +
+                "user=$user, " +
                 "config=$config, " +
                 "score=$score, " +
                 "createdAt=$startedAt, " +

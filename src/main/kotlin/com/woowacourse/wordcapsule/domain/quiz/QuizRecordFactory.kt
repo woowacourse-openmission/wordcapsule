@@ -1,13 +1,14 @@
 package com.woowacourse.wordcapsule.domain.quiz
 
+import com.woowacourse.wordcapsule.domain.user.User
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordRequest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object QuizRecordFactory {
-    fun createQuizRecord(request: QuizRecordRequest, quizConfig: QuizConfig): QuizRecord {
+    fun createQuizRecord(request: QuizRecordRequest, quizConfig: QuizConfig, user: User): QuizRecord {
         val quizRecord = QuizRecord(
-            userId = request.userId,
+            user = user,
             config = quizConfig,
             score = request.score,
             startedAt = parseLdt("startedAt", request.startedAt),
