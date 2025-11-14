@@ -1,6 +1,5 @@
 package com.woowacourse.wordcapsule.domain.quiz
 
-import com.woowacourse.wordcapsule.domain.BaseEntity
 import jakarta.persistence.*
 
 /**
@@ -28,7 +27,15 @@ class Quiz(
 
     @OneToMany(mappedBy = "quiz", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     val options: List<QuizOption> = emptyList()
-) : BaseEntity() {
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as Quiz
+        return id == other.id
+    }
+
+    override fun hashCode(): Int = id.hashCode()
 
     override fun toString(): String {
         return "Quiz(id=$id, content='$content', quizType=$quizType)"
