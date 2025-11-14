@@ -97,6 +97,17 @@ class GlobalExceptionHandler {
     }
 
     /**
+     * 접근 권한 없음 예외 처리
+     */
+    @ExceptionHandler(IllegalAccessException::class)
+    fun handleIllegalAccessException(
+        ex: IllegalAccessException
+    ): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse.of(ResponseCode.FORBIDDEN,ex)
+        return ResponseEntity.status(ResponseCode.FORBIDDEN.httpStatus).body(errorResponse)
+    }
+
+    /**
      * 기타 모든 예외에 대한 기본 처리
      */
     @ExceptionHandler(Exception::class)
