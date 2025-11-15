@@ -3,7 +3,6 @@ package com.woowacourse.wordcapsule.service.quiz
 import com.woowacourse.wordcapsule.domain.quiz.QuizAnswer
 import com.woowacourse.wordcapsule.domain.quiz.QuizRecord
 import com.woowacourse.wordcapsule.domain.quiz.QuizRecordFactory
-import com.woowacourse.wordcapsule.domain.quiz.QuizRecordSpecs
 import com.woowacourse.wordcapsule.dto.common.PageResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizAnswerRequest
 import com.woowacourse.wordcapsule.dto.quiz.QuizRecordDetailResponse
@@ -14,15 +13,13 @@ import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizOptionRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizRecordRepository
 import com.woowacourse.wordcapsule.repository.quiz.QuizRepository
+import com.woowacourse.wordcapsule.repository.user.UserRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.EnumMap
 import kotlin.math.abs
 
 @Service
@@ -31,7 +28,8 @@ class QuizRecordService(
     private val quizRecordRepository: QuizRecordRepository,
     private val quizConfigRepository: QuizConfigRepository,
     private val quizOptionRepository: QuizOptionRepository,
-    private val quizRepository: QuizRepository
+    private val quizRepository: QuizRepository,
+    private val userRepository: UserRepository
 ): QuizRecordServiceInterface {
 
     /**
@@ -39,13 +37,15 @@ class QuizRecordService(
      */
     @Transactional
     override fun createQuizRecord(request: QuizRecordRequest): Long {
-        // TODO : 유저 연관관계 매핑
-//        val user = userRepository...
+        val userId = request.userId
+        val user = userRepository.findById(userId)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: $userId") }
+
         val configId = request.configId
         val quizConfig = quizConfigRepository.findById(configId)
             .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
 
-        val quizRecord = QuizRecordFactory.createQuizRecord(request, quizConfig)
+        val quizRecord = QuizRecordFactory.createQuizRecord(request, quizConfig, user)
 
         val savedQuizRecord = quizRecordRepository.save(quizRecord)
 
@@ -61,18 +61,14 @@ class QuizRecordService(
      */
     override fun getUserQuizRecordList(
         userId: Long?,
-        // score에 따른 검색, 다 맞은거 or 오답이 있는 것
         pageable: Pageable
     ): PageResponse<QuizRecordListResponse> {
 
-        val spec = Specification.allOf(
-            listOfNotNull(
-                userId?.let { QuizRecordSpecs.userIdEq(it) }
-            )
-        )
-
-        val page = quizRecordRepository.findAll(spec, pageable)
-            .map(QuizRecordListResponse::from)
+        val page = if (userId != null)
+            { quizRecordRepository.findAllByUserId(userId, pageable)
+        } else {
+            quizRecordRepository.findAll(pageable)
+        }.map(QuizRecordListResponse::from)
 
         return PageResponse.of(page)
     }
@@ -110,13 +106,11 @@ class QuizRecordService(
      * 퀴즈 기록 통계
      */
     override fun getUserQuizRecordStatistic(userId: Long?): QuizRecordStatisticResponse {
-        val spec = Specification.allOf(
-            listOfNotNull(
-                userId?.let { QuizRecordSpecs.userIdEq(it) }
-            )
-        )
-
-        val quizRecordList = quizRecordRepository.findAll(spec)
+        val quizRecordList = if (userId != null) {
+            quizRecordRepository.findAllByUserId(userId)
+        } else {
+            quizRecordRepository.findAll()
+        }
 
         return QuizRecordStatisticResponse.from(quizRecordList)
     }

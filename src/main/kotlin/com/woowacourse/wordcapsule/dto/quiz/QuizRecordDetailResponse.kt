@@ -6,7 +6,6 @@ import java.time.LocalDateTime
 
 data class QuizRecordDetailResponse(
     val id: Long,
-    val userId: Long,
     val score: Int,
     val startedAt: LocalDateTime,
     val completedAt: LocalDateTime,
@@ -24,7 +23,6 @@ data class QuizRecordDetailResponse(
 
             return QuizRecordDetailResponse(
                 id = quizRecord.id,
-                userId = quizRecord.userId,
                 score = quizRecord.score,
                 startedAt = quizRecord.startedAt,
                 completedAt = quizRecord.completedAt,
