@@ -1,7 +1,11 @@
 spring:
   application:
     name: wordCapsule
-  
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
   datasource:
     url: jdbc:mysql://localhost:3306/wordcapsule?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${DB_USERNAME:root}
