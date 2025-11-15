@@ -43,7 +43,6 @@ a {
     min-height: 100vh;
     margin: 0 auto;
     background-color: var(--color-bg);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 
     /* Header와 BottomNav 영역 확보 */
     padding-top: var(--header-height);

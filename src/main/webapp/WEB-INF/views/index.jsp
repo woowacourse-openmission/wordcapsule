@@ -23,7 +23,7 @@
         </c:if>
 
         <c:if test="${empty path}">
-            <h2>Welcome</h2>
+            <jsp:include page="content/home.jsp" flush="true"/>
         </c:if>
     </main>
 
