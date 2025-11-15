@@ -1,104 +1,140 @@
-/* style.css */
+/* --- 1. Global & Font --- */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
-/* 기본적인 박스 모델 초기화 */
+:root {
+    /* Color Palette */
+    --color-primary: #4CAF50;
+    --color-primary-light: #E8F5E9;
+    --color-bg: #FFFFFF;
+    --color-bg-content: #F9F9F9;
+    --color-text: #333333;
+    --color-text-sub: #757575;
+    --color-border: #E0E0E0;
+    --color-error: #F44336;
+
+    /* Layout */
+    --max-width: 420px;
+    --header-height: 60px;
+    --bottom-nav-height: 65px;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
 }
 
-body {
-    background-color: #f4f7f9;
-    color: #333;
-    line-height: 1.6;
-}
-
-/* 레이아웃 컨테이너 */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* Header 스타일 */
-.main-header {
-    background-color: #2c3e50;
-    color: white;
-    padding: 15px 0;
-    margin-bottom: 20px;
-}
-
-.main-header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.8em;
-    font-weight: bold;
-}
-
-/* Footer 스타일 */
-.main-footer {
-    text-align: center;
-    padding: 15px 0;
-    margin-top: 30px;
-    border-top: 1px solid #ddd;
-    color: #777;
-    font-size: 0.9em;
-}
-
-/* 버튼 기본 스타일 */
-.btn {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn-primary {
-    background-color: #3498db;
-    color: white;
-}
-
-.btn-secondary {
-    background-color: #ecf0f1;
-    color: #333;
-    border: 1px solid #bdc3c7;
-}
-
-/* 테이블 기본 스타일 */
-.table {
+html, body {
     width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #EFEFEF; /* 앱 컨테이너 바깥 배경 */
+    color: var(--color-text);
 }
 
-.table th, .table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ecf0f1;
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-.table th {
-    background-color: #f8f8f8;
-    font-weight: 600;
-    color: #444;
+/* --- 2. Layout (App Container) --- */
+.app-container {
+    max-width: var(--max-width);
+    min-height: 100vh;
+    margin: 0 auto;
+    background-color: var(--color-bg);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+
+    /* Header와 BottomNav 영역 확보 */
+    padding-top: var(--header-height);
+    padding-bottom: var(--bottom-nav-height);
 }
 
-/* 페이징 스타일 (AJAX에서 사용) */
-.pagination {
+/* --- 3. Header (header.jsp) --- */
+.app-header {
     display: flex;
-    justify-content: center;
-    padding: 20px 0;
+    align-items: center;
+    justify-content: center; /* 또는 space-between */
+
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 100%;
+    max-width: var(--max-width);
+    height: var(--header-height);
+
+    padding: 0 20px;
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 100;
 }
 
-.pagination button {
-    margin: 0 5px;
+.app-header .title {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* --- 4. Main Content (e.g., index.jsp) --- */
+.main-content {
+    padding: 24px 20px; /* 상하좌우 여백 */
+    background-color: var(--color-bg);
+}
+
+/* --- 5. Bottom Navigation (footer.jsp) --- */
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 100%;
+    max-width: var(--max-width);
+    height: var(--bottom-nav-height);
+
+    background-color: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--color-text-sub);
+}
+
+.bottom-nav-item.active { /* 현재 페이지일 때 */
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+/* (아이콘은 추후 FontAwesome 등 라이브러리 사용 권장) */
+
+
+/* --- 6. Common Components --- */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--color-primary);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
 }
