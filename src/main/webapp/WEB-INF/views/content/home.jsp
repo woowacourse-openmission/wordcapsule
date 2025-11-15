@@ -9,7 +9,7 @@
 </div>
 
 <jsp:include page="quiz/record/statistic.jsp" flush="true"/>
-
+<jsp:include page="quiz/config/start-btn.jsp" flush="true"/>
 
 <style>
     /* User Profile */
