@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*
  * 사용자 관리를 위한 REST API 컨트롤러
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 class UserController(
     private val userService: UserServiceInterface
 ) {

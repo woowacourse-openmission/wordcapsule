@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/quiz/record")
+@RequestMapping("/api/quiz/record")
 class QuizRecordController(
     private val quizRecordService: QuizRecordServiceInterface
 ) {

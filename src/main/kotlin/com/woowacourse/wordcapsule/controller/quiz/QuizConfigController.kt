@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*
  * 퀴즈 설정 관리를 위한 REST API 컨트롤러
  */
 @RestController
-@RequestMapping("/quiz/config")
+@RequestMapping("/api/quiz/config")
 class QuizConfigController(
     private val quizConfigService: QuizConfigServiceInterface
 ) {
