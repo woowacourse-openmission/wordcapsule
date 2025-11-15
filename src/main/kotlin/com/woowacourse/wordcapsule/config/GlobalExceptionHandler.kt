@@ -5,6 +5,7 @@ import com.woowacourse.wordcapsule.dto.common.ErrorResponse
 import com.woowacourse.wordcapsule.dto.common.ResponseCode
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -22,7 +23,7 @@ class GlobalExceptionHandler {
      * 요청 데이터 검증 실패 시 처리
      * @Valid 어노테이션으로 인한 검증 오류를 처리
      */
-    @ExceptionHandler(MethodArgumentNotValidException::class)
+    @ExceptionHandler(MethodArgumentNotValidException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun handleValidationException(
         ex: MethodArgumentNotValidException
     ): ResponseEntity<ErrorResponse> {
@@ -41,7 +42,7 @@ class GlobalExceptionHandler {
     /**
      * 엔티티를 찾을 수 없을 때 처리
      */
-    @ExceptionHandler(EntityNotFoundException::class)
+    @ExceptionHandler(EntityNotFoundException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun handleEntityNotFoundException(
         ex: EntityNotFoundException
     ): ResponseEntity<ErrorResponse> {
@@ -57,7 +58,7 @@ class GlobalExceptionHandler {
     /**
      * 데이터베이스 제약조건 위반 시 처리
      */
-    @ExceptionHandler(DataIntegrityViolationException::class)
+    @ExceptionHandler(DataIntegrityViolationException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun handleDataIntegrityViolationException(
         ex: DataIntegrityViolationException
     ): ResponseEntity<ErrorResponse> {
@@ -68,7 +69,7 @@ class GlobalExceptionHandler {
     /**
      * JSON 파싱 에러 처리
      */
-    @ExceptionHandler(HttpMessageNotReadableException::class)
+    @ExceptionHandler(HttpMessageNotReadableException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun handleHttpMessageNotReadableException(
         ex: HttpMessageNotReadableException
     ): ResponseEntity<ErrorResponse> {
@@ -76,21 +77,21 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(ResponseCode.BAD_REQUEST.httpStatus).body(errorResponse)
     }
 
-    /**
-     * 기타 모든 예외에 대한 기본 처리
-     */
-    @ExceptionHandler(Exception::class)
-    fun handleGenericException(
-        ex: Exception
-    ): ResponseEntity<ErrorResponse> {
-        val errorResponse = ErrorResponse.of(ResponseCode.INTERNAL_ERROR, ex)
-        return ResponseEntity.status(ResponseCode.INTERNAL_ERROR.httpStatus).body(errorResponse)
-    }
+//    /**
+//     * 기타 모든 예외에 대한 기본 처리
+//     */
+//    @ExceptionHandler(Exception::class, produces = [MediaType.APPLICATION_JSON_VALUE])
+//    fun handleGenericException(
+//        ex: Exception
+//    ): ResponseEntity<ErrorResponse> {
+//        val errorResponse = ErrorResponse.of(ResponseCode.INTERNAL_ERROR, ex)
+//        return ResponseEntity.status(ResponseCode.INTERNAL_ERROR.httpStatus).body(errorResponse)
+//    }
 
     /**
      * 접근 권한 없음 예외 처리
      */
-    @ExceptionHandler(IllegalAccessException::class)
+    @ExceptionHandler(IllegalAccessException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun handleIllegalAccessException(
         ex: IllegalAccessException
     ): ResponseEntity<ErrorResponse> {
