@@ -8,8 +8,6 @@
     <p class="user-level">Beginner</p>
 </div>
 
-<hr class="divider">
-
 <jsp:include page="quiz/record/statistic.jsp" flush="true"/>
 
 

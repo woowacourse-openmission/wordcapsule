@@ -37,38 +37,11 @@
 </div>
 
 <style>
-    /* User Profile */
-    .user-profile-card {
-        padding: 16px;
-        background-color: var(--color-bg-content);
-        border-radius: 8px;
-        margin-bottom: 20px;
-        border: 1px solid var(--color-border);
-    }
-
-    .user-name {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 4px;
-    }
-
-    .user-level {
-        font-size: 0.9rem;
-        color: var(--color-text-sub);
-    }
-
     /* 통계 섹션 */
     .section-title {
         font-size: 1.2rem;
         font-weight: 700;
         margin-bottom: 16px;
-    }
-
-    .divider {
-        border: 0;
-        height: 1px;
-        background-color: var(--color-border);
-        margin: 24px 0;
     }
 
     /* 통계 카드 레이아웃 */
