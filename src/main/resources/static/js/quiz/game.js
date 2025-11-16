@@ -2,6 +2,7 @@ import {apiUtil} from "../util/apiUtil.js";
 
 // --- 1. API 함수 ---
 
+// TODO : 유저 ID 불러오기
 const fetchQuizGame = async (userId = 1) => {
     try {
         // configId를 URL 파라미터에서 가져오도록 수정
@@ -13,29 +14,34 @@ const fetchQuizGame = async (userId = 1) => {
         // isNaN 체크를 통해 유효한 숫자인지 확인, 아니면 기본값 1 사용
         const validUserId = isNaN(parseInt(id)) ? userId : parseInt(id);
 
+        // [수정] 랜덤 퀴즈 API로 변경
         const response = await apiUtil.get(`/quiz/config/random?userId=${validUserId}`);
 
-        const status = response.status
-        const quiz = response.quiz
-
-        if (status === "AVAILABLE") {
-            console.log("퀴즈 데이터 로드 성공:", quiz);
-            return quiz
-        }
-        else if (status === "LEVEL_COMPLETED") {
-            console.log("모든 퀴즈 완료", response)
-        }
-        else if (status === "USER_NOT_FOUND") {
-            console.error("일치하는 아이디를 찾을 수 없음", id)
-        }
-         else {
-             console.error("알 수 없는 에러", id)
+        // [수정] 응답이 없거나 status가 없는 경우 에러 처리
+        if (!response || !response.status) {
+            console.error("알 수 없는 에러: 유효하지 않은 응답.", response);
+            return {status: "ERROR", quiz: null, validUserId};
         }
 
-        return response;
+        // [수정] API 응답 상태에 따라 분기
+        switch (response.status) {
+            case "AVAILABLE":
+                console.log("퀴즈 데이터 로드 성공:", response.quiz);
+                return {status: "AVAILABLE", quiz: response.quiz, validUserId};
+            case "LEVEL_COMPLETED":
+                console.log("모든 퀴즈 완료", response);
+                return {status: "LEVEL_COMPLETED", quiz: null, validUserId};
+            case "USER_NOT_FOUND":
+                console.error("일치하는 아이디를 찾을 수 없음", id);
+                return {status: "ERROR", quiz: null, validUserId};
+            default:
+                console.error("알 수 없는 상태:", response.status);
+                return {status: "ERROR", quiz: null, validUserId};
+        }
+
     } catch (e) {
         console.error("퀴즈를 불러오는 데 실패했습니다.", e);
-        return null; // 오류 발생 시 null 반환
+        return {status: "ERROR", quiz: null, validUserId: 1}; // 오류 발생 시
     }
 };
 
@@ -51,9 +57,8 @@ const submitQuizGame = async (request) => {
 };
 
 /**
- * Date 객체를 백엔드 LocalDateTime 호환 형식(yyyy-MM-dd'T'HH:mm:ss)으로 변환합니다.
- * .toISOString() (e.g., ...T12:37:47.105Z)에서 밀리초와 'Z'를 제거합니다.
- * 시간은 UTC 기준으로 전송됩니다.
+ * Date 객체를 브라우저의 로컬 시간 기준 'yyyy-MM-ddTHH:mm:ss' 형식으로 변환합니다.
+ * (스프링부트 LocalDateTime.now()와 매칭하기 위함)
  */
 const formatForLocalDateTime = (date) => {
     const pad = (num) => num.toString().padStart(2, '0');
@@ -68,6 +73,84 @@ const formatForLocalDateTime = (date) => {
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 };
 
+
+// --- [신규] 모달 관련 함수 ---
+
+let modalStylesInjected = false;
+
+/** 모달에 필요한 CSS를 <head>에 동적으로 주입합니다. (1회만 실행) */
+const createModalStyles = () => {
+    if (modalStylesInjected) return;
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .quiz-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .quiz-modal-content {
+            background-color: var(--color-bg);
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .quiz-modal-content p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--color-text);
+            line-height: 1.5;
+        }
+        /* .btn-primary 스타일은 전역 CSS의 것을 활용 */
+    `;
+    document.head.appendChild(style);
+    modalStylesInjected = true;
+};
+
+/** [신규] 레벨업 안내 모달을 표시합니다. */
+const showLevelUpModal = (contextPath, userId) => {
+    // 스타일 주입
+    createModalStyles();
+
+    // 1. 오버레이 생성
+    const overlay = document.createElement('div');
+    overlay.className = 'quiz-modal-overlay';
+
+    // 2. 모달 컨텐츠 생성
+    const modalContent = document.createElement('div');
+    modalContent.className = 'quiz-modal-content';
+
+    // 3. 메시지 생성
+    const message = document.createElement('p');
+    message.textContent = '현재 레벨의 문제를 전부 풀었어요!';
+
+    // 4. 버튼 생성
+    const levelUpButton = document.createElement('button');
+    levelUpButton.className = 'btn-primary'; // 전역 스타일 재사용
+    levelUpButton.textContent = '레벨 올리기';
+    levelUpButton.onclick = () => {
+        // TODO : 마이페이지 수정
+        window.location.href = `${contextPath}/`;
+    };
+
+    // 5. DOM에 조립
+    modalContent.appendChild(message);
+    modalContent.appendChild(levelUpButton);
+    overlay.appendChild(modalContent);
+    document.body.appendChild(overlay);
+};
+
+
 // --- 2. 퀴즈 게임 상태 관리 ---
 // (DOM 로드 전에도 선언은 가능)
 let quizData = null;            // 서버에서 받은 퀴즈 전체 데이터
@@ -75,6 +158,8 @@ let currentQuestionIndex = 0;   // 현재 질문 인덱스
 let totalQuestions = 0;         // 총 질문 수
 let userAnswersMap = new Map(); // 사용자의 답변 기록 (quizId -> { optionId, isCorrect, questionNumber })
 let startedAt = "";             // 퀴즈 시작 시간
+// TODO: 유저 아이디
+let currentUserId = 1;          // [추가] 현재 사용자 ID 저장
 
 
 // --- 7. 게임 시작 (DOM 로드 후) ---
@@ -220,7 +305,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 서버에 보낼 데이터 구성 (request.json 형식)
         const requestPayload = {
-            userId: 1, // 요청대로 1로 고정
+            // [수정] 하드코딩된 '1' 대신 initGame에서 설정한 currentUserId 사용
+            userId: currentUserId,
             configId: quizData.configId,
             score: score,
             startedAt: startedAt,
@@ -235,13 +321,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (result) {
             // 성공 시 퀴즈 목록 페이지로 이동
-            // !!! alert()는 캔버스 환경에서 문제를 일으킬 수 있으므로 console.log로 대체
             console.log("퀴즈가 성공적으로 제출되었습니다!");
-            // contextPath를 사용하여 정확한 경로로 이동
-            window.location.href = `${contextPath}/quiz/records?userId=1`; // 퀴즈 '기록' 목록으로 이동
+            // [수정] contextPath와 userId를 사용하여 퀴즈 '기록' 목록으로 이동
+            window.location.href = `${contextPath}/quiz/records?userId=${currentUserId}`;
         } else {
             // 실패 시
-            // !!! alert() 대신 console.error 사용
             console.error("퀴즈 제출에 실패했습니다. 다시 시도해주세요.");
             nextButton.disabled = false;
             nextButton.textContent = "결과 제출";
@@ -253,29 +337,48 @@ document.addEventListener("DOMContentLoaded", () => {
         // 1. 퀴즈 시작 시간 기록
         startedAt = formatForLocalDateTime(new Date());
 
-        // 2. 퀴즈 데이터 로드
-        quizData = await fetchQuizGame(); // URL에서 configId 자동 감지 시도
+        // 2. 퀴즈 데이터 로드 (API 응답 구조 변경됨)
+        const response = await fetchQuizGame(); // URL에서 userId 자동 감지 시도
 
-        if (!quizData || !quizData.quizzes || quizData.quizzes.length === 0) {
-            // 로더 스피너를 지우고 에러 메시지를 HTML로 표시
+        // [수정] 전역 변수에 userId 저장
+        currentUserId = response.validUserId;
+
+        // [수정] API 응답 상태에 따른 분기 처리
+        if (response.status === "AVAILABLE") {
+            quizData = response.quiz;
+
+            // 퀴즈 데이터 유효성 검사
+            if (!quizData || !quizData.quizzes || quizData.quizzes.length === 0) {
+                loader.innerHTML = `<span style="color: var(--color-error); font-weight: 500;">퀴즈를 불러오지 못했습니다. (데이터 없음)</span>`;
+                return;
+            }
+
+            // 3. 상태 변수 초기화
+            totalQuestions = quizData.quizzes.length;
+            currentQuestionIndex = 0;
+            userAnswersMap.clear();
+
+            // 4. 로더 숨기고 게임 컨테이너 표시
+            loader.style.display = "none";
+            gameContainer.style.display = "flex";
+
+            // 5. 첫 번째 질문 렌더링
+            renderQuestion(currentQuestionIndex);
+
+            // 6. '다음' 버튼 이벤트 리스너 연결
+            nextButton.addEventListener("click", handleNextClick);
+
+        } else if (response.status === "LEVEL_COMPLETED") {
+            // [신규] 레벨 완료 모달 표시
+            showLevelUpModal(contextPath, currentUserId);
+            // 로더 대신 안내 메시지 표시
+            loader.innerHTML = `<span style="color: var(--color-text-sub); font-weight: 500;">현재 레벨의 퀴즈를 모두 완료했습니다.</span>`;
+
+        } else {
+            // [수정] "ERROR" 또는 기타 상태
             loader.innerHTML = `<span style="color: var(--color-error); font-weight: 500;">퀴즈를 불러오지 못했습니다.</span>`;
             return;
         }
-
-        // 3. 상태 변수 초기화
-        totalQuestions = quizData.quizzes.length;
-        currentQuestionIndex = 0;
-        userAnswersMap.clear();
-
-        // 4. 로더 숨기고 게임 컨테이너 표시
-        loader.style.display = "none";
-        gameContainer.style.display = "flex";
-
-        // 5. 첫 번째 질문 렌더링
-        renderQuestion(currentQuestionIndex);
-
-        // 6. '다음' 버튼 이벤트 리스너 연결
-        nextButton.addEventListener("click", handleNextClick);
     };
 
     // --- 7. 게임 시작 (실제 호출) ---
