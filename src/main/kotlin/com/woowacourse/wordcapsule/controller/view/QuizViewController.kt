@@ -50,8 +50,14 @@ class QuizViewController(
         return "index" // index로 고정 후 관리
     }
 
+    @GetMapping("/game")
+    fun quizGameStart(model: Model): String {
+        model.addAttribute("path", "content/quiz/game.jsp")
+        return "index"
+    }
+
     @GetMapping("/records")
-    fun getUserQuizRecordList(
+    fun showUserQuizRecordList(
         @RequestParam(required = false) userId: Long,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
@@ -73,7 +79,7 @@ class QuizViewController(
     }
 
     @GetMapping("/records/{recordId}")
-    fun getUserQuizRecordDetail(@PathVariable recordId: Long, model: Model): String {
+    fun showQuizRecordDetail(@PathVariable recordId: Long, model: Model): String {
         val response = quizRecordService.getUserQuizRecordDetail(recordId)
 
         // 보여줄 페이지 경로 추가
