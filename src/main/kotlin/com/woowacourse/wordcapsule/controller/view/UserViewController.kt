@@ -183,7 +183,10 @@ class UserViewController(
 
         return try {
             val user = userService.getUserByLoginId(loginId)
-            val request = UserUpdateRequest(password, username, level)
+            // 빈 문자열을 null로 변환
+            val updatedPassword = password?.ifBlank { null }
+            val updatedUsername = username?.ifBlank { null }
+            val request = UserUpdateRequest(updatedPassword, updatedUsername, level)
             userService.updateUser(user.id, request)
 
             "redirect:/users/mypage"
