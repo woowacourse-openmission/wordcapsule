@@ -42,6 +42,11 @@
         gap: 10px;
         margin-top: 20px;
     }
+    .action-section {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #ecf0f1;
+    }
 </style>
 
 <div class="mypage-container">
