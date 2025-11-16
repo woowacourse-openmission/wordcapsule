@@ -53,6 +53,7 @@ class QuizViewController(
     @GetMapping("/game")
     fun quizGameStart(model: Model): String {
         model.addAttribute("path", "content/quiz/game.jsp")
+        model.addAttribute("layoutType", "simple")
         return "index"
     }
 

@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="path" class="java.lang.String" scope="request"/>
+<jsp:useBean id="layoutType" class="java.lang.String" scope="request"/>
+
+<c:set var="layout" value="${empty layoutType ? 'full' : layoutType}"/>
 
 <!doctype html>
 <html lang="ko">
@@ -13,10 +16,10 @@
 <body>
 
 <div class="app-container">
-    <%-- 1. 공통 헤더 포함 --%>
-    <jsp:include page="layout/header.jsp"/>
+    <c:if test="${layout eq 'full' or layout eq 'noFooter'}">
+        <jsp:include page="layout/header.jsp"/>
+    </c:if>
 
-    <%-- 2. 메인 콘텐츠 영역 --%>
     <main class="main-content">
         <c:if test="${not empty path}">
             <jsp:include page="${path}" flush="true"/>
@@ -27,7 +30,9 @@
         </c:if>
     </main>
 
-    <jsp:include page="layout/footer.jsp"/>
+    <c:if test="${layout eq 'full' or layout eq 'noHeader'}">
+        <jsp:include page="layout/footer.jsp"/>
+    </c:if>
 </div>
 
 </body>
