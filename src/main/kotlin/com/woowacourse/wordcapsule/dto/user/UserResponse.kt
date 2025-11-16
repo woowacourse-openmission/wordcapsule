@@ -1,8 +1,8 @@
 package com.woowacourse.wordcapsule.dto.user
 
+import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.user.User
 import com.woowacourse.wordcapsule.domain.user.UserRole
-import com.woowacourse.wordcapsule.domain.quiz.Level
 import java.time.LocalDateTime
 
 /**

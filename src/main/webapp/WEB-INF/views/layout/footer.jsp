@@ -6,7 +6,7 @@
     <a class="bottom-nav-item" href="${pageContext.request.contextPath}/">
         <span>홈</span>
     </a>
-    <a class="bottom-nav-item" href="${pageContext.request.contextPath}/">
+    <a class="bottom-nav-item" href="${pageContext.request.contextPath}/users/mypage">
         <span>마이페이지</span>
     </a>
 </nav>
