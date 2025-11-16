@@ -6,8 +6,8 @@
 <script type="module" src="/js/quiz/statistic.js"></script>
 
 <h3 class="section-title">🔥 퀴즈 기록 통계</h3>
-<div class="statistic-grid">
 
+<div class="statistic-grid">
     <div class="stat-card stat-primary">
         <p class="stat-label">연속 학습 일수</p>
         <p class="stat-value" id="statStreakDays"></p>
@@ -30,7 +30,6 @@
     <div id="activePlayTimePeak" class="time-activity-peak">
         <p class="text-sub">데이터 로딩 중...</p>
     </div>
-
     <div id="activePlayTimeChart" class="column-chart-container">
         <!-- JS에 의해 동적으로 채워질 영역 -->
     </div>
