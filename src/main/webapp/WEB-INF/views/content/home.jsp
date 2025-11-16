@@ -4,8 +4,8 @@
 <jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
 <div class="user-profile-card">
-    <h2 class="user-name">유어진</h2>
-    <p class="user-level">Beginner</p>
+    <h2 class="user-name">${data.username}</h2>
+    <p class="user-level">${data.level}</p>
 </div>
 
 <jsp:include page="quiz/record/statistic.jsp" flush="true"/>
