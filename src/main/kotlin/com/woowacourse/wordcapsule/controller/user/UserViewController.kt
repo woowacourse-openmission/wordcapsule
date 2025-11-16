@@ -66,6 +66,15 @@ class UserViewController(
     }
 
     /**
+     * 로그아웃 처리
+     */
+    @GetMapping("/logout")
+    fun logout(session: HttpSession): String {
+        session.invalidate()
+        return "redirect:/view/users/login"
+    }
+
+    /**
      * 아이디 찾기 페이지
      */
     @GetMapping("/find-id")
