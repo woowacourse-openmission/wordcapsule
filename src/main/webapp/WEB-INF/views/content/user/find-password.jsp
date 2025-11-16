@@ -7,24 +7,24 @@
     <title>비밀번호 찾기</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
-        body {
+        .find-password-page .main-content {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
-        .form-container {
-            background: white;
+
+        .find-password-form-container {
             padding: 40px;
-            border-radius: 4px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            width: 100%;
+            max-width: 400px;
         }
-        h1 {
+
+        .find-password-form-container h1 {
             text-align: center;
             margin-bottom: 30px;
-            color: #2c3e50;
+            color: var(--color-text);
         }
+
         .result-message {
             background-color: #e8f5e9;
             color: #2e7d32;
@@ -34,6 +34,7 @@
             text-align: center;
             border: 1px solid #c8e6c9;
         }
+
         .error-message {
             background-color: #ffe6e6;
             color: #d32f2f;
@@ -43,48 +44,55 @@
             text-align: center;
             border: 1px solid #ffcccc;
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #444;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--color-text);
         }
+
         .form-group input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #bdc3c7;
+            border: 1px solid var(--color-border);
             border-radius: 4px;
+            font-size: 1rem;
         }
+
         .form-group input:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: var(--color-primary);
         }
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-        }
+
         .link-group {
             text-align: center;
             margin-top: 20px;
             padding-top: 20px;
-            border-top: 1px solid #ecf0f1;
+            border-top: 1px solid var(--color-border);
         }
+
         .link-group a {
-            color: #3498db;
+            color: var(--color-primary);
             text-decoration: none;
-            margin: 0 10px;
+            margin: 0 8px;
         }
+
         .link-group a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
-<body>
-    <div class="form-container">
+<body class="find-password-page">
+<div class="app-container">
+    <jsp:include page="../../layout/header.jsp"/>
+
+    <main class="main-content">
+        <div class="find-password-form-container">
         <h1>비밀번호 찾기</h1>
 
         <c:if test="${not empty password}">
@@ -109,6 +117,7 @@
             <a href="${pageContext.request.contextPath}/users/login">로그인</a>
             <a href="${pageContext.request.contextPath}/users/find-id">아이디 찾기</a>
         </div>
-    </div>
+    </main>
+</div>
 </body>
 </html>

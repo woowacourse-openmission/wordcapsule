@@ -6,52 +6,55 @@
     <title>회원가입</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
-        body {
+        .signup-page .main-content {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
-        .form-container {
-            background: white;
+
+        .signup-form-container {
             padding: 40px;
-            border-radius: 4px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            width: 100%;
+            max-width: 400px;
         }
-        h1 {
+
+        .signup-form-container h1 {
             text-align: center;
             margin-bottom: 30px;
-            color: #2c3e50;
+            color: var(--color-text);
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #444;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--color-text);
         }
+
         .form-group input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #bdc3c7;
+            border: 1px solid var(--color-border);
             border-radius: 4px;
+            font-size: 1rem;
         }
+
         .form-group input:focus {
             outline: none;
-            border-color: #3498db;
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
+            border-color: var(--color-primary);
         }
     </style>
 </head>
-<body>
-    <div class="form-container">
+<body class="signup-page">
+<div class="app-container">
+    <jsp:include page="../../layout/header.jsp"/>
+
+    <main class="main-content">
+        <div class="signup-form-container">
         <h1>회원가입</h1>
         <form action="${pageContext.request.contextPath}/users/new" method="post">
             <div class="form-group">
@@ -68,6 +71,8 @@
             </div>
             <button type="submit" class="btn btn-primary btn-submit">가입하기</button>
         </form>
-    </div>
+        </div>
+    </main>
+</div>
 </body>
 </html>
