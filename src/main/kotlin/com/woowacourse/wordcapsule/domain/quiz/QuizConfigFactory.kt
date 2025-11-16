@@ -1,5 +1,6 @@
 package com.woowacourse.wordcapsule.domain.quiz
 
+import com.woowacourse.wordcapsule.domain.user.User
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
 
 /**
@@ -12,51 +13,14 @@ object QuizConfigFactory {
      * 퀴즈 설정 요청 정보로부터 QuizConfig 도메인 객체를 생성
      *
      * @param request 퀴즈 설정 생성 요청 DTO
+     * @param user User 엔티티 (영속성 컨텍스트에서 관리)
      * @return 생성된 QuizConfig 도메인 객체 (하위 Quiz, QuizOption 포함)
      */
-    fun createQuizConfig(request: QuizConfigRequest): QuizConfig {
-        val quizConfig = QuizConfig(
+    fun createQuizConfig(request: QuizConfigRequest, user: User): QuizConfig {
+        return QuizConfig(
+            user = user,
             quizName = request.quizName,
             level = request.level
         )
-
-        val quizzes = createQuizzes(request, quizConfig)
-        return QuizConfig(
-            quizName = quizConfig.quizName,
-            level = quizConfig.level,
-            quizzes = quizzes
-        )
-    }
-
-    private fun createQuizzes(request: QuizConfigRequest, config: QuizConfig): List<Quiz> {
-        return request.quizzes.map { quizRequest ->
-            val quiz = Quiz(
-                config = config,
-                content = quizRequest.content,
-                quizType = quizRequest.quizType
-            )
-
-            val options = createQuizOptions(quizRequest, quiz)
-            Quiz(
-                config = quiz.config,
-                content = quiz.content,
-                quizType = quiz.quizType,
-                options = options
-            )
-        }
-    }
-
-    private fun createQuizOptions(
-        quizRequest: com.woowacourse.wordcapsule.dto.quiz.QuizRequest,
-        quiz: Quiz
-    ): List<QuizOption> {
-        return quizRequest.options.map { optionRequest ->
-            QuizOption(
-                quiz = quiz,
-                content = optionRequest.content,
-                position = optionRequest.position,
-                isCorrect = optionRequest.isCorrect
-            )
-        }
     }
 }
