@@ -24,7 +24,7 @@ class QuizConfig(
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
 
-    @Column(name = "quiz_name", nullable = false, length = 50)
+    @Column(name = "quiz_name", nullable = false, length = 100)
     var quizName: String,
 
     @Enumerated(EnumType.STRING)
