@@ -9,6 +9,7 @@ import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigUpdateRequest
+import com.woowacourse.wordcapsule.dto.quiz.RandomQuizResponse
 import com.woowacourse.wordcapsule.service.quiz.QuizConfigServiceInterface
 import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
@@ -102,5 +103,17 @@ class QuizConfigController(
     fun deleteQuizConfig(@PathVariable configId: Long): SimpleResponse {
         quizConfigService.deleteQuizConfig(configId)
         return SimpleResponse.noContent()
+    }
+
+    /**
+     * 사용자에게 랜덤 퀴즈를 추천
+     *
+     * @param userId 사용자 ID
+     * @return 랜덤 퀴즈 추천 결과 (추천 성공/레벨 완료/사용자 없음)
+     */
+    @GetMapping("/random")
+    fun getRandomQuizRecommendation(@RequestParam userId: Long): DataResponse<RandomQuizResponse> {
+        val result = quizConfigService.getRandomQuizRecommendation(userId)
+        return DataResponse.of(result)
     }
 }

@@ -6,7 +6,9 @@ import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigUpdateRequest
+import com.woowacourse.wordcapsule.dto.quiz.RandomQuizResponse
 import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
+import com.woowacourse.wordcapsule.repository.quiz.QuizRecordRepository
 import com.woowacourse.wordcapsule.repository.user.UserRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -21,7 +23,8 @@ import jakarta.persistence.EntityNotFoundException
 @Transactional(readOnly = true)
 class QuizConfigService(
     private val quizConfigRepository: QuizConfigRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val quizRecordRepository: QuizRecordRepository
 ) : QuizConfigServiceInterface {
 
     @Transactional
@@ -75,5 +78,33 @@ class QuizConfigService(
             .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
         
         quizConfigRepository.delete(quizConfig)
+    }
+
+    override fun getRandomQuizRecommendation(userId: Long): RandomQuizResponse {
+        // 1. 사용자 조회
+        val user = userRepository.findById(userId)
+            .orElse(null) ?: return RandomQuizResponse.userNotFound()
+
+        // 2. 사용자의 레벨에 맞는 퀴즈 목록 조회
+        val userLevel = user.level
+        val availableQuizzes = quizConfigRepository.findByLevel(userLevel)
+
+        // 3. 사용자가 이미 푼 퀴즈 기록 조회
+        val completedRecords = quizRecordRepository.findAllByUserId(userId)
+        val completedConfigIds = completedRecords.map { it.config.id }.toSet()
+
+        // 4. 아직 풀지 않은 퀴즈 필터링
+        val uncompletedQuizzes = availableQuizzes.filter { it.id !in completedConfigIds }
+
+        // 5. 결과 반환
+        return if (uncompletedQuizzes.isEmpty()) {
+            // 모든 퀴즈를 완료한 경우
+            RandomQuizResponse.completed(userLevel)
+        } else {
+            // 랜덤으로 하나 선택
+            val randomQuiz = uncompletedQuizzes.random()
+            val quizDetail = QuizConfigDetailResponse.from(randomQuiz)
+            RandomQuizResponse.success(quizDetail, userLevel)
+        }
     }
 }
