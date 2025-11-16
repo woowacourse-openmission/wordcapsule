@@ -187,4 +187,22 @@ class UserViewController(
         }
     }
 
+    /**
+     * 회원 탈퇴 처리
+     */
+    @PostMapping("/delete")
+    fun deleteAccount(session: HttpSession): String {
+        val loginId = session.getAttribute("loginId") as? String
+            ?: return "redirect:/view/users/login"
+
+        return try {
+            val user = userService.getUserByLoginId(loginId)
+            userService.deleteUser(user.id, user.id)
+            session.invalidate()
+            "redirect:/view/users/login"
+        } catch (e: EntityNotFoundException) {
+            "redirect:/view/users/login"
+        }
+    }
+
 }

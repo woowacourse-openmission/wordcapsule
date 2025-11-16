@@ -62,4 +62,15 @@
         <a href="${pageContext.request.contextPath}/view/users/edit" class="btn btn-primary">정보 수정</a>
         <a href="${pageContext.request.contextPath}/" class="btn btn-secondary">홈으로</a>
     </div>
+
+    <div class="action-section">
+        <div class="btn-group">
+            <a href="${pageContext.request.contextPath}/view/users/logout" class="btn btn-secondary">로그아웃</a>
+            <form action="${pageContext.request.contextPath}/view/users/delete" method="post"
+                  onsubmit="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');"
+                  style="flex: 1; margin: 0;">
+                <button type="submit" class="btn btn-secondary">회원 탈퇴</button>
+            </form>
+        </div>
+    </div>
 </div>
