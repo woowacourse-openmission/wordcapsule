@@ -39,13 +39,35 @@ class QuizViewController(
         val sortProperty = sort.split(",")[0]
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
 
-        val request = quizConfigService.getQuizConfigs(level, quizType, pageable)
+        val response = quizConfigService.getQuizConfigs(level, quizType, pageable)
 
         // 보여줄 페이지 경로 추가
         model.addAttribute("path", "content/quiz/config/list.jsp")
         // 모델에 뷰(JSP)에서 사용할 데이터를 추가
-        model.addAttribute("data", request)
+        model.addAttribute("data", response)
 
         return "index" // index로 고정 후 관리
+    }
+
+    @GetMapping("/records")
+    fun getUserQuizRecordList(
+        @RequestParam(required = false) userId: Long,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int,
+        @RequestParam(defaultValue = "startedAt,desc") sort: String,
+        model: Model
+    ): String {
+        val sortDirection = if (sort.contains("desc")) Sort.Direction.DESC else Sort.Direction.ASC
+        val sortProperty = sort.split(",")[0]
+        val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
+
+        val response = quizRecordService.getUserQuizRecordList(userId, pageable)
+
+        // 보여줄 페이지 경로 추가
+        model.addAttribute("path", "content/quiz/record/list.jsp")
+        // 모델에 뷰(JSP)에서 사용할 데이터를 추가
+        model.addAttribute("data", response)
+
+        return "index"
     }
 }
