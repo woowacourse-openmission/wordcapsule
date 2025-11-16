@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 
@@ -65,6 +66,18 @@ class QuizViewController(
 
         // 보여줄 페이지 경로 추가
         model.addAttribute("path", "content/quiz/record/list.jsp")
+        // 모델에 뷰(JSP)에서 사용할 데이터를 추가
+        model.addAttribute("data", response)
+
+        return "index"
+    }
+
+    @GetMapping("/records/{recordId}")
+    fun getUserQuizRecordDetail(@PathVariable recordId: Long, model: Model): String {
+        val response = quizRecordService.getUserQuizRecordDetail(recordId)
+
+        // 보여줄 페이지 경로 추가
+        model.addAttribute("path", "content/quiz/record/detail.jsp")
         // 모델에 뷰(JSP)에서 사용할 데이터를 추가
         model.addAttribute("data", response)
 
