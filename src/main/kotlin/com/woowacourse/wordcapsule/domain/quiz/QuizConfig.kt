@@ -1,11 +1,8 @@
 package com.woowacourse.wordcapsule.domain.quiz
 
+import com.woowacourse.wordcapsule.domain.BaseEntity
 import com.woowacourse.wordcapsule.domain.user.User
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDateTime
 
 /**
  * 퀴즈 설정 엔티티
@@ -13,7 +10,6 @@ import java.time.LocalDateTime
  */
 @Entity
 @Table(name = "quiz_configs")
-@EntityListeners(AuditingEntityListener::class)
 class QuizConfig(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,17 +27,9 @@ class QuizConfig(
     @Column(name = "level", nullable = false)
     var level: Level = Level.BEGINNER,
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: LocalDateTime = LocalDateTime.now(),
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    val updatedAt: LocalDateTime = LocalDateTime.now(),
-
     @OneToMany(mappedBy = "config", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     val quizzes: List<Quiz> = emptyList()
-) {
+) : BaseEntity() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
