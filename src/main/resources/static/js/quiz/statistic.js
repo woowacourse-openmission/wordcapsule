@@ -17,9 +17,9 @@ const formatTime = (seconds) => {
 const updateStatistics = (statisticData) => {
     // 1. 통계 값 업데이트
     document.getElementById('statStreakDays').textContent = statisticData.streakDays;
-    const rate = (statisticData.correctAnswerRate * 100).toFixed(1);
+    const rate = (statisticData.correctAnswerRate * 100).toFixed(0);
     document.getElementById('statCorrectRate').textContent = rate;
-    const avgTimeFormatted = formatTime(statisticData.averageSolveTime);
+    const avgTimeFormatted = formatTime(statisticData.averageSolveTime.toFixed(0));
     document.getElementById('statAvgTime').textContent = avgTimeFormatted;
 
     // 2. 시간대별 활동 패턴 (그래프 로직 수정)
