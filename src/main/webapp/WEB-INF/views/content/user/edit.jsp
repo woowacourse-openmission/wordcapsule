@@ -3,108 +3,193 @@
 <jsp:useBean id="path" class="java.lang.String" scope="request"/>
 <jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
+<div class="edit-header">
+    <h2 class="page-title">정보 수정</h2>
+</div>
+
+<c:if test="${not empty success}">
+    <div class="message-box success-message">
+        <span>${success}</span>
+    </div>
+</c:if>
+
+<c:if test="${not empty error}">
+    <div class="message-box error-message">
+        <span>${error}</span>
+    </div>
+</c:if>
+
+<form action="${pageContext.request.contextPath}/users/edit" method="post">
+    <h3 class="section-title">기본 정보</h3>
+    <div class="form-card">
+        <div class="form-group">
+            <label for="username" class="form-label">사용자 이름</label>
+            <input type="text" id="username" name="username" value="${data.username}"
+                   maxlength="50" class="form-input" required>
+            <small class="form-text">1자 이상 50자 이하로 입력해주세요</small>
+        </div>
+    </div>
+
+    <h3 class="section-title">학습 레벨</h3>
+    <div class="form-card">
+        <div class="form-group">
+            <label for="level" class="form-label">난이도</label>
+            <select id="level" name="level" class="form-select">
+                <option value="BEGINNER" ${data.level == 'BEGINNER' ? 'selected' : ''}>초급 (BEGINNER)</option>
+                <option value="INTERMEDIATE" ${data.level == 'INTERMEDIATE' ? 'selected' : ''}>중급 (INTERMEDIATE)</option>
+                <option value="ADVANCED" ${data.level == 'ADVANCED' ? 'selected' : ''}>고급 (ADVANCED)</option>
+            </select>
+            <small class="form-text">학습하고 싶은 난이도를 선택하세요</small>
+        </div>
+    </div>
+
+    <h3 class="section-title">비밀번호 변경</h3>
+    <div class="form-card">
+        <div class="form-group">
+            <label for="password" class="form-label">새 비밀번호</label>
+            <input type="password" id="password" name="password"
+                   minlength="8" maxlength="20" class="form-input" placeholder="변경하지 않으려면 비워두세요">
+            <small class="form-text">8자 이상 20자 이하</small>
+        </div>
+    </div>
+
+    <div class="button-section">
+        <a href="${pageContext.request.contextPath}/users/mypage" class="action-btn btn-cancel">취소</a>
+        <button type="submit" class="action-btn btn-save">저장</button>
+    </div>
+</form>
+
 <style>
-    .edit-container {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 20px;
+    /* Page Header */
+    .edit-header {
+        margin-bottom: 24px;
     }
-    .edit-container h2 {
-        color: #2c3e50;
-        margin-bottom: 30px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #3498db;
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
     }
-    .form-section {
-        background: white;
-        padding: 30px;
-        border-radius: 4px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+
+    /* Section Title */
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0 0 12px 0;
+        color: var(--color-text);
     }
-    .form-group {
+
+    /* Message Box */
+    .message-box {
+        padding: 14px 16px;
+        border-radius: 8px;
         margin-bottom: 20px;
+        font-size: 0.9rem;
+        text-align: center;
     }
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 600;
-        color: #444;
-    }
-    .form-group input {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #bdc3c7;
-        border-radius: 4px;
-    }
-    .form-group input:focus {
-        outline: none;
-        border-color: #3498db;
-    }
-    .form-text {
-        display: block;
-        margin-top: 5px;
-        font-size: 12px;
-        color: #666;
-    }
+
     .success-message {
         background-color: #e8f5e9;
         color: #2e7d32;
-        padding: 12px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        text-align: center;
         border: 1px solid #c8e6c9;
     }
+
     .error-message {
-        background-color: #ffe6e6;
+        background-color: #ffebee;
         color: #d32f2f;
-        padding: 12px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        text-align: center;
-        border: 1px solid #ffcccc;
+        border: 1px solid #ffcdd2;
     }
-    .btn-group {
+
+    /* Form Card */
+    .form-card {
+        background-color: var(--color-bg-content);
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* Form Group */
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--color-text);
+        margin-bottom: 8px;
+    }
+
+    .form-input,
+    .form-select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+        font-size: 0.95rem;
+        background-color: var(--color-bg, white);
+        color: var(--color-text);
+        box-sizing: border-box;
+    }
+
+    .form-select {
+        cursor: pointer;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+        outline: none;
+        border-color: var(--color-primary, #4CAF50);
+    }
+
+    .form-text {
+        display: block;
+        margin-top: 6px;
+        font-size: 0.8rem;
+        color: var(--color-text-sub);
+    }
+
+    /* Button Section */
+    .button-section {
         display: flex;
         gap: 10px;
         margin-top: 30px;
         padding-top: 20px;
-        border-top: 1px solid #ecf0f1;
+        border-top: 1px solid var(--color-border);
     }
-    .btn {
+
+    .action-btn {
         flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .btn-cancel {
+        background-color: #757575;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background-color: #616161;
+    }
+
+    .btn-save {
+        background-color: var(--color-primary, #4CAF50);
+        color: white;
+    }
+
+    .btn-save:hover {
+        background-color: #45a049;
     }
 </style>
-
-<div class="edit-container">
-    <h2>정보 수정</h2>
-
-    <c:if test="${not empty success}">
-        <div class="success-message">${success}</div>
-    </c:if>
-
-    <c:if test="${not empty error}">
-        <div class="error-message">${error}</div>
-    </c:if>
-
-    <div class="form-section">
-        <form action="${pageContext.request.contextPath}/users/edit" method="post">
-            <div class="form-group">
-                <label for="username">사용자 이름</label>
-                <input type="text" id="username" name="username" value="${data.username}" maxlength="50">
-                <small class="form-text">1자 이상 50자 이하로 입력해주세요</small>
-            </div>
-
-            <div class="form-group">
-                <label for="password">비밀번호 (변경 시에만 입력)</label>
-                <input type="password" id="password" name="password" minlength="8" maxlength="20">
-                <small class="form-text">변경하지 않으려면 비워두세요 (8자 이상 20자 이하)</small>
-            </div>
-
-            <div class="btn-group">
-                <a href="${pageContext.request.contextPath}/users/mypage" class="btn btn-secondary">취소</a>
-                <button type="submit" class="btn btn-primary">저장</button>
-            </div>
-        </form>
-    </div>
-</div>

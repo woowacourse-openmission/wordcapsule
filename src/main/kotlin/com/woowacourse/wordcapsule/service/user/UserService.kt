@@ -55,7 +55,7 @@ class UserService(
     override fun updateUser(currentUserId: Long, request: UserUpdateRequest): UserResponse {
         val user = findUserByIdOrThrow(currentUserId)
 
-        user.updateProfile(request.password, request.username)
+        user.updateProfile(request.password, request.username, request.level)
         return UserResponse.from(user)
     }
 

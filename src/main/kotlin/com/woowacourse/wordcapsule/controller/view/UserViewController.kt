@@ -175,6 +175,7 @@ class UserViewController(
     fun edit(
         @RequestParam(required = false) username: String?,
         @RequestParam(required = false) password: String?,
+        @RequestParam(required = false) level: com.woowacourse.wordcapsule.domain.quiz.Level?,
         session: HttpSession
     ): String {
         val loginId = session.getAttribute("loginId") as? String
@@ -182,7 +183,7 @@ class UserViewController(
 
         return try {
             val user = userService.getUserByLoginId(loginId)
-            val request = UserUpdateRequest(password, username)
+            val request = UserUpdateRequest(password, username, level)
             userService.updateUser(user.id, request)
 
             "redirect:/users/mypage"
