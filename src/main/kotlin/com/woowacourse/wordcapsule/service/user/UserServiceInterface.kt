@@ -39,6 +39,15 @@ interface UserServiceInterface {
     fun getUserById(userId: Long): UserResponse
 
     /**
+     * 로그인 ID로 사용자 정보 조회
+     *
+     * @param loginId 로그인 ID
+     * @return 사용자 정보
+     * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
+     */
+    fun getUserByLoginId(loginId: String): UserResponse
+
+    /**
      * 사용자 정보 수정
      *
      * @param currentUserId 현재 로그인한 사용자 ID
@@ -76,5 +85,16 @@ interface UserServiceInterface {
      * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
      */
     fun findPasswordByLoginId(loginId: String): String
+
+    /**
+     * 로그인 검증
+     *
+     * @param loginId 로그인 ID
+     * @param password 비밀번호
+     * @return 로그인 성공 시 사용자 정보
+     * @throws jakarta.persistence.EntityNotFoundException 사용자를 찾을 수 없는 경우
+     * @throws IllegalArgumentException 비밀번호가 일치하지 않는 경우
+     */
+    fun validateLogin(loginId: String, password: String): UserResponse
 
 }

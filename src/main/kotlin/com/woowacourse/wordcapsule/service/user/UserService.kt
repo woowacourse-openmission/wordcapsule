@@ -46,6 +46,11 @@ class UserService(
         return UserResponse.from(user)
     }
 
+    override fun getUserByLoginId(loginId: String): UserResponse {
+        val user = findUserByLoginIdOrThrow(loginId)
+        return UserResponse.from(user)
+    }
+
     @Transactional
     override fun updateUser(currentUserId: Long, request: UserUpdateRequest): UserResponse {
         val user = findUserByIdOrThrow(currentUserId)
@@ -74,6 +79,16 @@ class UserService(
     override fun findPasswordByLoginId(loginId: String): String {
         val user = findUserByLoginIdOrThrow(loginId)
         return user.password
+    }
+
+    override fun validateLogin(loginId: String, password: String): UserResponse {
+        val user = findUserByLoginIdOrThrow(loginId)
+
+        if (user.password != password) {
+            throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
+        }
+
+        return UserResponse.from(user)
     }
 
     private fun findUserByIdOrThrow(userId: Long) =
