@@ -12,7 +12,7 @@
     <%-- 공통 스타일시트 등 링크 --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
-<body>
+<body data-login-id="${sessionScope.loginId}">
 
 <div class="app-container">
     <c:if test="${layout eq 'FULL' or layout eq 'NO_FOOTER'}">

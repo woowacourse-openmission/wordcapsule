@@ -1,9 +1,14 @@
 import {apiUtil} from "../util/apiUtil.js";
+import {getUserId} from "../util/loginUtil.js";
+
+let currentUserId;
 
 // --- 1. API 함수 ---
 
-// TODO : 유저 ID 불러오기
-const fetchQuizGame = async (userId = 1) => {
+const fetchQuizGame = async () => {
+    const userId = await getUserId();
+    currentUserId = userId;
+
     try {
         // configId를 URL 파라미터에서 가져오도록 수정
         // 예: /quiz/game/1
@@ -157,8 +162,6 @@ let currentQuestionIndex = 0;   // 현재 질문 인덱스
 let totalQuestions = 0;         // 총 질문 수
 let userAnswersMap = new Map(); // 사용자의 답변 기록 (quizId -> { optionId, isCorrect, questionNumber })
 let startedAt = "";             // 퀴즈 시작 시간
-// TODO: 유저 아이디
-let currentUserId = 1;          // [추가] 현재 사용자 ID 저장
 
 
 // --- 7. 게임 시작 (DOM 로드 후) ---
@@ -304,7 +307,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 서버에 보낼 데이터 구성 (request.json 형식)
         const requestPayload = {
-            // [수정] 하드코딩된 '1' 대신 initGame에서 설정한 currentUserId 사용
             userId: currentUserId,
             configId: quizData.configId,
             score: score,

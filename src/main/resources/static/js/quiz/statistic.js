@@ -1,6 +1,7 @@
 // quiz/statistic.js
 
 import {apiUtil} from '../util/apiUtil.js';
+import {getUserId} from "../util/loginUtil.js";
 
 /**
  * 시간을 분:초 형식으로 변환하는 헬퍼 함수
@@ -112,7 +113,9 @@ const updateStatistics = (statisticData) => {
 /**
  * API를 호출하고 데이터를 화면에 업데이트하는 주 함수
  */
-const fetchStatistic = async (userId) => {
+const fetchStatistic = async () => {
+    const userId = await getUserId();
+
     const statElements = ['statStreakDays', 'statCorrectRate', 'statAvgTime'];
     // (요청 1) peakContainer 참조는 오류 메시지 표시용으로 유지
     const peakContainer = document.getElementById('activePlayTimePeak');
@@ -148,4 +151,4 @@ const fetchStatistic = async (userId) => {
 };
 
 // 사용자 ID 1에 대해 통계 데이터 로드 시작
-fetchStatistic(1);
+fetchStatistic();

@@ -4,6 +4,7 @@ import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizType
 import com.woowacourse.wordcapsule.service.quiz.QuizConfigServiceInterface
 import com.woowacourse.wordcapsule.service.quiz.QuizRecordServiceInterface
+import com.woowacourse.wordcapsule.service.user.UserServiceInterface
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Controller
@@ -20,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam
 @RequestMapping("/quiz")
 class QuizViewController(
     private val quizConfigService: QuizConfigServiceInterface,
-    private val quizRecordService: QuizRecordServiceInterface
+    private val quizRecordService: QuizRecordServiceInterface,
+    private val userService: UserServiceInterface
 ) {
 
     /**
@@ -59,7 +61,7 @@ class QuizViewController(
 
     @GetMapping("/records")
     fun showUserQuizRecordList(
-        @RequestParam(required = false) userId: Long,
+        @RequestParam(required = false) loginId: String,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
         @RequestParam(defaultValue = "startedAt,desc") sort: String,
@@ -69,7 +71,9 @@ class QuizViewController(
         val sortProperty = sort.split(",")[0]
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
 
-        val response = quizRecordService.getUserQuizRecordList(userId, pageable)
+        val user = userService.getUserByLoginId(loginId)
+
+        val response = quizRecordService.getUserQuizRecordList(user.id, pageable)
 
         // 보여줄 페이지 경로 추가
         model.addAttribute("path", "content/quiz/record/list.jsp")

@@ -1,12 +1,15 @@
 import {apiUtil} from "../util/apiUtil.js";
 import {formatDate} from "../util/dateUtil.js";
+import {getUserId} from "../util/loginUtil.js";
 
 /**
  * 퀴즈 기록 목록을 API에서 가져옵니다.
  * @param {number} userId - 조회할 사용자 ID
  * @returns {Promise<Array<object>>} 퀴즈 기록 목록 (content 배열)
  */
-const fetchRecordList = async (userId = 1) => {
+const fetchRecordList = async () => {
+    const userId = await getUserId();
+
     try {
         const response = await apiUtil.get(`/quiz/record?userId=${userId}`);
 
@@ -68,8 +71,7 @@ const renderRecordList = (list) => {
  * DOM이 로드된 후 실행됩니다.
  */
 const initPage = async () => {
-    const userId = 1;
-    const recordList = await fetchRecordList(userId);
+    const recordList = await fetchRecordList();
     renderRecordList(recordList);
 };
 
