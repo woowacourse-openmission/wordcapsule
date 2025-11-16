@@ -219,22 +219,19 @@ class UserViewController(
     @GetMapping("/list")
     fun userList(
         session: HttpSession,
-        model: Model,
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int
+        model: Model
     ): String {
         val loginId = session.getAttribute("loginId") as? String
             ?: return "redirect:/users/login"
 
         return try {
             val currentUser = userService.getUserByLoginId(loginId)
-            val pageable = PageRequest.of(page, size)
+            val pageable = PageRequest.of(0, 1000)  // 모든 회원 조회
             val users = userService.getUsers(currentUser.id, pageable)
 
             model.addAttribute("path", "content/user/list.jsp")
             model.addAttribute("data", mapOf(
                 "users" to users,
-                "currentPage" to page,
                 "currentUserId" to currentUser.id
             ))
             "index"
@@ -252,8 +249,7 @@ class UserViewController(
     @PostMapping("/delete/{userId}")
     fun deleteUserByAdmin(
         @PathVariable userId: Long,
-        session: HttpSession,
-        @RequestParam(defaultValue = "0") page: Int
+        session: HttpSession
     ): String {
         val loginId = session.getAttribute("loginId") as? String
             ?: return "redirect:/users/login"
@@ -261,11 +257,11 @@ class UserViewController(
         return try {
             val currentUser = userService.getUserByLoginId(loginId)
             userService.deleteUser(currentUser.id, userId)
-            "redirect:/users/list?page=$page"
+            "redirect:/users/list"
         } catch (e: IllegalAccessException) {
-            "redirect:/users/list?page=$page&error=permission"
+            "redirect:/users/list?error=permission"
         } catch (e: EntityNotFoundException) {
-            "redirect:/users/list?page=$page&error=notfound"
+            "redirect:/users/list?error=notfound"
         }
     }
 

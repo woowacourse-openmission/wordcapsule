@@ -3,86 +3,187 @@
 <jsp:useBean id="path" class="java.lang.String" scope="request"/>
 <jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
-<style>
-    .list-container {
-        max-width: 1000px;
-        margin: 40px auto;
-        padding: 20px;
-    }
-    .list-container h2 {
-        color: #2c3e50;
-        margin-bottom: 30px;
-    }
-    .user-table {
-        width: 100%;
-        background: white;
-        border-collapse: collapse;
-    }
-    .user-table th {
-        background-color: #3498db;
-        color: white;
-        padding: 15px;
-        text-align: left;
-    }
-    .user-table td {
-        padding: 12px 15px;
-        border-bottom: 1px solid #ecf0f1;
-    }
-    .btn-delete {
-        background-color: #e74c3c;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    .btn-delete:disabled {
-        background-color: #bdc3c7;
-        cursor: not-allowed;
-    }
-</style>
-
-<div class="list-container">
-    <h2>회원 목록 관리</h2>
-
-    <table class="user-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>로그인 ID</th>
-                <th>사용자 이름</th>
-                <th>역할</th>
-                <th>작업</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach items="${data.users.content}" var="user">
-                <tr>
-                    <td>${user.id}</td>
-                    <td>${user.loginId}</td>
-                    <td>${user.username}</td>
-                    <td>${user.role}</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${user.id == data.currentUserId}">
-                                <button class="btn-delete" disabled>본인</button>
-                            </c:when>
-                            <c:otherwise>
-                                <form action="${pageContext.request.contextPath}/users/delete/${user.id}?page=${data.currentPage}"
-                                      method="post"
-                                      style="display: inline; margin: 0;"
-                                      onsubmit="return confirm('${user.username} 회원을 삭제하시겠습니까?');">
-                                    <button type="submit" class="btn-delete">삭제</button>
-                                </form>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-
-    <div style="margin-top: 20px;">
-        <a href="${pageContext.request.contextPath}/users/mypage" class="btn btn-secondary">마이페이지로</a>
-    </div>
+<div class="list-header">
+    <h2 class="page-title">회원 목록 관리</h2>
+    <p class="total-count">총 ${data.users.totalElements}명</p>
 </div>
+
+<div class="user-list-section">
+    <c:forEach items="${data.users.content}" var="user">
+        <div class="user-item">
+            <div class="user-info">
+                <div class="user-main-info">
+                    <h3 class="user-item-name">${user.username}</h3>
+                    <span class="user-role-badge ${user.role == 'ADMIN' ? 'admin' : 'user'}">${user.role}</span>
+                </div>
+                <div class="user-details-rows">
+                    <div class="detail-row">
+                        <span class="detail-label">로그인 ID</span>
+                        <span class="detail-value">${user.loginId}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">레벨</span>
+                        <span class="detail-value">${user.level}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="user-actions">
+                <c:choose>
+                    <c:when test="${user.id == data.currentUserId}">
+                        <span class="self-badge">본인</span>
+                    </c:when>
+                    <c:otherwise>
+                        <form action="${pageContext.request.contextPath}/users/delete/${user.id}?page=${data.currentPage}"
+                              method="post"
+                              style="margin: 0;"
+                              onsubmit="return confirm('${user.username} 회원을 삭제하시겠습니까?');">
+                            <button type="submit" class="btn-delete-user">삭제</button>
+                        </form>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </div>
+    </c:forEach>
+</div>
+
+
+<style>
+    /* Page Header */
+    .list-header {
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .total-count {
+        font-size: 0.9rem;
+        color: var(--color-text-sub);
+        margin: 0;
+    }
+
+    /* User List */
+    .user-list-section {
+        background-color: var(--color-bg-content);
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+        overflow: hidden;
+    }
+
+    .user-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+        border-bottom: 1px solid var(--color-border);
+        transition: background-color 0.2s ease;
+    }
+
+    .user-item:last-child {
+        border-bottom: none;
+    }
+
+    .user-item:hover {
+        background-color: var(--color-bg-hover, rgba(0, 0, 0, 0.02));
+    }
+
+    .user-info {
+        flex: 1;
+    }
+
+    .user-main-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .user-item-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--color-text);
+    }
+
+    .user-role-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .user-role-badge.admin {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .user-role-badge.user {
+        background-color: #f5f5f5;
+        color: #757575;
+    }
+
+    .user-details-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.9rem;
+    }
+
+    .detail-label {
+        min-width: 80px;
+        color: var(--color-text-sub);
+        font-weight: 500;
+    }
+
+    .detail-value {
+        color: var(--color-text);
+        font-weight: 600;
+    }
+
+    /* User Actions */
+    .user-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .self-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        background-color: #f5f5f5;
+        color: #757575;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .btn-delete-user {
+        padding: 8px 16px;
+        background-color: transparent;
+        color: #f44336;
+        border: 1px solid #f44336;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-delete-user:hover {
+        background-color: #f44336;
+        color: white;
+    }
+
+</style>
