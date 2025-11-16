@@ -2,6 +2,7 @@ package com.woowacourse.wordcapsule.controller.user
 
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
 import com.woowacourse.wordcapsule.service.user.UserServiceInterface
+import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpSession
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -54,15 +55,20 @@ class UserViewController(
         session: HttpSession,
         model: Model
     ): String {
-        val storedPassword = userService.findPasswordByLoginId(loginId)
+        return try {
+            val storedPassword = userService.findPasswordByLoginId(loginId)
 
-        if (storedPassword != password) {
+            if (storedPassword != password) {
+                model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.")
+                return "content/user/login"
+            }
+
+            session.setAttribute("loginId", loginId)
+            "redirect:/"
+        } catch (e: EntityNotFoundException) {
             model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.")
-            return "content/user/login"
+            "content/user/login"
         }
-
-        session.setAttribute("loginId", loginId)
-        return "redirect:/"
     }
 
     /**
@@ -94,7 +100,7 @@ class UserViewController(
             val foundLoginId = userService.findLoginIdByUsername(username)
             model.addAttribute("foundLoginId", foundLoginId)
             "content/user/find-id"
-        } catch (e: Exception) {
+        } catch (e: EntityNotFoundException) {
             model.addAttribute("error", "해당 사용자 이름을 찾을 수 없습니다.")
             "content/user/find-id"
         }
@@ -120,7 +126,7 @@ class UserViewController(
             val password = userService.findPasswordByLoginId(loginId)
             model.addAttribute("password", password)
             "content/user/find-password"
-        } catch (e: Exception) {
+        } catch (e: EntityNotFoundException) {
             model.addAttribute("error", "해당 아이디를 찾을 수 없습니다.")
             "content/user/find-password"
         }
