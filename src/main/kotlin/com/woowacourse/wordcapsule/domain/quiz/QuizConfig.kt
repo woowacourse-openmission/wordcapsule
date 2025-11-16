@@ -1,5 +1,6 @@
 package com.woowacourse.wordcapsule.domain.quiz
 
+import com.woowacourse.wordcapsule.domain.user.User
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -18,6 +19,10 @@ class QuizConfig(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "config_id")
     val id: Long = 0L,
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    val user: User,
 
     @Column(name = "quiz_name", nullable = false, length = 50)
     var quizName: String,
