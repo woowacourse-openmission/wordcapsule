@@ -3,90 +3,170 @@
 <jsp:useBean id="path" class="java.lang.String" scope="request"/>
 <jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
+<div class="mypage-header">
+    <h2 class="page-title">마이페이지</h2>
+</div>
+
+<h3 class="section-title">👤 내 정보</h3>
+<div class="user-info-card">
+    <div class="info-row">
+        <span class="info-label">이름</span>
+        <span class="info-value">${data.username}</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">로그인 ID</span>
+        <span class="info-value">${data.loginId}</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">레벨</span>
+        <span class="info-value level-text">${data.level}</span>
+    </div>
+</div>
+
+<h3 class="section-title">⚙️ 계정 관리</h3>
+<div class="menu-section">
+    <a href="${pageContext.request.contextPath}/users/edit" class="menu-item">
+        <span class="menu-text">정보 수정</span>
+        <span class="menu-arrow">›</span>
+    </a>
+    <a href="${pageContext.request.contextPath}/users/logout" class="menu-item">
+        <span class="menu-text">로그아웃</span>
+        <span class="menu-arrow">›</span>
+    </a>
+</div>
+
+<c:if test="${data.role == 'ADMIN'}">
+    <h3 class="section-title">👥 관리자</h3>
+    <div class="menu-section">
+        <a href="${pageContext.request.contextPath}/users/list" class="menu-item">
+            <span class="menu-text">회원 목록 관리</span>
+            <span class="menu-arrow">›</span>
+        </a>
+    </div>
+</c:if>
+
+<div class="danger-zone">
+    <form action="${pageContext.request.contextPath}/users/delete" method="post"
+          onsubmit="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');">
+        <button type="submit" class="delete-account-btn">회원 탈퇴</button>
+    </form>
+</div>
+
 <style>
-    .mypage-container {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 20px;
-        padding-bottom: 80px;
+    /* Page Header */
+    .mypage-header {
+        margin-bottom: 24px;
     }
-    .mypage-container h2 {
-        color: #2c3e50;
-        margin-bottom: 30px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #3498db;
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
     }
-    .info-section {
-        background: white;
-        padding: 20px;
-        border-radius: 4px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+
+    /* Section Title */
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0 0 12px 0;
+        color: var(--color-text);
+    }
+
+    /* User Info Card */
+    .user-info-card {
+        background-color: var(--color-bg-content);
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
         margin-bottom: 20px;
-        position: relative;
-        z-index: 1;
     }
+
     .info-row {
         display: flex;
-        padding: 15px 0;
-        border-bottom: 1px solid #ecf0f1;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-bottom: 1px solid var(--color-border);
     }
+
     .info-row:last-child {
         border-bottom: none;
     }
+
     .info-label {
-        flex: 0 0 150px;
-        font-weight: 600;
-        color: #555;
+        font-size: 0.9rem;
+        color: var(--color-text-sub);
+        font-weight: 500;
     }
+
     .info-value {
-        flex: 1;
-        color: #333;
+        font-size: 0.95rem;
+        color: var(--color-text);
+        font-weight: 600;
     }
-    .btn-group {
+
+    .level-text {
+        color: var(--color-primary, #4CAF50);
+        font-weight: 700;
+    }
+
+    /* Menu Section */
+    .menu-section {
+        background-color: var(--color-bg-content);
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+        margin-bottom: 20px;
+    }
+
+    .menu-item {
         display: flex;
-        gap: 10px;
-        margin-top: 20px;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        text-decoration: none;
+        color: var(--color-text);
+        border-bottom: 1px solid var(--color-border);
+        transition: background-color 0.2s ease;
     }
-    .action-section {
+
+    .menu-item:last-child {
+        border-bottom: none;
+    }
+
+    .menu-item:hover {
+        background-color: var(--color-bg-hover, rgba(0, 0, 0, 0.02));
+    }
+
+    .menu-text {
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .menu-arrow {
+        font-size: 1.5rem;
+        color: var(--color-text-sub);
+    }
+
+    .danger-zone {
         margin-top: 30px;
         padding-top: 20px;
-        border-top: 1px solid #ecf0f1;
+        border-top: 1px solid var(--color-border);
+    }
+
+    .delete-account-btn {
+        width: 100%;
+        padding: 14px;
+        background-color: transparent;
+        color: #f44336;
+        border: 1px solid #f44336;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .delete-account-btn:hover {
+        background-color: #f44336;
+        color: white;
     }
 </style>
-
-<div class="mypage-container">
-    <h2>마이페이지</h2>
-
-    <div class="info-section">
-        <div class="info-row">
-            <div class="info-label">로그인 ID</div>
-            <div class="info-value">${data.loginId}</div>
-        </div>
-        <div class="info-row">
-            <div class="info-label">사용자 이름</div>
-            <div class="info-value">${data.username}</div>
-        </div>
-        <div class="info-row">
-            <div class="info-label">레벨</div>
-            <div class="info-value">${data.level}</div>
-        </div>
-    </div>
-
-    <div class="btn-group">
-        <a href="${pageContext.request.contextPath}/users/edit" class="btn btn-primary">정보 수정</a>
-        <c:if test="${data.role == 'ADMIN'}">
-            <a href="${pageContext.request.contextPath}/users/list" class="btn btn-primary">회원 목록 관리</a>
-        </c:if>
-    </div>
-
-    <div class="action-section">
-        <div class="btn-group">
-            <a href="${pageContext.request.contextPath}/users/logout" class="btn btn-secondary">로그아웃</a>
-            <form action="${pageContext.request.contextPath}/users/delete" method="post"
-                  onsubmit="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');"
-                  style="flex: 1; margin: 0;">
-                <button type="submit" class="btn btn-secondary">회원 탈퇴</button>
-            </form>
-        </div>
-    </div>
-</div>
