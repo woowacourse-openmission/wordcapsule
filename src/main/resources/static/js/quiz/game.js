@@ -139,8 +139,7 @@ const showLevelUpModal = (contextPath, userId) => {
     levelUpButton.className = 'btn-primary'; // 전역 스타일 재사용
     levelUpButton.textContent = '레벨 올리기';
     levelUpButton.onclick = () => {
-        // TODO : 마이페이지 수정
-        window.location.href = `${contextPath}/`;
+        window.location.href = `${contextPath}/users/edit`;
     };
 
     // 5. DOM에 조립
