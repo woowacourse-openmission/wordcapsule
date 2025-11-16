@@ -79,7 +79,7 @@
         <c:if test="${not empty error}">
             <div class="error-message">${error}</div>
         </c:if>
-        <form action="${pageContext.request.contextPath}/view/users/login" method="post">
+        <form action="${pageContext.request.contextPath}/users/login" method="post">
             <div class="form-group">
                 <label for="loginId">로그인 ID</label>
                 <input type="text" id="loginId" name="loginId" required>
@@ -91,9 +91,9 @@
             <button type="submit" class="btn btn-primary btn-submit">로그인</button>
         </form>
         <div class="link-group">
-            <a href="${pageContext.request.contextPath}/view/users/find-id">아이디 찾기</a>
-            <a href="${pageContext.request.contextPath}/view/users/find-password">비밀번호 찾기</a>
-            <a href="${pageContext.request.contextPath}/view/users/new">회원가입</a>
+            <a href="${pageContext.request.contextPath}/users/find-id">아이디 찾기</a>
+            <a href="${pageContext.request.contextPath}/users/find-password">비밀번호 찾기</a>
+            <a href="${pageContext.request.contextPath}/users/new">회원가입</a>
         </div>
     </div>
 </body>

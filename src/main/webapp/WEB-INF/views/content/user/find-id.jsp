@@ -97,7 +97,7 @@
             <div class="error-message">${error}</div>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/view/users/find-id" method="post">
+        <form action="${pageContext.request.contextPath}/users/find-id" method="post">
             <div class="form-group">
                 <label for="username">사용자 이름</label>
                 <input type="text" id="username" name="username" required>
@@ -106,8 +106,8 @@
         </form>
 
         <div class="link-group">
-            <a href="${pageContext.request.contextPath}/view/users/login">로그인</a>
-            <a href="${pageContext.request.contextPath}/view/users/find-password">비밀번호 찾기</a>
+            <a href="${pageContext.request.contextPath}/users/login">로그인</a>
+            <a href="${pageContext.request.contextPath}/users/find-password">비밀번호 찾기</a>
         </div>
     </div>
 </body>

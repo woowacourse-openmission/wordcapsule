@@ -53,7 +53,7 @@
 <body>
     <div class="form-container">
         <h1>회원가입</h1>
-        <form action="${pageContext.request.contextPath}/view/users/new" method="post">
+        <form action="${pageContext.request.contextPath}/users/new" method="post">
             <div class="form-group">
                 <label for="loginId">로그인 ID</label>
                 <input type="text" id="loginId" name="loginId" required minlength="5" maxlength="20">

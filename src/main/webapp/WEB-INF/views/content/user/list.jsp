@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="path" class="java.lang.String" scope="request"/>
+<jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
 <style>
     .list-container {
@@ -54,7 +56,7 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach items="${users.content}" var="user">
+            <c:forEach items="${data.users.content}" var="user">
                 <tr>
                     <td>${user.id}</td>
                     <td>${user.loginId}</td>
@@ -62,11 +64,11 @@
                     <td>${user.role}</td>
                     <td>
                         <c:choose>
-                            <c:when test="${user.id == currentUserId}">
+                            <c:when test="${user.id == data.currentUserId}">
                                 <button class="btn-delete" disabled>본인</button>
                             </c:when>
                             <c:otherwise>
-                                <form action="${pageContext.request.contextPath}/view/users/delete/${user.id}?page=${currentPage}"
+                                <form action="${pageContext.request.contextPath}/users/delete/${user.id}?page=${data.currentPage}"
                                       method="post"
                                       style="display: inline; margin: 0;"
                                       onsubmit="return confirm('${user.username} 회원을 삭제하시겠습니까?');">
@@ -81,6 +83,6 @@
     </table>
 
     <div style="margin-top: 20px;">
-        <a href="${pageContext.request.contextPath}/view/users/mypage" class="btn btn-secondary">마이페이지로</a>
+        <a href="${pageContext.request.contextPath}/users/mypage" class="btn btn-secondary">마이페이지로</a>
     </div>
 </div>

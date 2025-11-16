@@ -37,7 +37,7 @@ class UserViewController(
     @PostMapping("/new")
     fun createUser(request: UserCreateRequest): String {
         userService.createUser(request)
-        return "redirect:/view/users/login"
+        return "redirect:/users/login"
     }
 
     /**
@@ -77,7 +77,7 @@ class UserViewController(
     @GetMapping("/logout")
     fun logout(session: HttpSession): String {
         session.invalidate()
-        return "redirect:/view/users/login"
+        return "redirect:/users/login"
     }
 
     /**
@@ -138,14 +138,15 @@ class UserViewController(
     @GetMapping("/mypage")
     fun mypage(session: HttpSession, model: Model): String {
         val loginId = session.getAttribute("loginId") as? String
-            ?: return "redirect:/view/users/login"
+            ?: return "redirect:/users/login"
 
         return try {
             val user = userService.getUserByLoginId(loginId)
-            model.addAttribute("user", user)
-            "content/user/mypage"
+            model.addAttribute("path", "content/user/mypage.jsp")
+            model.addAttribute("data", user)
+            "index"
         } catch (e: EntityNotFoundException) {
-            "redirect:/view/users/login"
+            "redirect:/users/login"
         }
     }
 
@@ -155,14 +156,15 @@ class UserViewController(
     @GetMapping("/edit")
     fun editForm(session: HttpSession, model: Model): String {
         val loginId = session.getAttribute("loginId") as? String
-            ?: return "redirect:/view/users/login"
+            ?: return "redirect:/users/login"
 
         return try {
             val user = userService.getUserByLoginId(loginId)
-            model.addAttribute("user", user)
-            "content/user/edit"
+            model.addAttribute("path", "content/user/edit.jsp")
+            model.addAttribute("data", user)
+            "index"
         } catch (e: EntityNotFoundException) {
-            "redirect:/view/users/login"
+            "redirect:/users/login"
         }
     }
 
@@ -176,16 +178,16 @@ class UserViewController(
         session: HttpSession
     ): String {
         val loginId = session.getAttribute("loginId") as? String
-            ?: return "redirect:/view/users/login"
+            ?: return "redirect:/users/login"
 
         return try {
             val user = userService.getUserByLoginId(loginId)
             val request = UserUpdateRequest(password, username)
             userService.updateUser(user.id, request)
 
-            "redirect:/view/users/mypage"
+            "redirect:/users/mypage"
         } catch (e: EntityNotFoundException) {
-            "redirect:/view/users/login"
+            "redirect:/users/login"
         }
     }
 
@@ -195,15 +197,15 @@ class UserViewController(
     @PostMapping("/delete")
     fun deleteAccount(session: HttpSession): String {
         val loginId = session.getAttribute("loginId") as? String
-            ?: return "redirect:/view/users/login"
+            ?: return "redirect:/users/login"
 
         return try {
             val user = userService.getUserByLoginId(loginId)
             userService.deleteUser(user.id, user.id)
             session.invalidate()
-            "redirect:/view/users/login"
+            "redirect:/users/login"
         } catch (e: EntityNotFoundException) {
-            "redirect:/view/users/login"
+            "redirect:/users/login"
         }
     }
 
@@ -218,22 +220,25 @@ class UserViewController(
         @RequestParam(defaultValue = "10") size: Int
     ): String {
         val loginId = session.getAttribute("loginId") as? String
-            ?: return "redirect:/view/users/login"
+            ?: return "redirect:/users/login"
 
         return try {
             val currentUser = userService.getUserByLoginId(loginId)
             val pageable = PageRequest.of(page, size)
             val users = userService.getUsers(currentUser.id, pageable)
 
-            model.addAttribute("users", users)
-            model.addAttribute("currentPage", page)
-            model.addAttribute("currentUserId", currentUser.id)
-            "content/user/list"
+            model.addAttribute("path", "content/user/list.jsp")
+            model.addAttribute("data", mapOf(
+                "users" to users,
+                "currentPage" to page,
+                "currentUserId" to currentUser.id
+            ))
+            "index"
         } catch (e: IllegalAccessException) {
             model.addAttribute("error", "관리자만 접근할 수 있습니다.")
-            "redirect:/view/users/mypage"
+            "redirect:/users/mypage"
         } catch (e: EntityNotFoundException) {
-            "redirect:/view/users/login"
+            "redirect:/users/login"
         }
     }
 
@@ -247,16 +252,16 @@ class UserViewController(
         @RequestParam(defaultValue = "0") page: Int
     ): String {
         val loginId = session.getAttribute("loginId") as? String
-            ?: return "redirect:/view/users/login"
+            ?: return "redirect:/users/login"
 
         return try {
             val currentUser = userService.getUserByLoginId(loginId)
             userService.deleteUser(currentUser.id, userId)
-            "redirect:/view/users/list?page=$page"
+            "redirect:/users/list?page=$page"
         } catch (e: IllegalAccessException) {
-            "redirect:/view/users/list?page=$page&error=permission"
+            "redirect:/users/list?page=$page&error=permission"
         } catch (e: EntityNotFoundException) {
-            "redirect:/view/users/list?page=$page&error=notfound"
+            "redirect:/users/list?page=$page&error=notfound"
         }
     }
 

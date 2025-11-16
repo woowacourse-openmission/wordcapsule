@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="path" class="java.lang.String" scope="request"/>
+<jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
 <style>
     .mypage-container {
@@ -55,26 +57,26 @@
     <div class="info-section">
         <div class="info-row">
             <div class="info-label">로그인 ID</div>
-            <div class="info-value">${user.loginId}</div>
+            <div class="info-value">${data.loginId}</div>
         </div>
         <div class="info-row">
             <div class="info-label">사용자 이름</div>
-            <div class="info-value">${user.username}</div>
+            <div class="info-value">${data.username}</div>
         </div>
     </div>
 
     <div class="btn-group">
-        <a href="${pageContext.request.contextPath}/view/users/edit" class="btn btn-primary">정보 수정</a>
+        <a href="${pageContext.request.contextPath}/users/edit" class="btn btn-primary">정보 수정</a>
         <a href="${pageContext.request.contextPath}/" class="btn btn-secondary">홈으로</a>
-        <c:if test="${user.role == 'ADMIN'}">
-            <a href="${pageContext.request.contextPath}/view/users/list" class="btn btn-primary">회원 목록 관리</a>
+        <c:if test="${data.role == 'ADMIN'}">
+            <a href="${pageContext.request.contextPath}/users/list" class="btn btn-primary">회원 목록 관리</a>
         </c:if>
     </div>
 
     <div class="action-section">
         <div class="btn-group">
-            <a href="${pageContext.request.contextPath}/view/users/logout" class="btn btn-secondary">로그아웃</a>
-            <form action="${pageContext.request.contextPath}/view/users/delete" method="post"
+            <a href="${pageContext.request.contextPath}/users/logout" class="btn btn-secondary">로그아웃</a>
+            <form action="${pageContext.request.contextPath}/users/delete" method="post"
                   onsubmit="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');"
                   style="flex: 1; margin: 0;">
                 <button type="submit" class="btn btn-secondary">회원 탈퇴</button>

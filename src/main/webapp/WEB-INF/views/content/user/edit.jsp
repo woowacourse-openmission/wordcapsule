@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="path" class="java.lang.String" scope="request"/>
+<jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
 <style>
     .edit-container {
@@ -86,10 +88,10 @@
     </c:if>
 
     <div class="form-section">
-        <form action="${pageContext.request.contextPath}/view/users/edit" method="post">
+        <form action="${pageContext.request.contextPath}/users/edit" method="post">
             <div class="form-group">
                 <label for="username">사용자 이름</label>
-                <input type="text" id="username" name="username" value="${user.username}" maxlength="50">
+                <input type="text" id="username" name="username" value="${data.username}" maxlength="50">
                 <small class="form-text">1자 이상 50자 이하로 입력해주세요</small>
             </div>
 
@@ -100,7 +102,7 @@
             </div>
 
             <div class="btn-group">
-                <a href="${pageContext.request.contextPath}/view/users/mypage" class="btn btn-secondary">취소</a>
+                <a href="${pageContext.request.contextPath}/users/mypage" class="btn btn-secondary">취소</a>
                 <button type="submit" class="btn btn-primary">저장</button>
             </div>
         </form>
