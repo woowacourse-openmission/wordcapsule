@@ -8,8 +8,11 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
 data class QuizConfigRequest(
+    @field:NotNull(message = "사용자 ID는 필수입니다")
+    val userId: Long,
+    
     @field:NotBlank(message = "퀴즈명은 필수입니다")
-    @field:Size(max = 50, message = "퀴즈명은 50자 이하여야 합니다")
+    @field:Size(max = 100, message = "퀴즈명은 100자 이하여야 합니다")
     val quizName: String,
 
     val level: Level = Level.BEGINNER,

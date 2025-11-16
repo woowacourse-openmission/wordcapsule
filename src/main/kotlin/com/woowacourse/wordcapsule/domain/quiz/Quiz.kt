@@ -18,7 +18,7 @@ class Quiz(
     @JoinColumn(name = "config_id", nullable = false)
     val config: QuizConfig,
 
-    @Column(name = "content", nullable = false, length = 50)
+    @Column(name = "content", nullable = false, length = 100)
     val content: String,
 
     @Enumerated(EnumType.STRING)

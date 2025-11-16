@@ -1,6 +1,7 @@
 package com.woowacourse.wordcapsule.domain.user
 
 import com.woowacourse.wordcapsule.domain.BaseEntity
+import com.woowacourse.wordcapsule.domain.quiz.Level
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
@@ -26,6 +27,10 @@ class User(
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     var role: UserRole = UserRole.USER,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "level", nullable = false)
+    var level: Level = Level.BEGINNER,
 
 ) : BaseEntity() {
 

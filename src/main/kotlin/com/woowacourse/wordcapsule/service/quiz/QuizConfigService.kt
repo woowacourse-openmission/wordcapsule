@@ -7,6 +7,7 @@ import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigUpdateRequest
 import com.woowacourse.wordcapsule.repository.quiz.QuizConfigRepository
+import com.woowacourse.wordcapsule.repository.user.UserRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,12 +20,16 @@ import jakarta.persistence.EntityNotFoundException
 @Service
 @Transactional(readOnly = true)
 class QuizConfigService(
-    private val quizConfigRepository: QuizConfigRepository
+    private val quizConfigRepository: QuizConfigRepository,
+    private val userRepository: UserRepository
 ) : QuizConfigServiceInterface {
 
     @Transactional
     override fun createQuizConfig(request: QuizConfigRequest): Long {
-        val quizConfig = QuizConfigFactory.createQuizConfig(request)
+        val user = userRepository.findById(request.userId)
+            .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: ${request.userId}") }
+        
+        val quizConfig = QuizConfigFactory.createQuizConfig(request, user)
         val savedConfig = quizConfigRepository.save(quizConfig)
         return savedConfig.id
     }
