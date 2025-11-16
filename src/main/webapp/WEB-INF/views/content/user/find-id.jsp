@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>로그인</title>
+    <title>아이디 찾기</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
         body {
@@ -24,6 +24,15 @@
             text-align: center;
             margin-bottom: 30px;
             color: #2c3e50;
+        }
+        .result-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #c8e6c9;
         }
         .error-message {
             background-color: #ffe6e6;
@@ -67,6 +76,7 @@
         .link-group a {
             color: #3498db;
             text-decoration: none;
+            margin: 0 10px;
         }
         .link-group a:hover {
             text-decoration: underline;
@@ -75,25 +85,29 @@
 </head>
 <body>
     <div class="form-container">
-        <h1>로그인</h1>
+        <h1>아이디 찾기</h1>
+
+        <c:if test="${not empty foundLoginId}">
+            <div class="result-message">
+                회원님의 아이디는 <strong>${foundLoginId}</strong> 입니다.
+            </div>
+        </c:if>
+
         <c:if test="${not empty error}">
             <div class="error-message">${error}</div>
         </c:if>
-        <form action="${pageContext.request.contextPath}/view/users/login" method="post">
+
+        <form action="${pageContext.request.contextPath}/view/users/find-id" method="post">
             <div class="form-group">
-                <label for="loginId">로그인 ID</label>
-                <input type="text" id="loginId" name="loginId" required>
+                <label for="username">사용자 이름</label>
+                <input type="text" id="username" name="username" required>
             </div>
-            <div class="form-group">
-                <label for="password">비밀번호</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-submit">로그인</button>
+            <button type="submit" class="btn btn-primary btn-submit">아이디 찾기</button>
         </form>
+
         <div class="link-group">
-            <a href="${pageContext.request.contextPath}/view/users/find-id">아이디 찾기</a>
+            <a href="${pageContext.request.contextPath}/view/users/login">로그인</a>
             <a href="${pageContext.request.contextPath}/view/users/find-password">비밀번호 찾기</a>
-            <a href="${pageContext.request.contextPath}/view/users/new">회원가입</a>
         </div>
     </div>
 </body>

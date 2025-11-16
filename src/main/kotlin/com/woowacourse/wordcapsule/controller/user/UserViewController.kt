@@ -65,4 +65,56 @@ class UserViewController(
         return "redirect:/"
     }
 
+    /**
+     * 아이디 찾기 페이지
+     */
+    @GetMapping("/find-id")
+    fun findIdForm(): String {
+        return "content/user/find-id"
+    }
+
+    /**
+     * 아이디 찾기 처리
+     */
+    @PostMapping("/find-id")
+    fun findId(
+        @RequestParam username: String,
+        model: Model
+    ): String {
+        return try {
+            val foundLoginId = userService.findLoginIdByUsername(username)
+            model.addAttribute("foundLoginId", foundLoginId)
+            "content/user/find-id"
+        } catch (e: Exception) {
+            model.addAttribute("error", "해당 사용자 이름을 찾을 수 없습니다.")
+            "content/user/find-id"
+        }
+    }
+
+    /**
+     * 비밀번호 찾기 페이지
+     */
+    @GetMapping("/find-password")
+    fun findPasswordForm(): String {
+        return "content/user/find-password"
+    }
+
+    /**
+     * 비밀번호 찾기 처리
+     */
+    @PostMapping("/find-password")
+    fun findPassword(
+        @RequestParam loginId: String,
+        model: Model
+    ): String {
+        return try {
+            val password = userService.findPasswordByLoginId(loginId)
+            model.addAttribute("password", password)
+            "content/user/find-password"
+        } catch (e: Exception) {
+            model.addAttribute("error", "해당 아이디를 찾을 수 없습니다.")
+            "content/user/find-password"
+        }
+    }
+
 }
