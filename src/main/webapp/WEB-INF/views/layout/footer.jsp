@@ -5,7 +5,7 @@
     <a href="${pageContext.request.contextPath}/">홈</a>
     <c:choose>
         <c:when test="${not empty sessionScope.loginId}">
-            <a href="${pageContext.request.contextPath}/">마이페이지</a>
+            <a href="${pageContext.request.contextPath}/view/users/mypage">마이페이지</a>
         </c:when>
         <c:otherwise>
             <a href="${pageContext.request.contextPath}/view/users/login">로그인</a>

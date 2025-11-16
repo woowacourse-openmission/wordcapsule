@@ -1,6 +1,7 @@
 package com.woowacourse.wordcapsule.controller.user
 
 import com.woowacourse.wordcapsule.dto.user.UserCreateRequest
+import com.woowacourse.wordcapsule.dto.user.UserUpdateRequest
 import com.woowacourse.wordcapsule.service.user.UserServiceInterface
 import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpSession
@@ -56,16 +57,13 @@ class UserViewController(
         model: Model
     ): String {
         return try {
-            val storedPassword = userService.findPasswordByLoginId(loginId)
-
-            if (storedPassword != password) {
-                model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.")
-                return "content/user/login"
-            }
-
+            userService.validateLogin(loginId, password)
             session.setAttribute("loginId", loginId)
             "redirect:/"
         } catch (e: EntityNotFoundException) {
+            model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.")
+            "content/user/login"
+        } catch (e: IllegalArgumentException) {
             model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.")
             "content/user/login"
         }
@@ -129,6 +127,63 @@ class UserViewController(
         } catch (e: EntityNotFoundException) {
             model.addAttribute("error", "해당 아이디를 찾을 수 없습니다.")
             "content/user/find-password"
+        }
+    }
+
+    /**
+     * 마이페이지
+     */
+    @GetMapping("/mypage")
+    fun mypage(session: HttpSession, model: Model): String {
+        val loginId = session.getAttribute("loginId") as? String
+            ?: return "redirect:/view/users/login"
+
+        return try {
+            val user = userService.getUserByLoginId(loginId)
+            model.addAttribute("user", user)
+            "content/user/mypage"
+        } catch (e: EntityNotFoundException) {
+            "redirect:/view/users/login"
+        }
+    }
+
+    /**
+     * 정보 수정 페이지
+     */
+    @GetMapping("/edit")
+    fun editForm(session: HttpSession, model: Model): String {
+        val loginId = session.getAttribute("loginId") as? String
+            ?: return "redirect:/view/users/login"
+
+        return try {
+            val user = userService.getUserByLoginId(loginId)
+            model.addAttribute("user", user)
+            "content/user/edit"
+        } catch (e: EntityNotFoundException) {
+            "redirect:/view/users/login"
+        }
+    }
+
+    /**
+     * 정보 수정 처리
+     */
+    @PostMapping("/edit")
+    fun edit(
+        @RequestParam(required = false) username: String?,
+        @RequestParam(required = false) password: String?,
+        session: HttpSession
+    ): String {
+        val loginId = session.getAttribute("loginId") as? String
+            ?: return "redirect:/view/users/login"
+
+        return try {
+            val user = userService.getUserByLoginId(loginId)
+            val request = UserUpdateRequest(password, username)
+            userService.updateUser(user.id, request)
+
+            "redirect:/view/users/mypage"
+        } catch (e: EntityNotFoundException) {
+            "redirect:/view/users/login"
         }
     }
 
