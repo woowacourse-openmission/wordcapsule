@@ -211,10 +211,10 @@
                         ${answer.quiz.content}
                     </span>
 
-                    <c:if test="${answer.isCorrect}">
+                    <c:if test="${answer.correct}">
                         <span class="result-badge correct">정답 (O)</span>
                     </c:if>
-                    <c:if test="${not answer.isCorrect}">
+                    <c:if test="${not answer.correct}">
                         <span class="result-badge incorrect">오답 (X)</span>
                     </c:if>
                 </div>
@@ -231,15 +231,15 @@
                         --%>
                         <c:set var="liClass" value="option-item"/>
 
-                        <c:if test="${option.isCorrect}">
+                        <c:if test="${option.correct}">
                             <c:set var="liClass" value="${liClass} correct-answer"/>
                         </c:if>
 
                         <c:if test="${option.optionId == answer.selectedOptionId}">
-                            <c:if test="${not answer.isCorrect}">
+                            <c:if test="${not answer.correct}">
                                 <c:set var="liClass" value="${liClass} selected-incorrect"/>
                             </c:if>
-                            <c:if test="${answer.isCorrect}">
+                            <c:if test="${answer.correct}">
                                 <c:set var="liClass" value="${liClass} user-selected"/>
                             </c:if>
                         </c:if>
