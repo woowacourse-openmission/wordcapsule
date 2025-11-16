@@ -2,19 +2,36 @@ import {apiUtil} from "../util/apiUtil.js";
 
 // --- 1. API 함수 ---
 
-const fetchQuizGame = async (configId = 1) => {
+const fetchQuizGame = async (userId = 1) => {
     try {
         // configId를 URL 파라미터에서 가져오도록 수정
         // 예: /quiz/game/1
         const pathParts = window.location.pathname.split('/');
         // URL의 마지막 부분을 ID로 사용
-        const id = pathParts[pathParts.length - 1] || configId;
+        const id = pathParts[pathParts.length - 1] || userId;
 
         // isNaN 체크를 통해 유효한 숫자인지 확인, 아니면 기본값 1 사용
-        const validConfigId = isNaN(parseInt(id)) ? configId : parseInt(id);
+        const validUserId = isNaN(parseInt(id)) ? userId : parseInt(id);
 
-        const response = await apiUtil.get(`/quiz/config/${validConfigId}`);
-        console.log("퀴즈 데이터 로드 성공:", response);
+        const response = await apiUtil.get(`/quiz/config/random?userId=${validUserId}`);
+
+        const status = response.status
+        const quiz = response.quiz
+
+        if (status === "AVAILABLE") {
+            console.log("퀴즈 데이터 로드 성공:", quiz);
+            return quiz
+        }
+        else if (status === "LEVEL_COMPLETED") {
+            console.log("모든 퀴즈 완료", response)
+        }
+        else if (status === "USER_NOT_FOUND") {
+            console.error("일치하는 아이디를 찾을 수 없음", id)
+        }
+         else {
+             console.error("알 수 없는 에러", id)
+        }
+
         return response;
     } catch (e) {
         console.error("퀴즈를 불러오는 데 실패했습니다.", e);
