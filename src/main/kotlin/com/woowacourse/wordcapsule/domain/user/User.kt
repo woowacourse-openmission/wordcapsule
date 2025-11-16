@@ -34,9 +34,10 @@ class User(
 
 ) : BaseEntity() {
 
-    fun updateProfile(password: String?, username: String?) {
+    fun updateProfile(password: String?, username: String?, level: Level?) {
         password?.let { this.password = it }
         username?.let { this.username = it }
+        level?.let { this.level = it }
     }
 
 }

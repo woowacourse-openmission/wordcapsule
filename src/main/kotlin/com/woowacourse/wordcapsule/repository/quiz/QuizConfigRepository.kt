@@ -14,9 +14,14 @@ import com.woowacourse.wordcapsule.domain.quiz.QuizType
 interface QuizConfigRepository : JpaRepository<QuizConfig, Long> {
 
     /**
-     * 레벨별 퀴즈 설정 목록 조회
+     * 레벨별 퀴즈 설정 목록 조회 (페이지네이션)
      */
     fun findByLevel(level: Level, pageable: Pageable): Page<QuizConfig>
+
+    /**
+     * 레벨별 퀴즈 설정 전체 목록 조회 (랜덤 추천용)
+     */
+    fun findByLevel(level: Level): List<QuizConfig>
 
     /**
      * 퀴즈 타입별 퀴즈 설정 목록 조회 (하위 퀴즈의 타입으로 검색)

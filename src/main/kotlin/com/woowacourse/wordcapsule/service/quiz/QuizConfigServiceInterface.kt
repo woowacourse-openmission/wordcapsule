@@ -7,6 +7,7 @@ import com.woowacourse.wordcapsule.dto.quiz.QuizConfigDetailResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigListResponse
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigRequest
 import com.woowacourse.wordcapsule.dto.quiz.QuizConfigUpdateRequest
+import com.woowacourse.wordcapsule.dto.quiz.RandomQuizResponse
 import org.springframework.data.domain.Pageable
 
 /**
@@ -59,4 +60,12 @@ interface QuizConfigServiceInterface {
      * @throws EntityNotFoundException 퀴즈 설정을 찾을 수 없는 경우
      */
     fun deleteQuizConfig(configId: Long)
+
+    /**
+     * 사용자에게 랜덤 퀴즈를 추천
+     *
+     * @param userId 사용자 ID
+     * @return 랜덤 퀴즈 추천 결과 (추천 성공/레벨 완료/사용자 없음)
+     */
+    fun getRandomQuizRecommendation(userId: Long): RandomQuizResponse
 }

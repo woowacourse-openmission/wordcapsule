@@ -1,5 +1,6 @@
 package com.woowacourse.wordcapsule.dto.user
 
+import com.woowacourse.wordcapsule.domain.quiz.Level
 import jakarta.validation.constraints.Size
 
 /**
@@ -10,5 +11,7 @@ data class UserUpdateRequest(
     val password: String?,
 
     @field:Size(min = 1, max = 50, message = "사용자 이름은 1자 이상 50자 이하로 입력해야 합니다")
-    val username: String?
+    val username: String?,
+
+    val level: Level?
 )
