@@ -205,4 +205,57 @@ class UserViewController(
         }
     }
 
+    /**
+     * 관리자 - 회원 목록 조회
+     */
+    @GetMapping("/list")
+    fun userList(
+        session: HttpSession,
+        model: Model,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): String {
+        val loginId = session.getAttribute("loginId") as? String
+            ?: return "redirect:/view/users/login"
+
+        return try {
+            val currentUser = userService.getUserByLoginId(loginId)
+            val pageable = org.springframework.data.domain.PageRequest.of(page, size)
+            val users = userService.getUsers(currentUser.id, pageable)
+
+            model.addAttribute("users", users)
+            model.addAttribute("currentPage", page)
+            model.addAttribute("currentUserId", currentUser.id)
+            "content/user/list"
+        } catch (e: IllegalAccessException) {
+            model.addAttribute("error", "관리자만 접근할 수 있습니다.")
+            "redirect:/view/users/mypage"
+        } catch (e: EntityNotFoundException) {
+            "redirect:/view/users/login"
+        }
+    }
+
+    /**
+     * 관리자 - 회원 삭제
+     */
+    @PostMapping("/delete/{userId}")
+    fun deleteUserByAdmin(
+        @org.springframework.web.bind.annotation.PathVariable userId: Long,
+        session: HttpSession,
+        @RequestParam(defaultValue = "0") page: Int
+    ): String {
+        val loginId = session.getAttribute("loginId") as? String
+            ?: return "redirect:/view/users/login"
+
+        return try {
+            val currentUser = userService.getUserByLoginId(loginId)
+            userService.deleteUser(currentUser.id, userId)
+            "redirect:/view/users/list?page=$page"
+        } catch (e: IllegalAccessException) {
+            "redirect:/view/users/list?page=$page&error=permission"
+        } catch (e: EntityNotFoundException) {
+            "redirect:/view/users/list?page=$page&error=notfound"
+        }
+    }
+
 }

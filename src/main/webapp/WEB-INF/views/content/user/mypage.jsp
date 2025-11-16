@@ -66,6 +66,9 @@
     <div class="btn-group">
         <a href="${pageContext.request.contextPath}/view/users/edit" class="btn btn-primary">정보 수정</a>
         <a href="${pageContext.request.contextPath}/" class="btn btn-secondary">홈으로</a>
+        <c:if test="${user.role == 'ADMIN'}">
+            <a href="${pageContext.request.contextPath}/view/users/list" class="btn btn-primary">회원 목록 관리</a>
+        </c:if>
     </div>
 
     <div class="action-section">
