@@ -12,21 +12,23 @@
 </head>
 <body>
 
-<%-- 1. 공통 헤더 포함 --%>
-<jsp:include page="layout/header.jsp"/>
+<div class="app-container">
+    <%-- 1. 공통 헤더 포함 --%>
+    <jsp:include page="layout/header.jsp"/>
 
-<%-- 2. 메인 콘텐츠 영역 --%>
-<main>
-    <c:if test="${not empty path}">
-        <jsp:include page="${path}" flush="true"/>
-    </c:if>
+    <%-- 2. 메인 콘텐츠 영역 --%>
+    <main class="main-content">
+        <c:if test="${not empty path}">
+            <jsp:include page="${path}" flush="true"/>
+        </c:if>
 
-    <c:if test="${empty path}">
-        <h2>컨텐츠를 찾지 못함</h2>
-    </c:if>
-</main>
+        <c:if test="${empty path}">
+            <jsp:include page="content/home.jsp" flush="true"/>
+        </c:if>
+    </main>
 
-<jsp:include page="layout/footer.jsp"/>
+    <jsp:include page="layout/footer.jsp"/>
+</div>
 
 </body>
 </html>
