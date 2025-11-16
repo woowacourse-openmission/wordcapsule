@@ -1,9 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="path" class="java.lang.String" scope="request"/>
-<jsp:useBean id="layoutType" class="java.lang.String" scope="request"/>
 
-<c:set var="layout" value="${empty layoutType ? 'full' : layoutType}"/>
+<c:set var="layout" value="${empty layoutType ? 'FULL' : layoutType.toString()}"/>
 
 <!doctype html>
 <html lang="ko">
@@ -16,7 +15,7 @@
 <body>
 
 <div class="app-container">
-    <c:if test="${layout eq 'full' or layout eq 'noFooter'}">
+    <c:if test="${layout eq 'FULL' or layout eq 'NO_FOOTER'}">
         <jsp:include page="layout/header.jsp"/>
     </c:if>
 
@@ -30,7 +29,7 @@
         </c:if>
     </main>
 
-    <c:if test="${layout eq 'full' or layout eq 'noHeader'}">
+    <c:if test="${layout eq 'FULL' or layout eq 'NO_HEADER'}">
         <jsp:include page="layout/footer.jsp"/>
     </c:if>
 </div>
