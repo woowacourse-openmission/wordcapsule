@@ -61,25 +61,9 @@ class QuizViewController(
 
     @GetMapping("/records")
     fun showUserQuizRecordList(
-        @RequestParam(required = false) loginId: String,
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int,
-        @RequestParam(defaultValue = "startedAt,desc") sort: String,
         model: Model
     ): String {
-        val sortDirection = if (sort.contains("desc")) Sort.Direction.DESC else Sort.Direction.ASC
-        val sortProperty = sort.split(",")[0]
-        val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
-
-        val user = userService.getUserByLoginId(loginId)
-
-        val response = quizRecordService.getUserQuizRecordList(user.id, pageable)
-
-        // 보여줄 페이지 경로 추가
         model.addAttribute("path", "content/quiz/record/list.jsp")
-        // 모델에 뷰(JSP)에서 사용할 데이터를 추가
-        model.addAttribute("data", response)
-
         return "index"
     }
 

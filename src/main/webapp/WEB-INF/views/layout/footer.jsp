@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <nav class="bottom-nav">
-    <a class="bottom-nav-item" href="${pageContext.request.contextPath}/quiz/records?loginId=${sessionScope.loginId}">
+    <a class="bottom-nav-item" href="${pageContext.request.contextPath}/quiz/records">
         <span>기록</span>
     </a>
     <a class="bottom-nav-item" href="${pageContext.request.contextPath}/">
