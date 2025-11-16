@@ -12,7 +12,7 @@ data class QuizConfigRequest(
     val userId: Long,
     
     @field:NotBlank(message = "퀴즈명은 필수입니다")
-    @field:Size(max = 50, message = "퀴즈명은 50자 이하여야 합니다")
+    @field:Size(max = 100, message = "퀴즈명은 100자 이하여야 합니다")
     val quizName: String,
 
     val level: Level = Level.BEGINNER,
