@@ -4,7 +4,7 @@
 <jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
 <div class="btn-container">
-    <button class="btn-primary">
+    <button class="btn-primary" onclick="location.href='${pageContext.request.contextPath}/quiz/game'">
         퀴즈 시작
     </button>
 </div>
