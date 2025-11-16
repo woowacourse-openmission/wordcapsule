@@ -1,5 +1,6 @@
 package com.woowacourse.wordcapsule.dto.user
 
+import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.user.User
 import com.woowacourse.wordcapsule.domain.user.UserRole
 import java.time.LocalDateTime
@@ -12,6 +13,7 @@ data class UserResponse(
     val loginId: String,
     val username: String,
     val role: UserRole,
+    val level: Level,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 ) {
@@ -22,6 +24,7 @@ data class UserResponse(
                 loginId = user.loginId,
                 username = user.username,
                 role = user.role,
+                level = user.level,
                 createdAt = user.createdAt,
                 updatedAt = user.updatedAt
             )

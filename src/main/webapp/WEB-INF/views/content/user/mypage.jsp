@@ -8,6 +8,7 @@
         max-width: 600px;
         margin: 40px auto;
         padding: 20px;
+        padding-bottom: 80px;
     }
     .mypage-container h2 {
         color: #2c3e50;
@@ -21,6 +22,8 @@
         border-radius: 4px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
     }
     .info-row {
         display: flex;
@@ -63,11 +66,14 @@
             <div class="info-label">사용자 이름</div>
             <div class="info-value">${data.username}</div>
         </div>
+        <div class="info-row">
+            <div class="info-label">레벨</div>
+            <div class="info-value">${data.level}</div>
+        </div>
     </div>
 
     <div class="btn-group">
         <a href="${pageContext.request.contextPath}/users/edit" class="btn btn-primary">정보 수정</a>
-        <a href="${pageContext.request.contextPath}/" class="btn btn-secondary">홈으로</a>
         <c:if test="${data.role == 'ADMIN'}">
             <a href="${pageContext.request.contextPath}/users/list" class="btn btn-primary">회원 목록 관리</a>
         </c:if>
