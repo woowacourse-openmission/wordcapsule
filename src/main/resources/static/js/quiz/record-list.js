@@ -34,7 +34,7 @@ const renderRecordList = (list) => {
 
     list.forEach(item => {
         const link = document.createElement('a');
-        link.href = `${contextPath}/quiz/records/${item.id}`;
+        link.href = `${contextPath}/quiz/record/${item.id}`;
         link.className = 'record-item';
         link.innerHTML = `
             <div class="record-item__info">
