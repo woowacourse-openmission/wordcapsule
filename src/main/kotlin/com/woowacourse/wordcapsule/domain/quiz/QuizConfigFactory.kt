@@ -17,49 +17,34 @@ object QuizConfigFactory {
      * @return 생성된 QuizConfig 도메인 객체 (하위 Quiz, QuizOption 포함)
      */
     fun createQuizConfig(request: QuizConfigRequest, user: User): QuizConfig {
-        // 임시 QuizConfig 생성 (순환 참조 해결을 위해)
-        val tempQuizConfig = QuizConfig(
+        val quizConfig = QuizConfig(
             user = user,
             quizName = request.quizName,
             level = request.level,
-            quizzes = emptyList()
+            quizzes = mutableListOf()
         )
 
-        // Quiz들과 QuizOption들을 함께 생성
-        val createdQuizzes = request.quizzes.map { quizRequest ->
-            // 임시 Quiz 생성
-            val tempQuiz = Quiz(
-                config = tempQuizConfig,
+        request.quizzes.forEach { quizRequest ->
+            val quiz = Quiz(
+                config = quizConfig,
                 content = quizRequest.content,
                 quizType = quizRequest.quizType,
-                options = emptyList()
+                options = mutableListOf()
             )
 
-            // QuizOption들 생성 (quiz 참조 포함)
-            val quizOptions = quizRequest.options.mapIndexed { index, optionRequest ->
-                QuizOption(
-                    quiz = tempQuiz,
+            quizRequest.options.forEachIndexed { index, optionRequest ->
+                val option = QuizOption(
+                    quiz = quiz,
                     content = optionRequest.content,
                     position = index + 1,
                     isCorrect = optionRequest.isCorrect
                 )
+                quiz.addOption(option)
             }
 
-            // 완전한 Quiz 생성 (options 포함)
-            Quiz(
-                config = tempQuizConfig,
-                content = quizRequest.content,
-                quizType = quizRequest.quizType,
-                options = quizOptions
-            )
+            quizConfig.addQuiz(quiz)
         }
 
-        // 완전한 QuizConfig 반환 (quizzes 포함)
-        return QuizConfig(
-            user = user,
-            quizName = request.quizName,
-            level = request.level,
-            quizzes = createdQuizzes
-        )
+        return quizConfig
     }
 }

@@ -28,8 +28,14 @@ class QuizConfig(
     var level: Level = Level.BEGINNER,
 
     @OneToMany(mappedBy = "config", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val quizzes: List<Quiz> = emptyList()
+    val quizzes: MutableList<Quiz> = mutableListOf()
 ) : BaseEntity() {
+
+    fun addQuiz(quiz: Quiz) {
+        this.quizzes.add(quiz)
+        quiz.config = this
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

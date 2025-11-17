@@ -16,7 +16,7 @@ class Quiz(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "config_id", nullable = false)
-    val config: QuizConfig,
+    var config: QuizConfig,
 
     @Column(name = "content", nullable = false, length = 100)
     val content: String,
@@ -26,8 +26,14 @@ class Quiz(
     val quizType: QuizType,
 
     @OneToMany(mappedBy = "quiz", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val options: List<QuizOption> = emptyList()
+    val options: MutableList<QuizOption> = mutableListOf()
 ) {
+
+    fun addOption(option: QuizOption) {
+        this.options.add(option)
+        option.quiz = this
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
