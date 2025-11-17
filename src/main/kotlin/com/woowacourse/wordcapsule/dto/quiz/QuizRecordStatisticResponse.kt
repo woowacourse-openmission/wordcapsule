@@ -2,7 +2,7 @@ package com.woowacourse.wordcapsule.dto.quiz
 
 import com.woowacourse.wordcapsule.domain.quiz.QuizRecord
 import com.woowacourse.wordcapsule.domain.quiz.TimeRange
-import com.woowacourse.wordcapsule.service.quiz.QuizRecordService
+import com.woowacourse.wordcapsule.util.LocalDateUtil
 import java.util.EnumMap
 
 /**
@@ -20,7 +20,7 @@ data class QuizRecordStatisticResponse(
     companion object {
         fun from(quizRecordList: List<QuizRecord>): QuizRecordStatisticResponse {
             val dateList = quizRecordList.map { it.startedAt }
-            val streakDays = QuizRecordService.getStreakDay(dateList)
+            val streakDays = LocalDateUtil.getStreakDay(dateList)
 
             val scoreList = quizRecordList.map { it.getCorrectAnswerRate() }
             val correctAnswerRate = scoreList.sum() / scoreList.size
