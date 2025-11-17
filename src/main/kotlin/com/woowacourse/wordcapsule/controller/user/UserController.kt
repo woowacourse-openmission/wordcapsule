@@ -129,4 +129,10 @@ class UserController(
         val password = userService.findPasswordByLoginId(loginId)
         return DataResponse.of(PasswordResponse(password))
     }
+
+    @GetMapping("/id")
+    fun findUserByLoginId(@RequestParam loginId: String): DataResponse<Map<String, Long>> {
+        val user = userService.getUserByLoginId(loginId)
+        return DataResponse.of(mapOf("id" to user.id))
+    }
 }

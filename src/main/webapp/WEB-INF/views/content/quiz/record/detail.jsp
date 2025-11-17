@@ -6,7 +6,7 @@
 
 <%--
   이 페이지(detail.jsp)에만 적용되는 스타일입니다.
-  전역 CSS의 변수(var(--color-primary))를 활용하여 일관된 디자인을 유지합니다.
+  [수정] SENTENCE_ORDER를 위한 스타일이 추가되었습니다.
 --%>
 <style>
     .record-detail-container {
@@ -122,7 +122,22 @@
         background-color: var(--color-error);
     }
 
-    /* --- 3. 선택지 --- */
+    /* --- 3. 선택지 (공통) --- */
+    .marker {
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-left: 8px;
+    }
+
+    .marker.correct-marker {
+        color: var(--color-primary);
+    }
+
+    .marker.incorrect-marker {
+        color: var(--color-error);
+    }
+
+    /* --- 3a. 선택지 (객관식) --- */
     .options-list {
         list-style: none;
         padding: 0;
@@ -142,19 +157,19 @@
         transition: all 0.2s ease;
     }
 
-    /* 3.1. 정답 (항상 초록색으로 표시) */
+    /* 정답 (항상 초록색으로 표시) */
     .option-item.correct-answer {
         border-color: var(--color-primary);
         background-color: var(--color-primary-light);
-        color: #000; /* 정답 텍스트는 검은색으로 유지 */
+        color: #000;
         font-weight: 700;
     }
 
-    /* 3.2. 사용자가 선택한 오답 (빨간색으로 표시) */
+    /* 사용자가 선택한 오답 (빨간색으로 표시) */
     .option-item.selected-incorrect {
         border-color: var(--color-error);
-        background-color: #FFF0F0; /* 옅은 빨간색 */
-        color: #000; /* 오답 텍스트는 검은색으로 유지 */
+        background-color: #FFF0F0;
+        color: #000;
     }
 
     .user-choice-marker {
@@ -165,23 +180,52 @@
         flex-shrink: 0;
     }
 
-    /* 사용자가 선택한 오답일 경우, 마커 색상 변경 */
     .selected-incorrect .user-choice-marker {
         color: var(--color-error);
         font-weight: 700;
     }
 
-    /* 사용자가 선택한 정답일 경우, 마커 색상 변경 */
     .correct-answer.user-selected .user-choice-marker {
         color: var(--color-primary);
         font-weight: 700;
+    }
+
+    /* --- [신규] 3b. 선택지 (문장 순서) --- */
+    .sentence-result h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--color-text);
+    }
+
+    .sentence-list {
+        padding-left: 20px; /* <ol> 태그의 숫자 들여쓰기 */
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sentence-list li {
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 10px 12px;
+        background-color: var(--color-primary-light);
+        border-radius: 6px;
+        border: 1px solid var(--color-primary);
+        list-style-type: decimal; /* 순서 번호 표시 */
+    }
+
+    .note-text {
+        font-size: 0.85rem;
+        color: var(--color-text-sub);
+        margin-top: 12px;
     }
 
 </style>
 
 <div class="record-detail-container">
 
-    <!-- 1. 퀴즈 결과 요약 -->
     <div class="summary-card">
         <h2>${data.quizName}</h2>
 
@@ -198,17 +242,21 @@
         </div>
     </div>
 
-    <!-- 2. 개별 문항 상세보기 -->
     <div class="answer-list">
         <h3 class="answer-list-header">상세 풀이</h3>
 
         <c:forEach var="answer" items="${data.answers}" varStatus="status">
+            <%--
+              [수정] answer.quiz.options가 SENTENCE_ORDER일 때
+              DB에서 position 순으로 정렬되어 왔다고 가정합니다.
+            --%>
+            <c:set var="quiz" value="${answer.quiz}"/>
+
             <div class="answer-card">
-                <!-- 질문 헤더 (문제, 정답/오답) -->
                 <div class="question-header">
                     <span class="question-title">
                         <span class="q-number">Q${status.count}.</span>
-                        ${answer.quiz.content}
+                        ${quiz.content}
                     </span>
 
                     <c:if test="${answer.correct}">
@@ -219,41 +267,75 @@
                     </c:if>
                 </div>
 
-                <!-- 선택지 목록 -->
-                <ul class="options-list">
-                    <c:forEach var="option" items="${answer.quiz.options}">
-                        <%--
-                            CSS 클래스 동적 할당
-                            1. liClass: 기본 클래스 'option-item'
-                            2. 정답인 경우: 'correct-answer' 추가
-                            3. 사용자가 선택한 오답인 경우: 'selected-incorrect' 추가
-                            4. 사용자가 선택한 정답인 경우: 'user-selected' 추가 (스타일링 구분을 위해)
-                        --%>
-                        <c:set var="liClass" value="option-item"/>
+                <c:choose>
+                    <%-- CASE 1: 객관식 유형 (SENTENCE_ORDER가 아님) --%>
+                    <c:when test="${quiz.quizType != 'SENTENCE_ORDER'}">
+                        <ul class="options-list">
+                            <c:forEach var="option" items="${quiz.options}">
+                                <c:set var="isCorrectAnswer" value="${option.correct}"/>
+                                <c:set var="isUserChoice" value="${option.optionId == answer.selectedOptionId}"/>
 
-                        <c:if test="${option.correct}">
-                            <c:set var="liClass" value="${liClass} correct-answer"/>
-                        </c:if>
+                                <c:set var="liClass" value="option-item"/>
+                                <c:if test="${isCorrectAnswer}">
+                                    <c:set var="liClass" value="${liClass} correct-answer"/>
+                                </c:if>
+                                <c:if test="${isUserChoice && !isCorrectAnswer}">
+                                    <c:set var="liClass" value="${liClass} selected-incorrect"/>
+                                </c:if>
+                                <c:if test="${isUserChoice && isCorrectAnswer}">
+                                    <c:set var="liClass" value="${liClass} user-selected"/>
+                                </c:if>
 
-                        <c:if test="${option.optionId == answer.selectedOptionId}">
+                                <li class="${liClass}">
+                                    <span>${option.content}</span>
+
+                                        <%-- 마커 표시 --%>
+                                    <c:choose>
+                                        <c:when test="${isCorrectAnswer && isUserChoice}">
+                                            <span class="user-choice-marker">&lt;-- 정답 (나의 선택)</span>
+                                        </c:when>
+                                        <c:when test="${isCorrectAnswer && !isUserChoice}">
+                                            <span class="user-choice-marker correct-answer-text">(정답)</span>
+                                        </c:when>
+                                        <c:when test="${!isCorrectAnswer && isUserChoice}">
+                                            <span class="user-choice-marker">&lt;-- 나의 오답</span>
+                                        </c:when>
+                                    </c:choose>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </c:when>
+
+                    <%-- CASE 2: 문장 순서 유형 (SENTENCE_ORDER) --%>
+                    <c:otherwise>
+                        <div class="sentence-result">
+                            <h4>
+                                정답 순서
+                                <c:if test="${answer.correct}">
+                                    <span class="marker correct-marker">(정답 맞춤)</span>
+                                </c:if>
+                                <c:if test="${!answer.correct}">
+                                    <span class="marker incorrect-marker">(오답)</span>
+                                </c:if>
+                            </h4>
+
+                            <ol class="sentence-list">
+                                <c:forEach var="option" items="${quiz.options}">
+                                    <c:if test="${option.correct}">
+                                        <li>${option.content}</li>
+                                    </c:if>
+                                </c:forEach>
+                            </ol>
+
                             <c:if test="${not answer.correct}">
-                                <c:set var="liClass" value="${liClass} selected-incorrect"/>
+                                <p class="note-text">
+                                    * 사용자가 제출한 순서가 위 정답 순서와 다릅니다.
+                                </p>
                             </c:if>
-                            <c:if test="${answer.correct}">
-                                <c:set var="liClass" value="${liClass} user-selected"/>
-                            </c:if>
-                        </c:if>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
 
-                        <li class="${liClass}">
-                            <span>${option.content}</span>
-
-                                <%-- 사용자가 선택한 항목에만 마커 표시 --%>
-                            <c:if test="${option.optionId == answer.selectedOptionId}">
-                                <span class="user-choice-marker">&lt;-- 나의 선택</span>
-                            </c:if>
-                        </li>
-                    </c:forEach>
-                </ul>
             </div>
         </c:forEach>
     </div>

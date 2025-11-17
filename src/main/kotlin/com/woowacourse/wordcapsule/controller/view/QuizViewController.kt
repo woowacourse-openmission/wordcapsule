@@ -2,8 +2,10 @@ package com.woowacourse.wordcapsule.controller.view
 
 import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizType
+import com.woowacourse.wordcapsule.domain.user.UserRole
 import com.woowacourse.wordcapsule.service.quiz.QuizConfigServiceInterface
 import com.woowacourse.wordcapsule.service.quiz.QuizRecordServiceInterface
+import com.woowacourse.wordcapsule.service.user.UserServiceInterface
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Controller
@@ -20,7 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam
 @RequestMapping("/quiz")
 class QuizViewController(
     private val quizConfigService: QuizConfigServiceInterface,
-    private val quizRecordService: QuizRecordServiceInterface
+    private val quizRecordService: QuizRecordServiceInterface,
+    private val userService: UserServiceInterface
 ) {
 
     /**
@@ -42,39 +45,41 @@ class QuizViewController(
 
         val response = quizConfigService.getQuizConfigs(level, quizType, pageable)
 
-        // 보여줄 페이지 경로 추가
         model.addAttribute("path", "content/quiz/config/list.jsp")
-        // 모델에 뷰(JSP)에서 사용할 데이터를 추가
         model.addAttribute("data", response)
 
-        return "index" // index로 고정 후 관리
+        return "index"
+    }
+
+    @GetMapping("/config/{configId}")
+    fun showQuizConfigDetailPage(@PathVariable configId: Long, model: Model): String {
+        val response = quizConfigService.getQuizConfigDetail(configId)
+
+        model.addAttribute("path", "content/quiz/config/detail.jsp")
+        model.addAttribute("data", response)
+
+        return "index"
+    }
+
+    @GetMapping("/config/new")
+    fun showQuizConfigFormPage(model: Model): String {
+        model.addAttribute("path", "content/quiz/config/new.jsp")
+
+        return "index"
     }
 
     @GetMapping("/game")
     fun quizGameStart(model: Model): String {
         model.addAttribute("path", "content/quiz/game.jsp")
+        model.addAttribute("layoutType", LayoutType.SIMPLE)
         return "index"
     }
 
     @GetMapping("/records")
     fun showUserQuizRecordList(
-        @RequestParam(required = false) userId: Long,
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int,
-        @RequestParam(defaultValue = "startedAt,desc") sort: String,
         model: Model
     ): String {
-        val sortDirection = if (sort.contains("desc")) Sort.Direction.DESC else Sort.Direction.ASC
-        val sortProperty = sort.split(",")[0]
-        val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
-
-        val response = quizRecordService.getUserQuizRecordList(userId, pageable)
-
-        // 보여줄 페이지 경로 추가
         model.addAttribute("path", "content/quiz/record/list.jsp")
-        // 모델에 뷰(JSP)에서 사용할 데이터를 추가
-        model.addAttribute("data", response)
-
         return "index"
     }
 
@@ -88,5 +93,10 @@ class QuizViewController(
         model.addAttribute("data", response)
 
         return "index"
+    }
+
+    fun isAdmin(loginId: String): Boolean {
+        val currentUser = userService.getUserByLoginId(loginId)
+        return currentUser.role == UserRole.ADMIN
     }
 }

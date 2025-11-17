@@ -16,7 +16,7 @@ class QuizOption(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = false)
-    val quiz: Quiz,
+    var quiz: Quiz,
 
     @Column(name = "content", nullable = false, length = 50)
     val content: String,

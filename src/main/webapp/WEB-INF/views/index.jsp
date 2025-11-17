@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="path" class="java.lang.String" scope="request"/>
 
+<c:set var="layout" value="${empty layoutType ? 'FULL' : layoutType.toString()}"/>
+
 <!doctype html>
 <html lang="ko">
 <head>
@@ -10,13 +12,13 @@
     <%-- 공통 스타일시트 등 링크 --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
-<body>
+<body data-login-id="${sessionScope.loginId}">
 
 <div class="app-container">
-    <%-- 1. 공통 헤더 포함 --%>
-    <jsp:include page="layout/header.jsp"/>
+    <c:if test="${layout eq 'FULL' or layout eq 'NO_FOOTER'}">
+        <jsp:include page="layout/header.jsp"/>
+    </c:if>
 
-    <%-- 2. 메인 콘텐츠 영역 --%>
     <main class="main-content">
         <c:if test="${not empty path}">
             <jsp:include page="${path}" flush="true"/>
@@ -27,7 +29,9 @@
         </c:if>
     </main>
 
-    <jsp:include page="layout/footer.jsp"/>
+    <c:if test="${layout eq 'FULL' or layout eq 'NO_HEADER'}">
+        <jsp:include page="layout/footer.jsp"/>
+    </c:if>
 </div>
 
 </body>

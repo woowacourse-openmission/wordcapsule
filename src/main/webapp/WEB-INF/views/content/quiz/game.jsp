@@ -7,10 +7,10 @@
 
 <%--
   퀴즈 게임 페이지 전용 스타일
-  - 전역 CSS 변수(var(--color-primary))를 사용하여 일관성 유지
+  [수정] SENTENCE_ORDER (문장 순서) 유형을 위한 스타일 추가
 --%>
 <style>
-    /* --- 1. 로딩 스피너 --- */
+    /* --- 1. 로딩 스피너 (변경 없음) --- */
     .quiz-loader {
         display: flex;
         justify-content: center;
@@ -33,17 +33,15 @@
         }
     }
 
-    /* --- 2. 퀴즈 게임 컨테이너 --- */
+    /* --- 2. 퀴즈 게임 컨테이너 (변경 없음) --- */
     .quiz-game-container {
         display: none; /* JS로 데이터 로드 후 flex로 변경 */
         flex-direction: column;
         gap: 20px;
-        /* main-content의 기본 padding(24px 20px)을 고려하여
-           컨텐츠가 너무 붙지 않게 약간의 음수 마진으로 공간 확보 */
         margin: -10px 0;
     }
 
-    /* --- 3. 퀴즈 헤더 --- */
+    /* --- 3. 퀴즈 헤더 (변경 없음) --- */
     .quiz-header {
         width: 100%;
     }
@@ -78,7 +76,7 @@
         transition: width 0.3s ease-in-out;
     }
 
-    /* --- 4. 질문 영역 --- */
+    /* --- 4. 질문 영역 (변경 없음) --- */
     .question-container {
         padding: 24px 16px;
         background-color: var(--color-bg-content);
@@ -96,7 +94,7 @@
         line-height: 1.5;
     }
 
-    /* --- 5. 선택지 영역 --- */
+    /* --- 5. 선택지 영역 (객관식) --- */
     .options-list {
         list-style: none;
         display: flex;
@@ -128,7 +126,65 @@
         color: var(--color-primary);
     }
 
-    /* --- 6. 하단 버튼 --- */
+    /* --- [신규] 5-2. 선택지 영역 (문장 순서) --- */
+    .sentence-container {
+        display: none; /* JS로 제어 (flex) */
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* 정답을 놓는 영역 (첨부파일의 'I') */
+    .sentence-answer-box {
+        min-height: 60px; /* 최소 높이 */
+        padding: 10px;
+        border: 2px dashed var(--color-border);
+        border-radius: 10px;
+        background-color: var(--color-primary-light);
+        display: flex;
+        flex-wrap: wrap; /* 칩들이 줄바꿈되도록 */
+        gap: 10px;
+    }
+
+    /* 선택지를 고르는 영역 (첨부파일의 'love', 'you') */
+    .sentence-options-box {
+        min-height: 60px; /* 최소 높이 */
+        padding: 10px;
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        background-color: var(--color-bg);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center; /* 칩들을 중앙 정렬 */
+    }
+
+    /* 칩 (클릭 가능한 단어) */
+    .sentence-chip {
+        padding: 12px 16px;
+        border-radius: 8px;
+        background-color: var(--color-bg);
+        border: 1px solid var(--color-border);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .sentence-chip:hover {
+        transform: translateY(-2px);
+        border-color: var(--color-primary);
+    }
+
+    /* 정답 영역으로 이동한 칩 */
+    .sentence-answer-box .sentence-chip {
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+    }
+
+
+    /* --- 6. 하단 버튼 (변경 없음) --- */
     .quiz-footer {
         margin-top: 10px;
     }
@@ -142,18 +198,12 @@
 
 </style>
 
-<!-- 1. 로딩 스피너 (초기 표시) -->
 <div id="quiz-loader" class="quiz-loader">
     <div class="spinner"></div>
 </div>
 
-<!--
-2. 퀴즈 게임 UI (로딩 완료 후 표시)
-- data-context-path: JS에서 리다이렉션 경로를 생성하기 위해 사용
--->
 <div id="quiz-game-container" class="quiz-game-container" data-context-path="${pageContext.request.contextPath}">
 
-    <!-- 퀴즈 헤더: 제목, 진행상태 -->
     <header class="quiz-header">
         <h2 id="quiz-title" class="quiz-title">퀴즈 로딩 중...</h2>
         <div class="progress-status">
@@ -165,25 +215,29 @@
         </div>
     </header>
 
-    <!-- 질문 영역 -->
     <section class="question-container">
         <p id="question-content" class="question-content">
             문제를 불러오고 있습니다.
         </p>
     </section>
 
-    <!-- 선택지 영역 -->
     <section class="options-container">
+
         <ul id="options-list" class="options-list">
-            <!-- JS로 동적 생성 -->
         </ul>
+
+        <div id="sentence-container" class="sentence-container">
+            <div id="sentence-answer-box" class="sentence-answer-box">
+            </div>
+            <div id="sentence-options-box" class="sentence-options-box">
+            </div>
+        </div>
+
     </section>
 
-    <!-- 하단 버튼 (다음/제출) -->
     <footer class="quiz-footer">
         <button id="next-button" class="btn-primary" disabled>
             선택하세요
         </button>
     </footer>
-
 </div>
