@@ -1,0 +1,54 @@
+{
+  "userId": 1,
+  "quizName": "테스트 퀴즈",
+  "level": "BEGINNER",
+  "quizzes": [
+    {
+      "content": "What is the capital of Korea?",
+      "quizType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "content": "Seoul",
+          "position": 1,
+          "isCorrect": true
+        },
+        {
+          "content": "Busan",
+          "position": 2,
+          "isCorrect": false
+        },
+        {
+          "content": "Daegu",
+          "position": 3,
+          "isCorrect": false
+        },
+        {
+          "content": "Incheon",
+          "position": 4,
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "content": "Which programming language is used for Android development?",
+      "quizType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "content": "Swift",
+          "position": 1,
+          "isCorrect": false
+        },
+        {
+          "content": "Kotlin",
+          "position": 2,
+          "isCorrect": true
+        },
+        {
+          "content": "Ruby",
+          "position": 3,
+          "isCorrect": false
+        }
+      ]
+    }
+  ]
+}
