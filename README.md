@@ -48,7 +48,8 @@ WordCapsule은 사용자가 영어 단어를 효과적으로 학습할 수 있�
 
 ## ERD
 
-> 📋 ERD 다이어그램은 추후 업데이트 예정입니다.
+<img width="1112" height="681" alt="wordcapsule_erd" src="https://github.com/user-attachments/assets/32e904e5-6957-404a-9155-db95ca62ecdb" />
+
 
 ### 주요 엔티티
 - **User**: 사용자 정보 및 레벨 관리
