@@ -215,7 +215,6 @@
                 <ul class="quiz-config-list">
                     <c:forEach var="config" items="${data.content}">
                         <li class="quiz-config-item">
-                            <%-- TODO: 링크 연결 --%>
                             <c:url var="detailUrl" value="/quiz/config/${config.configId}"/>
 
                             <a href="${detailUrl}" class="card-link">

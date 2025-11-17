@@ -52,11 +52,18 @@ class QuizViewController(
     }
 
     @GetMapping("/config/{configId}")
-    fun showQuizConfigListPage(@PathVariable configId: Long, model: Model): String {
+    fun showQuizConfigDetailPage(@PathVariable configId: Long, model: Model): String {
         val response = quizConfigService.getQuizConfigDetail(configId)
 
         model.addAttribute("path", "content/quiz/config/detail.jsp")
         model.addAttribute("data", response)
+
+        return "index"
+    }
+
+    @GetMapping("/config/new")
+    fun showQuizConfigFormPage(model: Model): String {
+        model.addAttribute("path", "content/quiz/config/new.jsp")
 
         return "index"
     }
