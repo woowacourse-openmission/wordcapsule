@@ -1,7 +1,5 @@
 import {apiUtil} from "../util/apiUtil.js";
 
-console.log("!!!!!!!!!!!")
-
 // --- 공통 변수 ---
 const container = document.querySelector('.quiz-config-detail-container');
 const configId = container.dataset.configId;
