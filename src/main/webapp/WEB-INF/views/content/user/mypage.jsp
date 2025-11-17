@@ -42,6 +42,10 @@
             <span class="menu-text">회원 목록 관리</span>
             <span class="menu-arrow">›</span>
         </a>
+        <a href="${pageContext.request.contextPath}/quiz/configs" class="menu-item">
+            <span class="menu-text">퀴즈 설정 관리</span>
+            <span class="menu-arrow">›</span>
+        </a>
     </div>
 </c:if>
 
