@@ -63,7 +63,6 @@ const submitQuizGame = async (request) => {
 
 /**
  * Date 객체를 브라우저의 로컬 시간 기준 'yyyy-MM-ddTHH:mm:ss' 형식으로 변환합니다.
- * (스프링부트 LocalDateTime.now()와 매칭하기 위함)
  */
 const formatForLocalDateTime = (date) => {
     const pad = (num) => num.toString().padStart(2, '0');
@@ -156,7 +155,6 @@ const showLevelUpModal = (contextPath, userId) => {
 
 
 // --- 2. 퀴즈 게임 상태 관리 ---
-// (DOM 로드 전에도 선언은 가능)
 let quizData = null;            // 서버에서 받은 퀴즈 전체 데이터
 let currentQuestionIndex = 0;   // 현재 질문 인덱스
 let totalQuestions = 0;         // 총 질문 수
@@ -165,20 +163,15 @@ let startedAt = "";             // 퀴즈 시작 시간
 
 
 // --- 7. 게임 시작 (DOM 로드 후) ---
-// !!! 중요: DOM 요소가 모두 로드된 후에 스크립트를 실행하기 위해
-// DOMContentLoaded 이벤트 리스너로 전체 로직을 감쌉니다.
 document.addEventListener("DOMContentLoaded", () => {
 
     // --- 3. DOM 요소 참조 ---
-    // (DOM이 로드되었으므로 안전하게 요소를 참조)
     const loader = document.getElementById("quiz-loader");
     const gameContainer = document.getElementById("quiz-game-container");
 
-    // 필수 요소가 없으면 퀴즈를 진행할 수 없음
     if (!loader || !gameContainer) {
         console.error("퀴즈 게임의 필수 DOM 요소를 찾을 수 없습니다. (game.jsp 확인 필요)");
         if (loader) {
-            // 스피너 대신 에러 메시지를 표시
             loader.innerHTML = `<span style="color: var(--color-error); font-weight: 500;">페이지 오류: 게임 요소를 로드할 수 없습니다.</span>`;
         }
         return; // 스크립트 실행 중단
@@ -193,13 +186,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 질문/선택지
     const questionContentEl = document.getElementById("question-content");
+
+    // [수정] 선택지 컨테이너 참조
+    const optionsContainer = document.querySelector(".options-container");
     const optionsListEl = document.getElementById("options-list");
+    const sentenceContainer = document.getElementById("sentence-container");
+    const sentenceAnswerBox = document.getElementById("sentence-answer-box");
+    const sentenceOptionsBox = document.getElementById("sentence-options-box");
 
     // 푸터
     const nextButton = document.getElementById("next-button");
 
 
     // --- 4. 퀴즈 렌더링 함수 ---
+
     /** 현재 인덱스에 맞는 질문과 선택지를 화면에 그립니다. */
     const renderQuestion = (index) => {
         if (!quizData || !quizData.quizzes) return;
@@ -219,23 +219,17 @@ document.addEventListener("DOMContentLoaded", () => {
         // 3. 질문 업데이트
         questionContentEl.textContent = quiz.content;
 
-        // 4. 선택지 목록 초기화 및 생성
-        optionsListEl.innerHTML = "";
-        quiz.options.forEach(option => {
-            const li = document.createElement("li");
-            li.classList.add("option-item");
-            li.textContent = option.content;
-
-            // 데이터셋에 필요한 정보 저장
-            li.dataset.optionId = option.optionId;
-            li.dataset.isCorrect = option.isCorrect;
-            li.dataset.quizId = quiz.quizId;
-
-            // 선택지 클릭 이벤트 리스너 추가
-            li.addEventListener("click", () => handleOptionClick(li));
-
-            optionsListEl.appendChild(li);
-        });
+        // 4. [수정] 퀴즈 타입에 따라 UI 분기
+        if (quiz.quizType === 'SENTENCE_ORDER') {
+            optionsListEl.style.display = 'none';
+            sentenceContainer.style.display = 'flex';
+            renderSentenceOrderQuiz(quiz);
+        } else {
+            // WORD_MEANING, WORD_MATCHING, FILL_BLANK
+            sentenceContainer.style.display = 'none';
+            optionsListEl.style.display = 'flex';
+            renderMultipleChoiceQuiz(quiz);
+        }
 
         // 5. 버튼 상태 업데이트
         nextButton.disabled = true; // 새 질문이 나오면 항상 비활성화
@@ -247,8 +241,59 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    /** [신규] 객관식 퀴즈 UI를 렌더링합니다. */
+    const renderMultipleChoiceQuiz = (quiz) => {
+        optionsListEl.innerHTML = ""; // 목록 초기화
+        quiz.options.forEach(option => {
+            const li = document.createElement("li");
+            li.classList.add("option-item");
+            li.textContent = option.content;
+
+            // 데이터셋에 필요한 정보 저장
+            li.dataset.optionId = option.optionId;
+            li.dataset.isCorrect = option.isCorrect;
+            li.dataset.quizId = quiz.quizId;
+
+            optionsListEl.appendChild(li);
+        });
+    };
+
+    /** [신규] 문장 순서 퀴즈 UI를 렌더링합니다. */
+    const renderSentenceOrderQuiz = (quiz) => {
+        sentenceAnswerBox.innerHTML = ''; // 정답 영역 초기화
+        sentenceOptionsBox.innerHTML = ""; // 선택 영역 초기화
+
+        // [중요] DB에서 받은 정답 순서의 옵션을 무작위로 섞습니다.
+        const shuffledOptions = [...quiz.options].sort(() => Math.random() - 0.5);
+
+        shuffledOptions.forEach(option => {
+            const chip = document.createElement("div");
+            chip.classList.add("sentence-chip");
+            chip.textContent = option.content;
+            chip.dataset.optionId = option.optionId;
+            chip.dataset.quizId = quiz.quizId;
+            // (isCorrect와 position은 칩에 저장하지 않음 - 정답 노출 방지)
+
+            sentenceOptionsBox.appendChild(chip);
+        });
+    };
+
+
     // --- 5. 이벤트 핸들러 ---
-    /** 선택지 클릭 시 호출됩니다. */
+
+    /** [신규] 모든 선택지 클릭을 처리하는 이벤트 위임 핸들러 */
+    const handleAnswerClick = (e) => {
+        const mcOption = e.target.closest('.option-item');
+        const soChip = e.target.closest('.sentence-chip');
+
+        if (mcOption) {
+            handleOptionClick(mcOption);
+        } else if (soChip) {
+            handleSentenceOrderClick(soChip);
+        }
+    };
+
+    /** 객관식(option-item) 클릭 시 호출됩니다. */
     const handleOptionClick = (selectedLi) => {
         // 1. 모든 선택지에서 'selected' 클래스 제거
         const allOptions = optionsListEl.querySelectorAll(".option-item");
@@ -257,25 +302,70 @@ document.addEventListener("DOMContentLoaded", () => {
         // 2. 클릭한 선택지에 'selected' 클래스 추가
         selectedLi.classList.add("selected");
 
-        // 3. 사용자 답변을 Map에 저장
-        const {optionId, isCorrect, quizId} = selectedLi.dataset;
-        userAnswersMap.set(parseInt(quizId), {
-            quizId: parseInt(quizId),
-            optionId: parseInt(optionId),
-            isCorrect: isCorrect === 'true',
-            questionNumber: currentQuestionIndex // 0-based index
-        });
-
-        // 4. '다음' 버튼 활성화
+        // 3. '다음' 버튼 활성화
         nextButton.disabled = false;
     };
 
+    /** [신규] 문장 순서(sentence-chip) 클릭 시 호출됩니다. */
+    const handleSentenceOrderClick = (selectedChip) => {
+        // 1. 정답 영역(Answer Box)에 있었는지, 선택 영역(Options Box)에 있었는지 확인
+        if (selectedChip.parentElement === sentenceOptionsBox) {
+            // 선택 영역 -> 정답 영역으로 이동
+            sentenceAnswerBox.appendChild(selectedChip);
+        } else {
+            // 정답 영역 -> 선택 영역으로 이동
+            sentenceOptionsBox.appendChild(selectedChip);
+        }
+
+        // 2. '다음' 버튼 활성화/비활성화
+        // 정답 영역에 칩이 하나라도 있으면 활성화
+        nextButton.disabled = sentenceAnswerBox.children.length === 0;
+    };
+
+
     /** '다음' 또는 '제출' 버튼 클릭 시 호출됩니다. */
     const handleNextClick = async () => {
-        // 현재 선택된 답변이 있는지 확인 (혹시 모를 방어 코드)
-        const selectedAnswer = userAnswersMap.get(quizData.quizzes[currentQuestionIndex].quizId);
-        if (!selectedAnswer) {
-            return;
+
+        const quiz = quizData.quizzes[currentQuestionIndex];
+
+        // [핵심 수정] 퀴즈 타입에 따라 userAnswersMap에 저장하는 로직 분기
+        if (quiz.quizType === 'SENTENCE_ORDER') {
+            // --- 문장 순서 퀴즈 ---
+
+            // 1. 사용자가 정렬한 칩 (정답 영역에 있는 칩)
+            const answerChips = sentenceAnswerBox.querySelectorAll('.sentence-chip');
+            // 2. 사용자가 정렬한 optionId 배열
+            const userOptionIds = Array.from(answerChips).map(chip => parseInt(chip.dataset.optionId));
+
+            // 3. DB에서 받은 정답 순서 (position 기준 오름차순)
+            const correctOptions = [...quiz.options].sort((a, b) => a.position - b.position);
+            // 4. 정답 optionId 배열
+            const correctOptionIds = correctOptions.map(opt => opt.optionId);
+
+            // 5. 두 배열이 일치하는지 검사 (순서까지 정확해야 함)
+            const isCorrect = JSON.stringify(userOptionIds) === JSON.stringify(correctOptionIds);
+
+            // 6. userAnswersMap에 저장
+            // (주의: optionId는 정답 순서의 첫 번째 항목 ID를 대표로 전송)
+            userAnswersMap.set(quiz.quizId, {
+                quizId: quiz.quizId,
+                optionId: correctOptions.length > 0 ? correctOptions[0].optionId : null, // 대표 ID
+                isCorrect: isCorrect,
+                questionNumber: currentQuestionIndex
+            });
+
+        } else {
+            // --- 객관식 퀴즈 (기존 로직) ---
+            const selectedLi = optionsListEl.querySelector(".option-item.selected");
+            if (!selectedLi) return; // 선택한 것이 없으면 진행 불가 (버튼이 비활성화라 이럴 일 없음)
+
+            const {optionId, isCorrect, quizId} = selectedLi.dataset;
+            userAnswersMap.set(parseInt(quizId), {
+                quizId: parseInt(quizId),
+                optionId: parseInt(optionId),
+                isCorrect: isCorrect === 'true',
+                questionNumber: currentQuestionIndex // 0-based index
+            });
         }
 
         // 1. 마지막 질문이 아닌 경우
@@ -289,7 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    /** 퀴즈 제출 로직 */
+    /** 퀴즈 제출 로직 (변경 없음) */
     const handleSubmit = async () => {
         nextButton.disabled = true;
         nextButton.textContent = "제출 중...";
@@ -302,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
             questionNumber: ans.questionNumber + 1 // 0-based -> 1-based
         }));
 
-        // 점수 계산
+        // 점수 계산 (isCorrect는 handleNextClick에서 이미 계산됨)
         const score = answers.filter(ans => ans.isCorrect).length;
 
         // 서버에 보낼 데이터 구성 (request.json 형식)
@@ -338,8 +428,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // 1. 퀴즈 시작 시간 기록
         startedAt = formatForLocalDateTime(new Date());
 
-        // 2. 퀴즈 데이터 로드 (API 응답 구조 변경됨)
-        const response = await fetchQuizGame(); // URL에서 userId 자동 감지 시도
+        // 2. 퀴즈 데이터 로드
+        const response = await fetchQuizGame();
 
         // [수정] 전역 변수에 userId 저장
         currentUserId = response.validUserId;
@@ -368,6 +458,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // 6. '다음' 버튼 이벤트 리스너 연결
             nextButton.addEventListener("click", handleNextClick);
+
+            // [신규] 통합 이벤트 리스너 연결
+            optionsContainer.addEventListener("click", handleAnswerClick);
 
         } else if (response.status === "LEVEL_COMPLETED") {
             // [신규] 레벨 완료 모달 표시

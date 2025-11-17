@@ -30,7 +30,6 @@ data class QuizRecordRequest(
     val completedAt: String,
 
     @field:NotEmpty(message = "퀴즈 기록엔 각각의 답변이 필요합니다")
-    @field:Size(min = 10, max = 10, message = "퀴즈에 대한 답변은 10개여야 합니다")
     @field:Valid
     val answers: List<QuizAnswerRequest>
 )
