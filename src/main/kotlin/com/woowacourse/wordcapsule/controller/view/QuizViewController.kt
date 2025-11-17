@@ -26,6 +26,10 @@ class QuizViewController(
     private val quizRecordService: QuizRecordServiceInterface,
     private val userService: UserServiceInterface
 ) {
+    companion object {
+        const val LOGIN_PATH = "redirect:/users/login"
+        const val HOME_PATH = "redirect:/"
+    }
 
     /**
      * 퀴즈 설정 목록 페이지
@@ -43,6 +47,7 @@ class QuizViewController(
     ): String {
         val redirectPath = loginInterceptor(session)
         if (redirectPath != null) return redirectPath
+        if (!isAdmin(session)) return HOME_PATH
 
         val sortDirection = if (sort.contains("desc")) Sort.Direction.DESC else Sort.Direction.ASC
         val sortProperty = sort.split(",")[0]
@@ -63,6 +68,7 @@ class QuizViewController(
     fun showQuizConfigDetailPage(@PathVariable configId: Long, model: Model, session: HttpSession): String {
         val redirectPath = loginInterceptor(session)
         if (redirectPath != null) return redirectPath
+        if (!isAdmin(session)) return HOME_PATH
 
         val response = quizConfigService.getQuizConfigDetail(configId)
 
@@ -72,16 +78,23 @@ class QuizViewController(
         return "index"
     }
 
+    /**
+     * 퀴즈 설정 생성 페이지
+     */
     @GetMapping("/config/new")
     fun showQuizConfigFormPage(model: Model, session: HttpSession): String {
         val redirectPath = loginInterceptor(session)
         if (redirectPath != null) return redirectPath
+        if (!isAdmin(session)) return HOME_PATH
 
         model.addAttribute("path", "content/quiz/config/new.jsp")
 
         return "index"
     }
 
+    /**
+     * 퀴즈 시작 페이지
+     */
     @GetMapping("/game")
     fun quizGameStart(model: Model, session: HttpSession): String {
         val redirectPath = loginInterceptor(session)
@@ -92,6 +105,9 @@ class QuizViewController(
         return "index"
     }
 
+    /**
+     * 퀴즈 기록 페이지
+     */
     @GetMapping("/records")
     fun showUserQuizRecordList(model: Model, session: HttpSession): String {
         val redirectPath = loginInterceptor(session)
@@ -101,6 +117,9 @@ class QuizViewController(
         return "index"
     }
 
+    /**
+     *  퀴즈 기록 상세보기 페이지
+     */
     @GetMapping("/record/{recordId}")
     fun showQuizRecordDetail(@PathVariable recordId: Long, model: Model, session: HttpSession): String {
         val redirectPath = loginInterceptor(session)
@@ -114,14 +133,21 @@ class QuizViewController(
         return "index"
     }
 
-    fun isAdmin(loginId: String): Boolean {
+    /**
+     * 어드민 확인
+     */
+    fun isAdmin(session: HttpSession): Boolean {
+        val loginId = session.getAttribute("loginId") as String
         val currentUser = userService.getUserByLoginId(loginId)
         return currentUser.role == UserRole.ADMIN
     }
 
+    /**
+     * 로그인 인터셉터
+     */
     fun loginInterceptor(session: HttpSession): String? {
         val redirectPath = session.getAttribute("loginId") as? String
-            ?: return "redirect:/users/login"
+            ?: return LOGIN_PATH
         return null;
     }
 }
