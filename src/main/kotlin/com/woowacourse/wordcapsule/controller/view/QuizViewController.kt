@@ -6,6 +6,7 @@ import com.woowacourse.wordcapsule.domain.user.UserRole
 import com.woowacourse.wordcapsule.service.quiz.QuizConfigServiceInterface
 import com.woowacourse.wordcapsule.service.quiz.QuizRecordServiceInterface
 import com.woowacourse.wordcapsule.service.user.UserServiceInterface
+import jakarta.servlet.http.HttpSession
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Controller
@@ -37,8 +38,12 @@ class QuizViewController(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
         @RequestParam(defaultValue = "createdAt,desc") sort: String,
-        model: Model
+        model: Model,
+        session: HttpSession
     ): String {
+        val redirectPath = loginInterceptor(session)
+        if (redirectPath != null) return redirectPath
+
         val sortDirection = if (sort.contains("desc")) Sort.Direction.DESC else Sort.Direction.ASC
         val sortProperty = sort.split(",")[0]
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))
@@ -51,8 +56,14 @@ class QuizViewController(
         return "index"
     }
 
+    /**
+     * 퀴즈 설정 상세보기 페이지
+     */
     @GetMapping("/config/{configId}")
-    fun showQuizConfigDetailPage(@PathVariable configId: Long, model: Model): String {
+    fun showQuizConfigDetailPage(@PathVariable configId: Long, model: Model, session: HttpSession): String {
+        val redirectPath = loginInterceptor(session)
+        if (redirectPath != null) return redirectPath
+
         val response = quizConfigService.getQuizConfigDetail(configId)
 
         model.addAttribute("path", "content/quiz/config/detail.jsp")
@@ -62,34 +73,42 @@ class QuizViewController(
     }
 
     @GetMapping("/config/new")
-    fun showQuizConfigFormPage(model: Model): String {
+    fun showQuizConfigFormPage(model: Model, session: HttpSession): String {
+        val redirectPath = loginInterceptor(session)
+        if (redirectPath != null) return redirectPath
+
         model.addAttribute("path", "content/quiz/config/new.jsp")
 
         return "index"
     }
 
     @GetMapping("/game")
-    fun quizGameStart(model: Model): String {
+    fun quizGameStart(model: Model, session: HttpSession): String {
+        val redirectPath = loginInterceptor(session)
+        if (redirectPath != null) return redirectPath
+
         model.addAttribute("path", "content/quiz/game.jsp")
         model.addAttribute("layoutType", LayoutType.SIMPLE)
         return "index"
     }
 
     @GetMapping("/records")
-    fun showUserQuizRecordList(
-        model: Model
-    ): String {
+    fun showUserQuizRecordList(model: Model, session: HttpSession): String {
+        val redirectPath = loginInterceptor(session)
+        if (redirectPath != null) return redirectPath
+
         model.addAttribute("path", "content/quiz/record/list.jsp")
         return "index"
     }
 
     @GetMapping("/records/{recordId}")
-    fun showQuizRecordDetail(@PathVariable recordId: Long, model: Model): String {
+    fun showQuizRecordDetail(@PathVariable recordId: Long, model: Model, session: HttpSession): String {
+        val redirectPath = loginInterceptor(session)
+        if (redirectPath != null) return redirectPath
+
         val response = quizRecordService.getUserQuizRecordDetail(recordId)
 
-        // 보여줄 페이지 경로 추가
         model.addAttribute("path", "content/quiz/record/detail.jsp")
-        // 모델에 뷰(JSP)에서 사용할 데이터를 추가
         model.addAttribute("data", response)
 
         return "index"
@@ -98,5 +117,11 @@ class QuizViewController(
     fun isAdmin(loginId: String): Boolean {
         val currentUser = userService.getUserByLoginId(loginId)
         return currentUser.role == UserRole.ADMIN
+    }
+
+    fun loginInterceptor(session: HttpSession): String? {
+        val redirectPath = session.getAttribute("loginId") as? String
+            ?: return "redirect:/users/login"
+        return null;
     }
 }
