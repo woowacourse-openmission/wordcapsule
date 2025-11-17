@@ -101,7 +101,7 @@ class QuizViewController(
         return "index"
     }
 
-    @GetMapping("/records/{recordId}")
+    @GetMapping("/record/{recordId}")
     fun showQuizRecordDetail(@PathVariable recordId: Long, model: Model, session: HttpSession): String {
         val redirectPath = loginInterceptor(session)
         if (redirectPath != null) return redirectPath
