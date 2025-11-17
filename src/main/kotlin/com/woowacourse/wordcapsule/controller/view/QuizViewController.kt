@@ -2,6 +2,7 @@ package com.woowacourse.wordcapsule.controller.view
 
 import com.woowacourse.wordcapsule.domain.quiz.Level
 import com.woowacourse.wordcapsule.domain.quiz.QuizType
+import com.woowacourse.wordcapsule.domain.user.UserRole
 import com.woowacourse.wordcapsule.service.quiz.QuizConfigServiceInterface
 import com.woowacourse.wordcapsule.service.quiz.QuizRecordServiceInterface
 import com.woowacourse.wordcapsule.service.user.UserServiceInterface
@@ -44,12 +45,20 @@ class QuizViewController(
 
         val response = quizConfigService.getQuizConfigs(level, quizType, pageable)
 
-        // 보여줄 페이지 경로 추가
         model.addAttribute("path", "content/quiz/config/list.jsp")
-        // 모델에 뷰(JSP)에서 사용할 데이터를 추가
         model.addAttribute("data", response)
 
-        return "index" // index로 고정 후 관리
+        return "index"
+    }
+
+    @GetMapping("/config/{configId}")
+    fun showQuizConfigListPage(@PathVariable configId: Long, model: Model): String {
+        val response = quizConfigService.getQuizConfigDetail(configId)
+
+        model.addAttribute("path", "content/quiz/config/detail.jsp")
+        model.addAttribute("data", response)
+
+        return "index"
     }
 
     @GetMapping("/game")
@@ -77,5 +86,10 @@ class QuizViewController(
         model.addAttribute("data", response)
 
         return "index"
+    }
+
+    fun isAdmin(loginId: String): Boolean {
+        val currentUser = userService.getUserByLoginId(loginId)
+        return currentUser.role == UserRole.ADMIN
     }
 }
