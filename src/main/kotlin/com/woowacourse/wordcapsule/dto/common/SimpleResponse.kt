@@ -7,7 +7,7 @@ class SimpleResponse private constructor(
     code: String,
     message: String
 ) : BaseResponse(code, message) {
-    
+
     companion object {
         /**
          * No Content 응답 생성 (204 No Content)
@@ -20,7 +20,7 @@ class SimpleResponse private constructor(
                 message = ResponseCode.NO_CONTENT.message
             )
         }
-        
+
         /**
          * Accepted 응답 생성 (202 Accepted)
          * 
@@ -32,7 +32,7 @@ class SimpleResponse private constructor(
                 message = ResponseCode.ACCEPTED.message
             )
         }
-        
+
         /**
          * 사용자 정의 메시지와 함께 No Content 응답 생성
          * 
@@ -45,7 +45,7 @@ class SimpleResponse private constructor(
                 message = message
             )
         }
-        
+
         /**
          * 사용자 정의 메시지와 함께 Accepted 응답 생성
          * 

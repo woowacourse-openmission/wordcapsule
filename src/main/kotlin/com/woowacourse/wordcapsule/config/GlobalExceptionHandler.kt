@@ -70,23 +70,11 @@ class GlobalExceptionHandler {
      * JSON 파싱 에러 처리
      */
     @ExceptionHandler(HttpMessageNotReadableException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun handleHttpMessageNotReadableException(
-        ex: HttpMessageNotReadableException
-    ): ResponseEntity<ErrorResponse> {
+    fun handleHttpMessageNotReadableException(): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse.of(ResponseCode.BAD_REQUEST, "잘못된 형식의 JSON 요청입니다")
         return ResponseEntity.status(ResponseCode.BAD_REQUEST.httpStatus).body(errorResponse)
     }
 
-//    /**
-//     * 기타 모든 예외에 대한 기본 처리
-//     */
-//    @ExceptionHandler(Exception::class, produces = [MediaType.APPLICATION_JSON_VALUE])
-//    fun handleGenericException(
-//        ex: Exception
-//    ): ResponseEntity<ErrorResponse> {
-//        val errorResponse = ErrorResponse.of(ResponseCode.INTERNAL_ERROR, ex)
-//        return ResponseEntity.status(ResponseCode.INTERNAL_ERROR.httpStatus).body(errorResponse)
-//    }
 
     /**
      * 접근 권한 없음 예외 처리

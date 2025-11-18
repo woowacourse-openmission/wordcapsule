@@ -30,7 +30,7 @@ class QuizRecordService(
     private val quizOptionRepository: QuizOptionRepository,
     private val quizRepository: QuizRepository,
     private val userRepository: UserRepository
-): QuizRecordServiceInterface {
+) : QuizRecordServiceInterface {
 
     /**
      * 퀴즈 기록 생성
@@ -49,7 +49,8 @@ class QuizRecordService(
 
         val savedQuizRecord = quizRecordRepository.save(quizRecord)
 
-        val answers = request.answers.mapIndexed { index, answerDto -> buildQuizAnswer(index, answerDto, savedQuizRecord) }
+        val answers =
+            request.answers.mapIndexed { index, answerDto -> buildQuizAnswer(index, answerDto, savedQuizRecord) }
 
         answers.forEach { answer -> savedQuizRecord.addAnswer(answer) }
 
@@ -64,8 +65,8 @@ class QuizRecordService(
         pageable: Pageable
     ): PageResponse<QuizRecordListResponse> {
 
-        val page = if (userId != null)
-            { quizRecordRepository.findAllByUserId(userId, pageable)
+        val page = if (userId != null) {
+            quizRecordRepository.findAllByUserId(userId, pageable)
         } else {
             quizRecordRepository.findAll(pageable)
         }.map(QuizRecordListResponse::from)

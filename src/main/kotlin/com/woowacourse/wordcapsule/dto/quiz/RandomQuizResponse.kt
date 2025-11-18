@@ -56,10 +56,10 @@ data class RandomQuizResponse(
 enum class RandomQuizStatus {
     /** 추천 가능한 퀴즈 존재 */
     AVAILABLE,
-    
+
     /** 현재 레벨의 퀴즈를 모두 완료 */
     LEVEL_COMPLETED,
-    
+
     /** 사용자를 찾을 수 없음 */
     USER_NOT_FOUND
 }
