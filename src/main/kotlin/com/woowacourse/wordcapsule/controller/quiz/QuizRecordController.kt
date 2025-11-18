@@ -37,8 +37,7 @@ class QuizRecordController(
         @RequestParam(required = false) userId: Long,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
-        @RequestParam(defaultValue = "startedAt,desc") sort: String): DataResponse<PageResponse<QuizRecordListResponse>>
-    {
+        @RequestParam(defaultValue = "startedAt,desc") sort: String): DataResponse<PageResponse<QuizRecordListResponse>> {
         val sortDirection = if (sort.contains("desc")) Sort.Direction.DESC else Sort.Direction.ASC
         val sortProperty = sort.split(",")[0]
         val pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortProperty))

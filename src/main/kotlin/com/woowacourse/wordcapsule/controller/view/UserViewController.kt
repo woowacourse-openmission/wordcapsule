@@ -230,10 +230,12 @@ class UserViewController(
             val users = userService.getUsers(currentUser.id, pageable)
 
             model.addAttribute("path", "content/user/list.jsp")
-            model.addAttribute("data", mapOf(
-                "users" to users,
-                "currentUserId" to currentUser.id
-            ))
+            model.addAttribute(
+                "data", mapOf(
+                    "users" to users,
+                    "currentUserId" to currentUser.id
+                )
+            )
             "index"
         } catch (e: IllegalAccessException) {
             model.addAttribute("error", "관리자만 접근할 수 있습니다.")

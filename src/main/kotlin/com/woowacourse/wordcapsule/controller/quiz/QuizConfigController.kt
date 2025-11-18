@@ -64,7 +64,7 @@ class QuizConfigController(
         val result = quizConfigService.getQuizConfigs(level, quizType, pageable)
         return DataResponse.of(result)
     }
-    
+
     /**
      * ID로 퀴즈 설정 상세 정보 조회
      *
@@ -92,7 +92,7 @@ class QuizConfigController(
         val updatedId = quizConfigService.updateQuizConfig(configId, request)
         return DataResponse.of(mapOf("configId" to updatedId))
     }
-    
+
     /**
      * 퀴즈 설정을 삭제
      *

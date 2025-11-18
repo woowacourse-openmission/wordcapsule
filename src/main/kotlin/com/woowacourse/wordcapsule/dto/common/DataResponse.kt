@@ -10,7 +10,7 @@ class DataResponse<T> private constructor(
     message: String,
     val data: T
 ) : BaseResponse(code, message) {
-    
+
     companion object {
         /**
          * 성공 응답 생성 (200 OK)
@@ -25,7 +25,7 @@ class DataResponse<T> private constructor(
                 data = data
             )
         }
-        
+
         /**
          * 리소스 생성 응답 (201 Created)
          * 
@@ -39,7 +39,7 @@ class DataResponse<T> private constructor(
                 data = data
             )
         }
-        
+
         /**
          * 요청 접수 응답 (202 Accepted)
          * 
@@ -53,7 +53,7 @@ class DataResponse<T> private constructor(
                 data = data
             )
         }
-        
+
         /**
          * 사용자 정의 메시지와 함께 성공 응답 생성 (200 OK)
          * 
@@ -68,7 +68,7 @@ class DataResponse<T> private constructor(
                 data = data
             )
         }
-        
+
         /**
          * 사용자 정의 메시지와 함께 생성 응답 생성 (201 Created)
          * 
@@ -83,7 +83,7 @@ class DataResponse<T> private constructor(
                 data = data
             )
         }
-        
+
         /**
          * 사용자 정의 메시지와 함께 접수 응답 생성 (202 Accepted)
          * 
