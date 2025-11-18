@@ -33,7 +33,7 @@ interface QuizConfigServiceInterface {
      * @return 페이징된 퀴즈 설정 목록
      */
     fun getQuizConfigs(level: Level?, quizType: QuizType?, pageable: Pageable): PageResponse<QuizConfigListResponse>
-    
+
     /**
      * ID로 퀴즈 설정 상세 정보 조회
      *
@@ -42,7 +42,7 @@ interface QuizConfigServiceInterface {
      * @throws EntityNotFoundException 퀴즈 설정을 찾을 수 없는 경우
      */
     fun getQuizConfigDetail(configId: Long): QuizConfigDetailResponse
-    
+
     /**
      * 퀴즈 설정 정보를 부분적으로 수정
      *
@@ -52,7 +52,7 @@ interface QuizConfigServiceInterface {
      * @throws EntityNotFoundException 퀴즈 설정을 찾을 수 없는 경우
      */
     fun updateQuizConfig(configId: Long, request: QuizConfigUpdateRequest): Long
-    
+
     /**
      * 퀴즈 설정을 삭제
      *

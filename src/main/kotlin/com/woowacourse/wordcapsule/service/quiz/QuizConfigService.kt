@@ -31,7 +31,7 @@ class QuizConfigService(
     override fun createQuizConfig(request: QuizConfigRequest): Long {
         val user = userRepository.findById(request.userId)
             .orElseThrow { EntityNotFoundException("사용자를 찾을 수 없습니다. ID: ${request.userId}") }
-        
+
         val quizConfig = QuizConfigFactory.createQuizConfig(request, user)
         val savedConfig = quizConfigRepository.save(quizConfig)
         return savedConfig.id
@@ -51,32 +51,32 @@ class QuizConfigService(
 
         return PageResponse.of(page)
     }
-    
+
     override fun getQuizConfigDetail(configId: Long): QuizConfigDetailResponse {
         val quizConfig = quizConfigRepository.findById(configId)
             .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
-        
+
         return QuizConfigDetailResponse.from(quizConfig)
     }
-    
+
     @Transactional
     override fun updateQuizConfig(configId: Long, request: QuizConfigUpdateRequest): Long {
         val quizConfig = quizConfigRepository.findById(configId)
             .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
-        
+
         // JPA dirty checking 활용 - 엔티티 직접 수정
         request.quizName?.let { quizConfig.quizName = it }
         request.level?.let { quizConfig.level = it }
-        
+
         // save() 호출 없이도 트랜잭션 종료 시 자동 업데이트
         return quizConfig.id
     }
-    
+
     @Transactional
     override fun deleteQuizConfig(configId: Long) {
         val quizConfig = quizConfigRepository.findById(configId)
             .orElseThrow { EntityNotFoundException("퀴즈 설정을 찾을 수 없습니다. ID: $configId") }
-        
+
         quizConfigRepository.delete(quizConfig)
     }
 
