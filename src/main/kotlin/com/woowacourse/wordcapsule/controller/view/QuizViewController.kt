@@ -6,6 +6,7 @@ import com.woowacourse.wordcapsule.domain.user.UserRole
 import com.woowacourse.wordcapsule.service.quiz.QuizConfigServiceInterface
 import com.woowacourse.wordcapsule.service.quiz.QuizRecordServiceInterface
 import com.woowacourse.wordcapsule.service.user.UserServiceInterface
+import com.woowacourse.wordcapsule.util.addFromTest
 import jakarta.servlet.http.HttpSession
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -72,8 +73,59 @@ class QuizViewController(
 
         val response = quizConfigService.getQuizConfigDetail(configId)
 
+        // [1] addAttribute 반복 사용
+//        model.addAttribute("path", "content/quiz/config/detail.jsp")
+//        model.addAttribute("configId", response.configId)
+//        model.addAttribute("quizName", response.quizName)
+//        model.addAttribute("level", response.level)
+//        model.addAttribute("updatedAt", response.updatedAt)
+//        model.addAttribute("createdAt", response.createdAt)
+//        model.addAttribute("quizzes", response.quizzes)
+//
+        // [2] addAllAttributes 사용, 에러 발생
+//        val path = "content/quiz/config/detail.jsp"
+//        model.addAllAttributes(
+//            listOf<Any>(
+//                path,
+//                response.configId,
+//                response.quizName,
+//                response.level,
+//                response.updatedAt,
+//                response.createdAt,
+//                response.quizzes,
+//            )
+//        )
+//
+        // [2-1] addAllAttribute 사용, Map으로 매핑하여 전달
+//        model.addAllAttributes(
+//            mapOf(
+//                "path" to "content/quiz/config/detail.jsp",
+//                "configId" to response.configId,
+//                "quizName" to response.quizName,
+//                "level" to response.level,
+//                "updatedAt" to response.updatedAt,
+//                "createdAt" to response.createdAt,
+//                "quizzes" to response.quizzes,
+//            )
+//        )
+
+        // [3-1] 확장함수 테스트
+//        val map = mapOf(
+//            "path" to "content/quiz/config/detail.jsp",
+//            "configId" to response.configId,
+//            "quizName" to response.quizName,
+//            "level" to response.level,
+//            "updatedAt" to response.updatedAt,
+//            "createdAt" to response.createdAt,
+//            "quizzes" to response.quizzes,
+//        )
+//
+//        model.addAll(map)
+//
+
+        // [3-2] 리플렉션과 제네릭을 활용한 DTO 매핑 유틸 확장 메서드
         model.addAttribute("path", "content/quiz/config/detail.jsp")
-        model.addAttribute("data", response)
+        model.addFromTest(response)
 
         return "index"
     }
