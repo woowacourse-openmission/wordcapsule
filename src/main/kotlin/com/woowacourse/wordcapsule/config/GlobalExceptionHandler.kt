@@ -6,7 +6,6 @@ import com.woowacourse.wordcapsule.dto.common.ResponseCode
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -26,7 +25,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun handleValidationException(
         ex: MethodArgumentNotValidException
-    ): ResponseEntity<ErrorResponse> {
+    ): ErrorResponse {
         val errors = ex.bindingResult.fieldErrors.map { fieldError ->
             ErrorDetailResponse(
                 field = fieldError.field,
@@ -35,8 +34,7 @@ class GlobalExceptionHandler {
             )
         }
 
-        val errorResponse = ErrorResponse.of(ResponseCode.VALIDATION_FAILED, errors)
-        return ResponseEntity.status(ResponseCode.VALIDATION_FAILED.httpStatus).body(errorResponse)
+        return ErrorResponse.of(ResponseCode.VALIDATION_FAILED, errors)
     }
 
     /**
@@ -45,14 +43,14 @@ class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun handleEntityNotFoundException(
         ex: EntityNotFoundException
-    ): ResponseEntity<ErrorResponse> {
+    ): ErrorResponse {
         val errorResponse = if (ex.message.isNullOrBlank()) {
             ErrorResponse.of(ResponseCode.NOT_FOUND)
         } else {
             ErrorResponse.of(ResponseCode.NOT_FOUND, ex.message!!)
         }
 
-        return ResponseEntity.status(ResponseCode.NOT_FOUND.httpStatus).body(errorResponse)
+        return errorResponse
     }
 
     /**
@@ -61,18 +59,16 @@ class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun handleDataIntegrityViolationException(
         ex: DataIntegrityViolationException
-    ): ResponseEntity<ErrorResponse> {
-        val errorResponse = ErrorResponse.of(ResponseCode.DATABASE_ERROR, ex)
-        return ResponseEntity.status(ResponseCode.DATABASE_ERROR.httpStatus).body(errorResponse)
+    ): ErrorResponse {
+        return ErrorResponse.of(ResponseCode.DATABASE_ERROR, ex)
     }
 
     /**
      * JSON 파싱 에러 처리
      */
     @ExceptionHandler(HttpMessageNotReadableException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun handleHttpMessageNotReadableException(): ResponseEntity<ErrorResponse> {
-        val errorResponse = ErrorResponse.of(ResponseCode.BAD_REQUEST, "잘못된 형식의 JSON 요청입니다")
-        return ResponseEntity.status(ResponseCode.BAD_REQUEST.httpStatus).body(errorResponse)
+    fun handleHttpMessageNotReadableException(): ErrorResponse {
+        return ErrorResponse.of(ResponseCode.BAD_REQUEST, "잘못된 형식의 JSON 요청입니다")
     }
 
 
@@ -82,8 +78,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(IllegalAccessException::class, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun handleIllegalAccessException(
         ex: IllegalAccessException
-    ): ResponseEntity<ErrorResponse> {
-        val errorResponse = ErrorResponse.of(ResponseCode.FORBIDDEN, ex)
-        return ResponseEntity.status(ResponseCode.FORBIDDEN.httpStatus).body(errorResponse)
+    ): ErrorResponse {
+        return ErrorResponse.of(ResponseCode.FORBIDDEN, ex)
     }
 }
