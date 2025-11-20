@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import java.net.http.HttpResponse
 
 /**
  * 퀴즈 설정 관리를 위한 REST API 컨트롤러
@@ -76,7 +77,7 @@ class QuizConfigController(
         val result = quizConfigService.getQuizConfigDetail(configId)
         return DataResponse.of(result)
     }
-    
+
     /**
      * 퀴즈 설정 정보를 부분적으로 수정
      *

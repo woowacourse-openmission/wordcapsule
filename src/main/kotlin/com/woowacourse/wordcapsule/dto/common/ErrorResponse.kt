@@ -1,12 +1,15 @@
 package com.woowacourse.wordcapsule.dto.common
 
+import java.time.Instant
+
 /**
  * 에러 응답을 위한 DTO
  */
 class ErrorResponse private constructor(
     code: String,
     message: String,
-    val errors: List<ErrorDetailResponse> = emptyList()
+    val errors: List<ErrorDetailResponse> = emptyList(),
+    val timestamp : Instant
 ) : BaseResponse(code, message) {
 
     companion object {
@@ -19,7 +22,8 @@ class ErrorResponse private constructor(
         fun of(responseCode: ResponseCode): ErrorResponse {
             return ErrorResponse(
                 code = responseCode.code,
-                message = responseCode.message
+                message = responseCode.message,
+                timestamp = Instant.now()
             )
         }
 
@@ -33,7 +37,8 @@ class ErrorResponse private constructor(
         fun of(responseCode: ResponseCode, throwable: Throwable): ErrorResponse {
             return ErrorResponse(
                 code = responseCode.code,
-                message = responseCode.getMessage(throwable)
+                message = responseCode.message,
+                timestamp = Instant.now()
             )
         }
 
@@ -47,7 +52,8 @@ class ErrorResponse private constructor(
         fun of(responseCode: ResponseCode, message: String): ErrorResponse {
             return ErrorResponse(
                 code = responseCode.code,
-                message = message
+                message = responseCode.message,
+                timestamp = Instant.now()
             )
         }
 
@@ -62,6 +68,7 @@ class ErrorResponse private constructor(
             return ErrorResponse(
                 code = responseCode.code,
                 message = responseCode.message,
+                timestamp = Instant.now(),
                 errors = errors
             )
         }
@@ -78,6 +85,7 @@ class ErrorResponse private constructor(
             return ErrorResponse(
                 code = responseCode.code,
                 message = message,
+                timestamp = Instant.now(),
                 errors = errors
             )
         }

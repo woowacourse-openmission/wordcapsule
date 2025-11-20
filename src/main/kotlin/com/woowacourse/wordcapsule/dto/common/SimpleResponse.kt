@@ -1,11 +1,14 @@
 package com.woowacourse.wordcapsule.dto.common
 
+import java.time.Instant
+
 /**
  * 데이터 없이 성공 상태만 응답하는 DTO (주로 204 No Content용)
  */
 class SimpleResponse private constructor(
     code: String,
-    message: String
+    message: String,
+    val timestamp : Instant
 ) : BaseResponse(code, message) {
 
     companion object {
@@ -17,7 +20,8 @@ class SimpleResponse private constructor(
         fun noContent(): SimpleResponse {
             return SimpleResponse(
                 code = ResponseCode.NO_CONTENT.code,
-                message = ResponseCode.NO_CONTENT.message
+                message = ResponseCode.NO_CONTENT.message,
+                timestamp = Instant.now()
             )
         }
 
@@ -29,7 +33,8 @@ class SimpleResponse private constructor(
         fun accepted(): SimpleResponse {
             return SimpleResponse(
                 code = ResponseCode.ACCEPTED.code,
-                message = ResponseCode.ACCEPTED.message
+                message = ResponseCode.NO_CONTENT.message,
+                timestamp = Instant.now()
             )
         }
 
@@ -42,7 +47,8 @@ class SimpleResponse private constructor(
         fun noContent(message: String): SimpleResponse {
             return SimpleResponse(
                 code = ResponseCode.NO_CONTENT.code,
-                message = message
+                message = ResponseCode.NO_CONTENT.message,
+                timestamp = Instant.now()
             )
         }
 
@@ -55,7 +61,8 @@ class SimpleResponse private constructor(
         fun accepted(message: String): SimpleResponse {
             return SimpleResponse(
                 code = ResponseCode.ACCEPTED.code,
-                message = message
+                message = ResponseCode.NO_CONTENT.message,
+                timestamp = Instant.now()
             )
         }
     }
