@@ -69,7 +69,7 @@ class ModelExtensionTest {
                 Arguments.of(
                     "addFromTest4",
                     { model: Model, dto: TestDto ->
-                        model.addFromTest4(dto)
+                        model.addAllAttributesFrom(dto)
                     }
                 ),
             )

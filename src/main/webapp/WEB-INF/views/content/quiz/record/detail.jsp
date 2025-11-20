@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:useBean id="path" class="java.lang.String" scope="request"/>
-<jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
 <%--
   이 페이지(detail.jsp)에만 적용되는 스타일입니다.
@@ -227,17 +226,17 @@
 <div class="record-detail-container">
 
     <div class="summary-card">
-        <h2>${data.quizName}</h2>
+        <h2>${quizName}</h2>
 
         <div class="score-display">
-            <span class="score-value">${data.score}</span>
-            <span class="score-total">/ ${fn:length(data.answers)}</span>
+            <span class="score-value">${score}</span>
+            <span class="score-total">/ ${fn:length(answers)}</span>
         </div>
 
         <div class="summary-meta">
-            <span class="level-badge">${data.level}</span>
+            <span class="level-badge">${level}</span>
             <span>
-                완료: <c:out value="${data.completedAt}"/>
+                완료: <c:out value="${completedAt}"/>
             </span>
         </div>
     </div>
@@ -245,7 +244,7 @@
     <div class="answer-list">
         <h3 class="answer-list-header">상세 풀이</h3>
 
-        <c:forEach var="answer" items="${data.answers}" varStatus="status">
+        <c:forEach var="answer" items="${answers}" varStatus="status">
             <%--
               [수정] answer.quiz.options가 SENTENCE_ORDER일 때
               DB에서 position 순으로 정렬되어 왔다고 가정합니다.

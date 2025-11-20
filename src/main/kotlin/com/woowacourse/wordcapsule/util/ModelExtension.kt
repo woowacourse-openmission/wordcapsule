@@ -41,7 +41,10 @@ inline fun <reified T : Any> Model.addFromTest3(dto: T) {
         }
 }
 
-inline fun <reified T : Any> Model.addFromTest4(dto: T) {
+/**
+ * DTO를 Model attribute에 자동 매핑 함수
+ */
+inline fun <reified T : Any> Model.addAllAttributesFrom(dto: T) {
     T::class.memberProperties.forEach { prop ->
         val value = prop.get(dto)
         this.addAttribute(prop.name, value)
