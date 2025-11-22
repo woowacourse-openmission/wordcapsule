@@ -6,6 +6,7 @@ import com.woowacourse.wordcapsule.domain.user.UserRole
 import com.woowacourse.wordcapsule.service.quiz.QuizConfigServiceInterface
 import com.woowacourse.wordcapsule.service.quiz.QuizRecordServiceInterface
 import com.woowacourse.wordcapsule.service.user.UserServiceInterface
+import com.woowacourse.wordcapsule.util.addAllAttributesFrom
 import jakarta.servlet.http.HttpSession
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -56,7 +57,7 @@ class QuizViewController(
         val response = quizConfigService.getQuizConfigs(level, quizType, pageable)
 
         model.addAttribute("path", "content/quiz/config/list.jsp")
-        model.addAttribute("data", response)
+        model.addAllAttributesFrom(response)
 
         return "index"
     }
@@ -73,7 +74,7 @@ class QuizViewController(
         val response = quizConfigService.getQuizConfigDetail(configId)
 
         model.addAttribute("path", "content/quiz/config/detail.jsp")
-        model.addAttribute("data", response)
+        model.addAllAttributesFrom(response)
 
         return "index"
     }
@@ -128,7 +129,7 @@ class QuizViewController(
         val response = quizRecordService.getUserQuizRecordDetail(recordId)
 
         model.addAttribute("path", "content/quiz/record/detail.jsp")
-        model.addAttribute("data", response)
+        model.addAllAttributesFrom(response)
 
         return "index"
     }

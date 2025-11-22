@@ -205,7 +205,7 @@
     <%-- 2. 퀴즈 설정 리스트 --%>
     <div class="quiz-config-list-container">
         <c:choose>
-            <c:when test="${empty data.content}">
+            <c:when test="${empty content}">
                 <div class="empty-list-message">
                     <p>생성된 퀴즈 설정이 없습니다.</p>
                 </div>
@@ -213,7 +213,7 @@
 
             <c:otherwise>
                 <ul class="quiz-config-list">
-                    <c:forEach var="config" items="${data.content}">
+                    <c:forEach var="config" items="${content}">
                         <li class="quiz-config-item">
                             <c:url var="detailUrl" value="/quiz/config/${config.configId}"/>
 
@@ -238,19 +238,19 @@
         </c:choose>
     </div>
 
-    <c:if test="${not empty data.content and data.totalPages > 1}">
+    <c:if test="${not empty content and totalPages > 1}">
         <nav class="pagination">
             <ul class="pagination-list">
 
                 <%-- '이전' 버튼 --%>
                 <c:choose>
-                    <c:when test="${data.first}">
+                    <c:when test="${first}">
                         <li class="page-item disabled"><span class="page-link">이전</span></li>
                     </c:when>
                     <c:otherwise>
                         <li class="page-item">
                             <c:url var="prevUrl" value="/quiz/configs">
-                                <c:param name="page" value="${data.page - 1}"/>
+                                <c:param name="page" value="${page - 1}"/>
                                 <c:if test="${not empty param.level}"><c:param name="level"
                                                                                value="${param.level}"/></c:if>
                                 <c:if test="${not empty param.quizType}"><c:param name="quizType"
@@ -264,21 +264,21 @@
                 </c:choose>
 
                 <%-- 페이지 번호 목록 --%>
-                <c:set var="startPage" value="${Math.max(0, data.page - 2)}"/>
-                <c:set var="endPage" value="${Math.min(data.totalPages - 1, data.page + 2)}"/>
-                <c:if test="${data.totalPages <= 5}">
+                <c:set var="startPage" value="${Math.max(0, page - 2)}"/>
+                <c:set var="endPage" value="${Math.min(totalPages - 1, page + 2)}"/>
+                <c:if test="${totalPages <= 5}">
                     <c:set var="startPage" value="0"/>
-                    <c:set var="endPage" value="${data.totalPages - 1}"/>
+                    <c:set var="endPage" value="${totalPages - 1}"/>
                 </c:if>
-                <c:if test="${data.page < 2 && data.totalPages > 5}">
+                <c:if test="${page < 2 && totalPages > 5}">
                     <c:set var="endPage" value="4"/>
                 </c:if>
-                <c:if test="${data.page > data.totalPages - 3 && data.totalPages > 5}">
-                    <c:set var="startPage" value="${data.totalPages - 5}"/>
+                <c:if test="${page > totalPages - 3 && totalPages > 5}">
+                    <c:set var="startPage" value="${totalPages - 5}"/>
                 </c:if>
 
                 <c:forEach begin="${startPage}" end="${endPage}" var="pageNum">
-                    <li class="page-item ${pageNum == data.page ? 'active' : ''}">
+                    <li class="page-item ${pageNum == page ? 'active' : ''}">
                         <c:url var="pageUrl" value="/quiz/configs">
                             <c:param name="page" value="${pageNum}"/>
                             <c:if test="${not empty param.level}"><c:param name="level" value="${param.level}"/></c:if>
@@ -293,13 +293,13 @@
 
                 <%-- '다음' 버튼 --%>
                 <c:choose>
-                    <c:when test="${data.last}">
+                    <c:when test="${last}">
                         <li class="page-item disabled"><span class="page-link">다음</span></li>
                     </c:when>
                     <c:otherwise>
                         <li class="page-item">
                             <c:url var="nextUrl" value="/quiz/configs">
-                                <c:param name="page" value="${data.page + 1}"/>
+                                <c:param name="page" value="${page + 1}"/>
                                 <c:if test="${not empty param.level}"><c:param name="level"
                                                                                value="${param.level}"/></c:if>
                                 <c:if test="${not empty param.quizType}"><c:param name="quizType"

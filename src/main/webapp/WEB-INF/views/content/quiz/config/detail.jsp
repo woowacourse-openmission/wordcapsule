@@ -6,7 +6,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<jsp:useBean id="data" class="java.lang.Object" scope="request"/>
 
 <%-- 페이지별 CSS --%>
 <style>
@@ -217,11 +216,11 @@
 
 </style>
 
-<div class="quiz-config-detail-container" data-config-id="${data.configId}">
+<div class="quiz-config-detail-container" data-config-id="${configId}">
 
     <%-- 1. 상단 헤더 (제목 + 아이콘 버튼) --%>
     <div class="detail-header">
-        <h1 class="quiz-title">${data.quizName}</h1>
+        <h1 class="quiz-title">${quizName}</h1>
         <div class="icon-buttons">
             <button type="button" id="btn-edit-toggle" class="icon-btn" title="수정">✏️</button>
             <button type="button" id="btn-delete" class="icon-btn btn-danger-icon" title="삭제">🗑️</button>
@@ -234,15 +233,15 @@
         <form id="config-update-form" onsubmit="return false;">
             <div class="form-group">
                 <label for="quizName" class="form-label">퀴즈 이름</label>
-                <input type="text" id="quizName" class="form-control" value="${data.quizName}" required minlength="1"
+                <input type="text" id="quizName" class="form-control" value="${quizName}" required minlength="1"
                        maxlength="50">
             </div>
             <div class="form-group">
                 <label for="quizLevel" class="form-label">레벨</label>
                 <select id="quizLevel" class="form-control">
-                    <option value="BEGINNER" ${data.level == 'BEGINNER' ? 'selected' : ''}>BEGINNER</option>
-                    <option value="INTERMEDIATE" ${data.level == 'INTERMEDIATE' ? 'selected' : ''}>INTERMEDIATE</option>
-                    <option value="ADVANCED" ${data.level == 'ADVANCED' ? 'selected' : ''}>ADVANCED</option>
+                    <option value="BEGINNER" ${level == 'BEGINNER' ? 'selected' : ''}>BEGINNER</option>
+                    <option value="INTERMEDIATE" ${level == 'INTERMEDIATE' ? 'selected' : ''}>INTERMEDIATE</option>
+                    <option value="ADVANCED" ${level == 'ADVANCED' ? 'selected' : ''}>ADVANCED</option>
                 </select>
             </div>
 
@@ -257,20 +256,20 @@
         <div class="info-grid">
             <div class="info-item">
                 <strong>Config ID</strong>
-                <span>${data.configId}</span>
+                <span>${configId}</span>
             </div>
             <div class="info-item">
                 <strong>총 문항수</strong>
-                <span>${data.quizzes.size()} 문항</span>
+                <span>${quizzes.size()} 문항</span>
             </div>
             <div class="info-item">
                 <strong>생성일</strong>
-                <fmt:parseDate value="${data.createdAt}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="createdDate" type="BOTH"/>
+                <fmt:parseDate value="${createdAt}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="createdDate" type="BOTH"/>
                 <span><fmt:formatDate value="${createdDate}" pattern="yyyy.MM.dd HH:mm"/></span>
             </div>
             <div class="info-item">
                 <strong>최근 수정일</strong>
-                <fmt:parseDate value="${data.updatedAt}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="updatedDate" type="BOTH"/>
+                <fmt:parseDate value="${updatedAt}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="updatedDate" type="BOTH"/>
                 <span><fmt:formatDate value="${updatedDate}" pattern="yyyy.MM.dd HH:mm"/></span>
             </div>
         </div>
@@ -279,11 +278,11 @@
 
     <%-- 4. 포함된 퀴즈 목록 --%>
     <div class="section-card">
-        <h3>포함된 퀴즈 목록 (${data.quizzes.size()}개)</h3>
+        <h3>포함된 퀴즈 목록 (${quizzes.size()}개)</h3>
         <ul class="quiz-list">
             <c:choose>
-                <c:when test="${not empty data.quizzes}">
-                    <c:forEach var="quiz" items="${data.quizzes}" varStatus="status">
+                <c:when test="${not empty quizzes}">
+                    <c:forEach var="quiz" items="${quizzes}" varStatus="status">
                         <li class="quiz-list-item">
                             <div class="quiz-content"><strong>Q${status.count}.</strong> ${quiz.content}</div>
                             <ul class="option-list">
