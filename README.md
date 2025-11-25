@@ -62,11 +62,56 @@ WordCapsule은 사용자가 영어 단어를 효과적으로 학습할 수 있�
 ## 프로젝트 실행 가이드
 
 ### 사전 요구사항
-- Java 21+
-- MySQL 8.0+
+- Java 21+ (로컬 실행 시)
+- MySQL 8.0+ (로컬 실행 시)
 - Git
 
 ### 실행 방법
+
+#### 옵션 1: Docker Compose를 사용한 실행 (권장)
+
+Docker와 Docker Compose가 설치되어 있어야 합니다.
+
+1. **프로젝트 클론**
+   ```bash
+   git clone https://github.com/woowacourse-openmission/wordcapsule.git
+   cd wordcapsule
+   ```
+
+2. **Docker Compose 실행**
+   ```bash
+   docker-compose up -d --build
+   ```
+   - MySQL 컨테이너가 시작되고 테이블이 생성됩니다
+   - 예제 데이터(`data.sql`)가 자동으로 로드됩니다
+   - Spring Boot 애플리케이션이 8081 포트에서 실행됩니다
+
+3. **접속**
+   - URL: http://localhost:8081
+   - 관리자 계정: ID `admin1`, PW `password1234`
+
+4. **컨테이너 중지**
+   ```bash
+   docker-compose down
+   ```
+
+5. **로그 확인**
+   ```bash
+   docker-compose logs -f app
+   docker-compose logs -f mysql
+   ```
+
+6. **리셋 후 실행**
+    ```bash
+   # 1. 컨테이너 종료 및 DB 볼륨(데이터) 삭제
+   docker-compose down -v
+   # 2. 이미지 새로 빌드 및 재실행
+   docker-compose build --no-cache
+   # 3. 다시 실행
+   docker-compose up -d
+   ```
+
+#### 옵션 2: 로컬 환경에서 실행
 
 1. **프로젝트 클론**
    ```bash
@@ -96,7 +141,7 @@ WordCapsule은 사용자가 영어 단어를 효과적으로 학습할 수 있�
 
 5. **접속**
    - URL: http://localhost:8080
-   - 초기 데이터는 `quiz_data.sql` 참고
+   - 초기 데이터는 `data.sql` 참고
 
 ## API 명세
 
