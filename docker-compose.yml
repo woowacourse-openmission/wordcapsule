@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: wordcapsule-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordcapsule
+      MYSQL_USER: wordcapsule
+      MYSQL_PASSWORD: wordcapsule
+      TZ: 'Asia/Seoul'
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - wordcapsule-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wordcapsule-app
+    environment:
+      DB_USERNAME: wordcapsule
+      DB_PASSWORD: wordcapsule
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/wordcapsule?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: "true"
+      SPRING_SQL_INIT_MODE: "always"
+    ports:
+      - "8081:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - wordcapsule-network
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+
+networks:
+  wordcapsule-network:
+    driver: bridge

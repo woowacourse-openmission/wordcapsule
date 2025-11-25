@@ -7,20 +7,20 @@ spring:
       suffix: .jsp
 
   datasource:
-    url: jdbc:mysql://localhost:3306/wordcapsule?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:password}
+    url: "${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/wordcapsule?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8}"
+    username: "${DB_USERNAME:wordcapsule}"
+    password: "${DB_PASSWORD:wordcapsule}"
     driver-class-name: com.mysql.cj.jdbc.Driver
-  
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: "${SPRING_JPA_HIBERNATE_DDL_AUTO:update}"
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
     show-sql: true
-  
-  sql:
+    sql:
     init:
       mode: always
+    defer-datasource-initialization: true
