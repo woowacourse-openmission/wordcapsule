@@ -84,10 +84,10 @@ Docker와 Docker Compose가 설치되어 있어야 합니다.
    ```
    - MySQL 컨테이너가 시작되고 테이블이 생성됩니다
    - 예제 데이터(`data.sql`)가 자동으로 로드됩니다
-   - Spring Boot 애플리케이션이 8080 포트에서 실행됩니다
+   - Spring Boot 애플리케이션이 8081 포트에서 실행됩니다
 
 3. **접속**
-   - URL: http://localhost:8080
+   - URL: http://localhost:8081
    - 관리자 계정: ID `admin1`, PW `password1234`
 
 4. **컨테이너 중지**
